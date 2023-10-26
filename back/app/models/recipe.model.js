@@ -91,4 +91,21 @@ Recipe.findById = (id, result) => {
     });
   };
 
+  Recipe.addComment = (recipeId, comment, userId, result) => {
+    const newComment = {
+      comment_text: comment,
+      recipe_id: recipeId,
+      user_Id: userId,
+      comment_active: true
+    };
+    sql.query("INSERT INTO comment SET ?", newComment, (err, res) => {
+      if (err) {
+        console.log("Error al insertar comentario: ", err);
+        result(err, null);
+        return;
+  }
+  console.log("Comentario guardado con éxito en la receta con ID: " + recipeId);
+    result(null, res);
+  });
+};
 module.exports = Recipe;

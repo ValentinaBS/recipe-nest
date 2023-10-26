@@ -100,3 +100,18 @@ exports.delete = (req, res) => {
         } else res.send({ message: `Recipe was deleted successfully!` });
       });
     };
+
+    exports.addComment = (req, res) => {
+        if (!req.body.comment || !req.body.recipeId){
+            return res.estatus(400).send({message: "comment and recipeId are required"});
+        }
+
+Recipe.addComment(req.body.recipeId, req.body.comment, (err, data) =>{
+    if (err) {
+        return res.status(500).send({
+            message: "Error adding comment to recipe"
+        });
+    }
+    res.send({ message: "Comment added successfully"});
+});
+    };
