@@ -25,22 +25,57 @@ textarea {
   height: 200px;
 }
 
+nav {
+  background-color: var(--cream);
+}
+
+.nav-logo, .footer-img {
+  height: 50px;
+}
+
+.nav-link:hover {
+  color: var(--primary);
+}
+
 footer {
   background-color: var(--primary);
+}
+
+footer a {
+  display: inline-block;
+  position: relative;
+}
+
+footer a:after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  transform: scaleX(0);
+  height: 2px;
+  bottom: 3px;
+  left: 0;
+  background-color: white;
+  transform-origin: bottom right;
+  transition: transform 0.25s ease-out;
+}
+
+footer a:hover:after {
+  transform: scaleX(1);
+  transform-origin: bottom left;
 }
 
 .primary-btn, .secondary-btn:hover {
   background-color: var(--primary);
   color: white;
   font-weight: bold;
-  border: 1px solid var(--primary);
+  border: 2px solid var(--primary);
 }
 
 .primary-btn:hover, .secondary-btn {
   background-color: white;
   color: var(--dark);
   font-weight: bold;
-  border: 1px solid var(--secondary);
+  border: 2px solid var(--secondary);
 }
 
 .form-control,
