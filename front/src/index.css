@@ -25,12 +25,17 @@ textarea {
   height: 200px;
 }
 
-nav {
+.nav-general {
   background-color: var(--cream);
 }
 
 .nav-logo, .footer-img {
   height: 50px;
+}
+
+a {
+  color: var(--dark);
+  text-decoration: none;
 }
 
 .nav-link:hover {
@@ -90,12 +95,12 @@ footer a:hover:after {
 
 .form-control:focus,
 .form-select:focus {
-    border: 2px solid var(--secondary);
+    border: 2px solid var(--primary);
     box-shadow: none;
 }
 
 .form-check-input:checked {
-    background-color: var(--secondary);
+    background-color: var(--primary);
     border-color: var(--dark);
 }
 
