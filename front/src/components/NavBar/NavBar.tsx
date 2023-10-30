@@ -3,15 +3,14 @@ import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
 import Button from 'react-bootstrap/Button';
 import { MdOutlineAddCircle } from 'react-icons/md';
-import { BiSearchAlt, BiLogOut, BiSolidUser } from 'react-icons/bi'
-import logo from '../../assets/logo.png';
+import { BiSearchAlt, BiLogOut, BiSolidUser } from 'react-icons/bi';
 
-const NavBar = () => {
+const NavBar: React.FC = () => {
     return (
         <Navbar expand='md' sticky='top' className='nav-general shadow'>
             <Container fluid className='px-4 mx-0'>
                 <Navbar.Brand href="#">
-                    <img className='nav-logo my-1' src={logo} alt='Green Plates logo' />
+                    <img className='nav-logo my-1' src='../../assets/logo.png' alt='Green Plates logo' />
                 </Navbar.Brand>
                 <Navbar.Toggle className='border-0'/>
                 <Navbar.Collapse className='justify-content-end'>

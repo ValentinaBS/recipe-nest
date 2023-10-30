@@ -1,16 +1,20 @@
-import React, { useState } from 'react'
-import { BiSearchAlt, BiSolidFilterAlt } from 'react-icons/bi'
+import React, { useState } from 'react';
+import { BiSearchAlt, BiSolidFilterAlt } from 'react-icons/bi';
 import { Form, ListGroup, InputGroup, Button } from 'react-bootstrap';
-import './filters.css'
+import './filters.css';
 
-const Filters = (props) => {
+interface FiltersProps {
+    display: string;
+}
+
+const Filters: React.FC<FiltersProps> = (props) => {
     const [searchInput, setSearchInput] = useState('');
-    const [occasionChecked, setOccasionChecked] = useState([]);
-    const [typeChecked, setTypeChecked] = useState([]);
+    const [occasionChecked, setOccasionChecked] = useState<string[]>([]);
+    const [typeChecked, setTypeChecked] = useState<string[]>([]);
 
-    const occasions = ["Breakfast", "Lunch", "Brunch", "Tea Time", "Dinner", "Appetizers"];
+    const occasions: string[] = ["Breakfast", "Lunch", "Brunch", "Tea Time", "Dinner", "Appetizers"];
 
-    const handleOccasionChange = (e) => {
+    const handleOccasionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
         if (occasionChecked.includes(value)) {
             setOccasionChecked(occasionChecked.filter((occasion) => occasion !== value));
@@ -19,7 +23,7 @@ const Filters = (props) => {
         }
     };
 
-    const handleType = (e) => {
+    const handleType = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
         if (typeChecked.includes(value)) {
             setTypeChecked(typeChecked.filter((type) => type !== value));
@@ -37,7 +41,7 @@ const Filters = (props) => {
 
             <ListGroup.Item className="py-4 px-2">
                 <label htmlFor="searchInput" className="form-label">
-                    <BiSearchAlt className='fs-5 me-1'/>
+                    <BiSearchAlt className='fs-5 me-1' />
                     Search by name or ingredient
                 </label>
                 <InputGroup>
@@ -90,7 +94,7 @@ const Filters = (props) => {
             <Button type="submit" className="primary-btn mt-3 w-100">Apply filters</Button>
             <Button type="submit" className="secondary-btn my-3 w-100">Clear filters</Button>
         </Form>
-    )
-}
+    );
+};
 
-export default Filters
+export default Filters;

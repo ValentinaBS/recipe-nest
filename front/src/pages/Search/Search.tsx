@@ -1,6 +1,6 @@
 import Breadcrumb from 'react-bootstrap/Breadcrumb';
 import Filters from '../../components/Filters/Filters';
-import RecipeCard from '../../components/RecipeCard/RecipeCard';
+// import RecipeCard from '../../components/RecipeCard/RecipeCard';
 
 export const Search = () => {
     return (
@@ -15,7 +15,7 @@ export const Search = () => {
             </Breadcrumb>
             <section className="mb-5 mt-4 pt-4 pt-md-5 mx-2 mx-md-4 d-flex column-gap-3 border-top">
                 <Filters display=' d-none d-lg-block'/>
-                <RecipeCard /> 
+                {/* <RecipeCard />  */}
             </section>
         </>
     )

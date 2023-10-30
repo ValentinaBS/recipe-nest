@@ -1,32 +1,32 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
 import { MdOutlineAddCircle } from 'react-icons/md';
-import imagePlaceholder from '../../assets/add-image.png';
-import './createRecipe.css'
+import './createRecipe.css';
 
-const CreateRecipe = () => {
-    const [selectedFile, setSelectedFile] = useState(imagePlaceholder);
+const CreateRecipe: React.FC = () => {
+    const [selectedFile, setSelectedFile] = useState<string | ArrayBuffer | null>('../../assets/add-image.png');
 
-    const handleFileChange = (event) => {
-        const file = event.target.files[0];
+    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
         if (file) {
             const reader = new FileReader();
             reader.onload = (e) => {
-                setSelectedFile(e.target.result);
+                setSelectedFile(e.target?.result as string);
             };
             reader.readAsDataURL(file);
         }
     };
+
     return (
         <Form className='my-5 mx-4 mx-md-auto create-form'>
             <Form.Group className='mb-4' controlId='image'>
                 <Form.Label className='d-flex flex-column row-gap-3 justify-content-center align-items-center' role="button" htmlFor='imageUpload'>
                     {selectedFile && (
                         <img
-                            src={selectedFile}
+                            src={selectedFile as string}
                             alt="Uploaded"
                             className='uploaded-image'
                         />
@@ -62,7 +62,7 @@ const CreateRecipe = () => {
 
             <Form.Group className='mb-4' controlId='ingredients'>
                 <Form.Label>Ingredients</Form.Label>
-                <Form.Control type='text' aria-describedby='ingredientsHelp' placeholder='2l water, 500gr tomatos...' />
+                <Form.Control type='text' aria-describedby='ingredientsHelp' placeholder='2l water, 500gr tomatoes...' />
                 <Form.Text id='ingredientsHelp'>
                     Make sure to separate the ingredients with commas.
                 </Form.Text>
@@ -72,7 +72,6 @@ const CreateRecipe = () => {
                 <Form.Label>Instructions</Form.Label>
                 <Form.Control as='textarea' rows={3} placeholder='Step 1: Preheat the oven...' />
             </Form.Group>
-
 
             <Form.Group className='mb-4' controlId='occasion'>
                 <Form.Label>Occasion</Form.Label>
@@ -112,7 +111,7 @@ const CreateRecipe = () => {
                 </Button>
             </div>
         </Form>
-    )
-}
+    );
+};
 
-export default CreateRecipe
+export default CreateRecipe;

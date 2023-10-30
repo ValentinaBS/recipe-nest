@@ -1,9 +1,9 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Routes, Route } from 'react-router-dom';
+//import { Routes, Route } from 'react-router-dom';
 import NavBar from './components/NavBar/NavBar';
 import Footer from './components/Footer/Footer';
-import Search from './pages/Search/Search';
-import CreateRecipe from './pages/CreateRecipe/CreateRecipe';
+//import { Search } from './pages/Search/Search';
+//import CreateRecipe from './pages/CreateRecipe/CreateRecipe';
 
 function App() {
 

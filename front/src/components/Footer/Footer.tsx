@@ -1,11 +1,10 @@
 import Row from 'react-bootstrap/Row';
-import Container from 'react-bootstrap/Container'
+import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
-import naturalImg from '../../assets/natural.png'
-import { FaLeaf } from 'react-icons/fa'
-import { BiLogoInstagramAlt, BiLogoFacebookCircle, BiLogoTiktok } from 'react-icons/bi'
+import { FaLeaf } from 'react-icons/fa';
+import { BiLogoInstagramAlt, BiLogoFacebookCircle, BiLogoTiktok } from 'react-icons/bi';
 
-const Footer = () => {
+const Footer: React.FC = () => {
     return (
         <footer className='footer text-center text-lg-start text-white py-4'>
             <Container className='px-4 pb-0'>
@@ -106,7 +105,7 @@ const Footer = () => {
                         <div className='col-md-4 ml-lg-0 text-center text-md-end'>
                             <img 
                                 className='footer-img' 
-                                src={naturalImg}
+                                src='../../assets/natural.png'
                                 alt='Hundred percent natural' 
                             />
                         </div>
