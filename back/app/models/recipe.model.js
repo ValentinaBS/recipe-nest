@@ -14,7 +14,7 @@ const Recipe = function(recipe) {
   this.recipe_category_type = recipe.recipe_category_type ;
   this.user_id = recipe.user_id ;
   this.recipe_active = recipe.recipe_active ;
-  this.recipe_category_flavor = recipe.recipe_category_flavor ;
+  this.recipe_category_occasion = recipe.recipe_category_occasion ;
 };
 
 Recipe.create = (newRecipe, result) => {
@@ -72,7 +72,7 @@ Recipe.findById = (id, result) => {
     );
   };*/
 
-  Recipe.remove = (id, result) => {
+  /*Recipe.remove = (id, result) => {
     sql.query("DELETE FROM recipe WHERE id = ?", id, (err, res) => {
       if (err) {
         console.log("error: ", err);
@@ -89,7 +89,7 @@ Recipe.findById = (id, result) => {
       console.log("deleted recipe with id: ", id);
       result(null, res);
     });
-  };
+  };*/
 
   Recipe.addComment = (recipeId, comment, userId, result) => {
     const newComment = {
