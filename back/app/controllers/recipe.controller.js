@@ -23,7 +23,7 @@ exports.create = (req, res) => {
     recipe_category_type: req.body.recipe_category_type,
     user_id: req.body.user_id,
     recipe_active: req.body.recipe_active|| true,
-    recipe_category_flavor: req.body.recipe_category_flavor
+    recipe_category_occasion: req.body.recipe_category_occasion
   });
 
   // Save Recipe in the database
@@ -55,7 +55,7 @@ exports.findOne = (req, res) => {
 };
 
 // Update a Recipe identified by the id in the request
-exports.update = (req, res) => {
+/*exports.update = (req, res) => {
    // Validate Request
    if (!req.body) {
     res.status(400).send({
@@ -99,7 +99,7 @@ exports.delete = (req, res) => {
           }
         } else res.send({ message: `Recipe was deleted successfully!` });
       });
-    };
+    };*/
 
     exports.addComment = (req, res) => {
         if (!req.body.comment || !req.body.recipeId){
