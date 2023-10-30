@@ -8,7 +8,7 @@ import logo from '../../assets/logo.png';
 
 const NavBar = () => {
     return (
-        <Navbar expand='md' sticky='top' className='shadow'>
+        <Navbar expand='md' sticky='top' className='nav-general shadow'>
             <Container fluid className='px-4 mx-0'>
                 <Navbar.Brand href="#">
                     <img className='nav-logo my-1' src={logo} alt='Green Plates logo' />

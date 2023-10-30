@@ -25,12 +25,17 @@ textarea {
   height: 200px;
 }
 
-nav {
+.nav-general {
   background-color: var(--cream);
 }
 
 .nav-logo, .footer-img {
   height: 50px;
+}
+
+a {
+  color: var(--dark);
+  text-decoration: none;
 }
 
 .nav-link:hover {
