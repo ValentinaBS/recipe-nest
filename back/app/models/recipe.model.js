@@ -108,4 +108,47 @@ Recipe.findById = (id, result) => {
     result(null, res);
   });
 };
+
+//constructor
+const User = function(user) {
+  this.user_id = recipe.user_id;
+  this.username = recipe.username;
+  this.email = recipe.email;
+  this.password = recipe.password;
+  this.user_image = recipe.user_image;
+  this.user_description = recipe.user_description ;
+};
+
+User.create = (newUser, result) => {
+  sql.query("INSERT INTO user SET ?", newUser, (err, res) => {
+    if (err) {
+      console.log("error: ", err);
+      result(err, null);
+      return;
+    }
+
+    console.log("created user: ", { id: res.insertId, ...newUser });
+    result(null, { id: res.insertId, ...newUser });
+  });
+};
+
+User.findById = (id, result) => {
+  sql.query(`SELECT * FROM user WHERE id = ${id}`, (err, res) => {
+    if (err) {
+      console.log("error: ", err);
+      result(err, null);
+      return;
+    }
+
+    if (res.length) {
+      console.log("found user: ", res[0]);
+      result(null, res[0]);
+      return;
+    }
+
+    // not found Recipe with the id
+    result({ kind: "not_found" }, null);
+  });
+};
+
 module.exports = Recipe;
