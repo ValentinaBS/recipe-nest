@@ -1,8 +1,8 @@
-const express = require("express");
-const app = express();
-const cors = require("cors");
+import express, { Express } from 'express';
+import cors from 'cors';
 
-const port = 3000
+const app: Express = express();
+const port: number = 3000;
 
 var corsOptions = {
     origin: "http://localhost:8081"

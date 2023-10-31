@@ -1,18 +1,19 @@
-const Recipe = require("../models/recipe.model.js");
+import { Request, Response } from 'express';
+import { Recipe } from '../models/recipe.model'; // Asegúrate de que la importación sea correcta
 
-// Create and Save a new Recipe
-exports.create = (req, res) => {
-  // Validate request
+// Crear y guardar una nueva Receta
+export const create = (req: Request, res: Response): void => {
+  // Validar la solicitud
   if (!req.body) {
     res.status(400).send({
-      message: "Content can not be empty!"
+      message: "¡El contenido no puede estar vacío!"
     });
   }
 
-  // Create a Recipe
-  const recipe = new Recipe({
+  // Crear una Receta
+  const recipe: Recipe = {
     recipe_title: req.body.recipe_title,
-    recipe_instructions : req.body.recipe_instructions ,
+    recipe_instructions: req.body.recipe_instructions,
     recipe_ingredients: req.body.recipe_ingredients,
     recipe_likes: req.body.recipe_likes,
     recipe_comments: req.body.recipe_comments,
@@ -22,37 +23,55 @@ exports.create = (req, res) => {
     recipe_image: req.body.recipe_image,
     recipe_category_type: req.body.recipe_category_type,
     user_id: req.body.user_id,
-    recipe_active: req.body.recipe_active|| true,
+    recipe_active: req.body.recipe_active || true,
     recipe_category_occasion: req.body.recipe_category_occasion
-  });
+  };
 
-  // Save Recipe in the database
-  Recipe.create(recipe, (err, data) => {
-    if (err)
+  // Guardar la Receta en la base de datos
+  Recipe.create(recipe, (err: Error | null, data?: Recipe) => {
+    if (err) {
       res.status(500).send({
         message:
-          err.message || "Some error occurred while creating the Recipe."
+          err.message || "Se produjo un error al crear la Receta."
       });
-    else res.send(data);
+    } else {
+      res.send(data);
+    }
   });
 };
 
-// Find a single recipe with a id
-exports.findOne = (req, res) => {
-    Recipe.findById(req.params.id, (err, data) => {
-        if (err) {
-          if (err.kind === "not_found") {
-            res.status(404).send({
-              message: `Not found Recipe with id ${req.params.id}.`
-            });
-          } else {
-            res.status(500).send({
-              message: "Error retrieving Recipe with id " + req.params.id
-            });
-          }
-        } else res.send(data);
-      });
+// Encontrar una sola receta por su ID
+export const findOne = (req: Request, res: Response): void => {
+  const recipeId: number = req.params.id;
+
+  Recipe.findById(recipeId, (err: Error | null, data?: Recipe) => {
+    if (err) {
+      if (err.message === "not_found") {
+        res.status(404).send({
+          message: `No se encontró la Receta con el ID ${recipeId}.`
+        });
+      } else {
+        res.status(500).send({
+          message: "Error al recuperar la Receta con el ID " + recipeId
+        });
+      }
+    } else {
+      res.send(data);
+    }
+  });
 };
+
+export const addComment = (req: Request, res: Response): void => {
+
+  Recipe.addComment(req.body.recipeId, req.body.comment, req.body.userId, (err: Error | null, data?: any) => {
+    if (err) {
+      return res.status(500).send({
+        message: "Error adding comment to recipe"
+      });
+    }
+      });
+  };
+
 
 // Update a Recipe identified by the id in the request
 /*exports.update = (req, res) => {
@@ -101,17 +120,5 @@ exports.delete = (req, res) => {
       });
     };*/
 
-    exports.addComment = (req, res) => {
-        if (!req.body.comment || !req.body.recipeId){
-            return res.estatus(400).send({message: "comment and recipeId are required"});
-        }
-
-Recipe.addComment(req.body.recipeId, req.body.comment, (err, data) =>{
-    if (err) {
-        return res.status(500).send({
-            message: "Error adding comment to recipe"
-        });
-    }
-    res.send({ message: "Comment added successfully"});
-});
-    };
+   
+    
