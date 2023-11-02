@@ -10,7 +10,7 @@ const NavBar: React.FC = () => {
         <Navbar expand='md' sticky='top' className='nav-general shadow'>
             <Container fluid className='px-4 mx-0'>
                 <Navbar.Brand href="#">
-                    <img className='nav-logo my-1' src='../../assets/logo.png' alt='Green Plates logo' />
+                    <img className='nav-logo my-1' src='https://i.imgur.com/bBi1u4w.png' alt='Green Plates logo' />
                 </Navbar.Brand>
                 <Navbar.Toggle className='border-0'/>
                 <Navbar.Collapse className='justify-content-end'>

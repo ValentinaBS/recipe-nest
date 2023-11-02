@@ -105,7 +105,7 @@ const Footer: React.FC = () => {
                         <div className='col-md-4 ml-lg-0 text-center text-md-end'>
                             <img 
                                 className='footer-img' 
-                                src='../../assets/natural.png'
+                                src='https://i.imgur.com/aFkf7gZ.png'
                                 alt='Hundred percent natural' 
                             />
                         </div>

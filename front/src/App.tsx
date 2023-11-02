@@ -15,9 +15,9 @@ function App() {
         {/* <Route index element={<Home />} /> */}
         {/* <Route path='/recipe/:recipeId' element={<Recipe/>} /> */}
         <Route path='/search' element={<Search />} />
-        <Route path='/login' element={<CreateRecipe />} />
+        <Route path='/create-recipe' element={<CreateRecipe />} />
         {/* <Route path='/about' element={<AboutUs />} /> */}
-        {/* <Route path='/create-recipe' element={<CreateRecipe />} /> */}
+        {/* <Route path='/login' element={<Login />} /> */}
         {/* <Route path='/profile' element={<Profile />} /> */}
         {/* <Route path="/*" element={<NotFound />} /> */}
       </Routes>

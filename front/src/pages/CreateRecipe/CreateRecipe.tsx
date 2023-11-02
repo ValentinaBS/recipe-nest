@@ -7,7 +7,7 @@ import { MdOutlineAddCircle } from 'react-icons/md';
 import './createRecipe.css';
 
 const CreateRecipe: React.FC = () => {
-    const [selectedFile, setSelectedFile] = useState<string | ArrayBuffer | null>('../../assets/add-image.png');
+    const [selectedFile, setSelectedFile] = useState<string | ArrayBuffer | null>('https://i.imgur.com/GEL53cL.png');
 
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
