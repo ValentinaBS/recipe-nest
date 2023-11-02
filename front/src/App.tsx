@@ -1,28 +1,29 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
-//import { Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import NavBar from './components/NavBar/NavBar';
 import Footer from './components/Footer/Footer';
-//import { Search } from './pages/Search/Search';
-//import CreateRecipe from './pages/CreateRecipe/CreateRecipe';
+import { Search } from './pages/Search/Search';
+import CreateRecipe from './pages/CreateRecipe/CreateRecipe';
 
 function App() {
 
   return (
-    <>
+    <BrowserRouter>
       <NavBar />
-    
-      {/*<Search />*/}
-      {/* <CreateRecipe /> */}
+
+      <Routes>
+        {/* <Route index element={<Home />} /> */}
+        {/* <Route path='/recipe/:recipeId' element={<Recipe/>} /> */}
+        <Route path='/search' element={<Search />} />
+        <Route path='/login' element={<CreateRecipe />} />
+        {/* <Route path='/about' element={<AboutUs />} /> */}
+        {/* <Route path='/create-recipe' element={<CreateRecipe />} /> */}
+        {/* <Route path='/profile' element={<Profile />} /> */}
+        {/* <Route path="/*" element={<NotFound />} /> */}
+      </Routes>
 
       <Footer />
-      {/* <Routes>
-        <Route index element={<Home />} />
-        <Route exact path='/' />
-        <Route path='/about' />
-        <Route path='/about' />
-        <Route path="*" element={<NoMatch />} />
-      </Routes>*/}
-    </>
+    </BrowserRouter>
   )
 }
 
