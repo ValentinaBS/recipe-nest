@@ -1,4 +1,4 @@
-import mysql, { Pool} from "mysql2/promise";
+import mysql, {Pool} from "mysql2/promise";
 import {dbConfig} from "../config/db.config";
 
 export const pool: Pool = mysql.createPool({
@@ -12,11 +12,11 @@ export const pool: Pool = mysql.createPool({
 }); 
 
 // Create a connection to the database
-const connection = mysql.createConnection({
+/*const connection = mysql.createConnection({
   host: dbConfig.HOST,
   user: dbConfig.USER,
   password: dbConfig.PASSWORD,
   database: dbConfig.DB
 });
 
-export default connection;
+export default connection;*/
