@@ -3,6 +3,7 @@ import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
+import { Ingredients } from '../../components/Ingredients/Ingredients';
 import { MdOutlineAddCircle } from 'react-icons/md';
 import './createRecipe.css';
 
@@ -22,7 +23,7 @@ const CreateRecipe: React.FC = () => {
 
     return (
         <Form className='my-5 mx-4 mx-md-auto create-form'>
-            <Form.Group className='mb-4' controlId='image'>
+            <Form.Group className='mb-4'>
                 <Form.Label className='d-flex flex-column row-gap-3 justify-content-center align-items-center' role="button" htmlFor='imageUpload'>
                     {selectedFile && (
                         <img
@@ -62,10 +63,7 @@ const CreateRecipe: React.FC = () => {
 
             <Form.Group className='mb-4' controlId='ingredients'>
                 <Form.Label>Ingredients</Form.Label>
-                <Form.Control type='text' aria-describedby='ingredientsHelp' placeholder='2l water, 500gr tomatoes...' />
-                <Form.Text id='ingredientsHelp'>
-                    Make sure to separate the ingredients with commas.
-                </Form.Text>
+                <Ingredients />
             </Form.Group>
 
             <Form.Group className='mb-4' controlId='instructions'>

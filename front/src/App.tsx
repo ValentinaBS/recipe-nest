@@ -15,7 +15,7 @@ function App() {
         {/* <Route index element={<Home />} /> */}
         {/* <Route path='/recipe/:recipeId' element={<Recipe/>} /> */}
         <Route path='/search' element={<Search />} />
-        <Route path='/create-recipe' element={<CreateRecipe />} />
+        <Route path='/createRecipe' element={<CreateRecipe />} />
         {/* <Route path='/about' element={<AboutUs />} /> */}
         {/* <Route path='/login' element={<Login />} /> */}
         {/* <Route path='/profile' element={<Profile />} /> */}
