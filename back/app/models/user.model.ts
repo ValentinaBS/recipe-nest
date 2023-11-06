@@ -15,15 +15,15 @@ export class User {
         this.user_description = user.user_description;
     }
 
-    static async create(newRecipe: any, result: Function): Promise<void> {
+    static async create(newUser: any, result: Function): Promise<void> {
         const connection = await pool.getConnection();
         try {
-          const [rows] = await connection.query("INSERT INTO recipe SET ?", newRecipe);
+          const [rows] = await connection.query("INSERT INTO user SET ?", newUser);
           const queryResult = rows as RowDataPacket[];
           if (queryResult[0] && queryResult[0][0]) {
             const insertId = queryResult[0][0].insertId;
-          console.log("created recipe: ", { id: insertId, ...newRecipe });
-          result(null, { id: insertId, ...newRecipe });
+          console.log("created user: ", { id: insertId, ...newUser });
+          result(null, { id: insertId, ...newUser });
         }
         } catch (err) {
           console.log("error: ", err);
