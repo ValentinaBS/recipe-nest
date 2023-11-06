@@ -4,6 +4,7 @@ import NavBar from './components/NavBar/NavBar';
 import Footer from './components/Footer/Footer';
 import { Search } from './pages/Search/Search';
 import CreateRecipe from './pages/CreateRecipe/CreateRecipe';
+import Login from './components/Login/Login';
 
 function App() {
 
@@ -17,7 +18,7 @@ function App() {
         <Route path='/search' element={<Search />} />
         <Route path='/create-recipe' element={<CreateRecipe />} />
         {/* <Route path='/about' element={<AboutUs />} /> */}
-        {/* <Route path='/login' element={<Login />} /> */}
+        <Route path='/login' element={<Login />} />
         {/* <Route path='/profile' element={<Profile />} /> */}
         {/* <Route path="/*" element={<NotFound />} /> */}
       </Routes>
