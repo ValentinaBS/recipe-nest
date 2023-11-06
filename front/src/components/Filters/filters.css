@@ -1,0 +1,12 @@
+@media screen and (min-width: 768px) {
+    .recipes-filters {
+        width: 80%;
+        height: fit-content;
+    }
+}
+
+@media screen and (min-width: 1024px) {
+    .recipes-filters {
+        width: 320px;
+    }
+}

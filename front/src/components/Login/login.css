@@ -1,0 +1,45 @@
+.login-link {
+    color: gray;
+    text-decoration: underline;
+}
+
+.login-link:hover {
+    color: var(--primary);
+}
+
+.login-form {
+    width: 80%;
+}
+
+.custom-checkbox {
+    display: inline-block;
+    position: relative;
+}
+
+.custom-checkbox label {
+    cursor: pointer;
+}
+
+.custom-checkbox label img {
+    width: 5rem;
+    height: 5rem;
+    opacity: 0.6;
+    background-color: var(--cream);
+}
+
+.custom-checkbox:hover label img {
+    opacity: 1;
+    transition: 0.3s;
+}
+
+.custom-checkbox input:checked+label img {
+    opacity: 1;
+    background-color: var(--primary);
+    transition: 0.5s;
+}
+
+@media screen and (min-width: 768px) {
+    .login-form {
+        width: 370px;
+    }
+}
