@@ -1,4 +1,5 @@
 import { pool } from './db'; // Asegúrate de que la importación sea correcta
+import { ResultSetHeader, RowDataPacket } from 'mysql2/promise';
 
 export class Recipe {
 
@@ -36,8 +37,12 @@ export class Recipe {
     const connection = await pool.getConnection();
     try {
       const [rows] = await connection.query("INSERT INTO recipe SET ?", newRecipe);
-      console.log("created recipe: ", { id: rows.insertId, ...newRecipe });
-      result(null, { id: rows.insertId, ...newRecipe });
+      const queryResult = rows as RowDataPacket[];
+      if (queryResult[0] && queryResult[0][0]) {
+        const insertId = queryResult[0][0].insertId;
+      console.log("created recipe: ", { id: insertId, ...newRecipe });
+      result(null, { id: insertId, ...newRecipe });
+    }
     } catch (err) {
       console.log("error: ", err);
       result(err, null);
@@ -50,11 +55,13 @@ export class Recipe {
     const connection = await pool.getConnection();
     try {
       const [rows] = await connection.query("SELECT * FROM recipe WHERE id = ?", id);
-      if (rows.length) {
+      if (Array.isArray(rows)) {
+        if (rows.length > 0) {
         console.log("found recipe: ", rows[0]);
         result(null, rows[0]);
       } else {
         result({ kind: "not_found" }, null);
+      }
       }
     } catch (err) {
       console.log("error: ", err);

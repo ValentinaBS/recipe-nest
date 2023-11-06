@@ -42,7 +42,8 @@ export const create = (req: Request, res: Response): void => {
 
 // Encontrar una sola receta por su ID
 export const findOne = (req: Request, res: Response): void => {
-  const recipeId: number = req.params.id;
+  const recipeId: number = Number(req.params.id);
+
 
   Recipe.findById(recipeId, (err: Error | null, data?: Recipe) => {
     if (err) {
