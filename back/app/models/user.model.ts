@@ -1,4 +1,6 @@
 import { pool } from './db'; // Asegúrate de que la importación sea correcta
+import { RowDataPacket } from 'mysql2';
+
 
 export class User {
     username: string;
