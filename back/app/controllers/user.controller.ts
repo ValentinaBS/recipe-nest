@@ -10,7 +10,7 @@ export const create = (req: Request, res: Response): void => {
       });
     }
 
-// Crear una Receta
+// Crear un usuario
   const user: User = {
     username: req.body.username,
     email: req.body.email,
@@ -32,18 +32,18 @@ export const create = (req: Request, res: Response): void => {
       });
 
       export const findOne = (req: Request, res: Response): void => {
-        const recipeId: number = Number(req.params.id);
+        const userId: number = Number(req.params.id);
       
       
-        User.findById(recipeId, (err: Error | null, data?: User) => {
+        User.findById(userId, (err: Error | null, data?: User) => {
           if (err) {
             if (err.message === "not_found") {
               res.status(404).send({
-                message: `No se encontró el Usuario con el ID ${recipeId}.`
+                message: `No se encontró el Usuario con el ID ${userId}.`
               });
             } else {
               res.status(500).send({
-                message: "Error al recuperar el usuario con el ID " + recipeId
+                message: "Error al recuperar el usuario con el ID " + userId
               });
             }
           } else {
