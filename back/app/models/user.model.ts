@@ -54,6 +54,25 @@ export class User {
           connection.release();
         }
       }
+
+      static async update(id: number, updatedUser: any, result: Function): Promise<void> {
+        const connection = await pool.getConnection();
+        try {
+          const [rows] = await connection.query("UPDATE user SET ? WHERE id = ?", [updatedUser, id]);
+          if (rows.affectedRows > 0) {
+            console.log(`Updated user with ID: ${id}`);
+            result(null, { message: "Usuario actualizado con éxito" });
+          } else {
+            result({ kind: "not_found" }, null);
+          }
+        } catch (err) {
+          console.log("error: ", err);
+          result(err, null);
+        } finally {
+          connection.release();
+        }
+      }
+      
 }
 
 

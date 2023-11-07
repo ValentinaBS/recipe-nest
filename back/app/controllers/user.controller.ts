@@ -51,6 +51,36 @@ export const findOne = (req: Request, res: Response): void => {
             res.send(data);
         }
     });
+
+    // Actualizar un usuario por ID
+ export const update = (req: Request, res: Response): void => {
+    const userId: number = Number(req.params.id);
+    
+    // Obtén los datos actualizados del usuario desde la solicitud
+    const updatedUserData = {
+        username: req.body.username,
+        email: req.body.email,
+        password: req.body.password,
+        user_image: req.body.user_image,
+        user_description: req.body.user_description
+    };
+
+    User.update(userId, updatedUserData, (err: Error | null, result?: { message: string }) => {
+        if (err) {
+            if (err.message === "not_found") {
+                res.status(404).send({
+                    message: `No se encontró el Usuario con el ID ${userId}.`
+                });
+            } else {
+                res.status(500).send({
+                    message: "Error al actualizar el usuario con el ID " + userId
+                });
+            }
+        } else {
+            res.send(result); // Devuelve un mensaje de éxito
+        }
+    });
+};
 };
 
 
