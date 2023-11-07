@@ -5,9 +5,9 @@ import { User } from '../models/user.model';
 export const create = (req: Request, res: Response): void => {
     // Validar la solicitud
     if (!req.body) {
-      res.status(400).send({
-        message: "¡El contenido no puede estar vacío!"
-      });
+        res.status(400).send({
+            message: "¡El contenido no puede estar vacío!"
+        });
     }
 
     // Crear un usuario
@@ -22,17 +22,17 @@ export const create = (req: Request, res: Response): void => {
     // Guardar un Usuario en la base de datos
     User.create(user, (err: Error | null, data?: User) => {
         if (err) {
-          res.status(500).send({
-            message:
-              err.message || "Se produjo un error al crear el usuario."
-          });
+            res.status(500).send({
+                message:
+                    err.message || "Se produjo un error al crear el usuario."
+            });
         } else {
-          res.send(data);
+            res.send(data);
         }
     });
 };
 
-// Define la función findOne por separado
+// Buscar un usuario por ID
 export const findOne = (req: Request, res: Response): void => {
     const userId: number = Number(req.params.id);
 
@@ -51,11 +51,12 @@ export const findOne = (req: Request, res: Response): void => {
             res.send(data);
         }
     });
+};
 
-    // Actualizar un usuario por ID
- export const update = (req: Request, res: Response): void => {
+// Actualizar un usuario por ID
+export const update = (req: Request, res: Response): void => {
     const userId: number = Number(req.params.id);
-    
+
     // Obtén los datos actualizados del usuario desde la solicitud
     const updatedUserData = {
         username: req.body.username,
@@ -81,6 +82,6 @@ export const findOne = (req: Request, res: Response): void => {
         }
     });
 };
-};
+
 
 
