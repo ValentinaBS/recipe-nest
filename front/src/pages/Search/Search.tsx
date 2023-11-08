@@ -5,7 +5,7 @@ import Filters from '../../components/Filters/Filters';
 export const Search = () => {
     return (
         <>
-            <Breadcrumb className='m-4 m-md-5 mb-2'>
+            <Breadcrumb className='m-4 m-md-5 mb-md-4'>
                 <Breadcrumb.Item className='nav-link' href="#">
                     Home
                 </Breadcrumb.Item>
@@ -13,7 +13,7 @@ export const Search = () => {
                     Search
                 </Breadcrumb.Item>
             </Breadcrumb>
-            <section className="mb-5 mt-4 pt-4 pt-md-5 mx-2 mx-md-4 d-flex column-gap-3 border-top">
+            <section className="mb-5 mt-3 pt-4 pt-md-5 mx-2 mx-md-4 d-flex column-gap-3 border-top">
                 <Filters display=' d-none d-lg-block'/>
                 {/* <RecipeCard />  */}
             </section>
