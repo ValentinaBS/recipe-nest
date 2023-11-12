@@ -3,10 +3,10 @@ import { BiLike, BiSolidComment, BiSolidSend } from 'react-icons/bi';
 
 const Comments: React.FC = () => {
     return (
-        <div className='p-4 card-background'>
+        <div className='py-4 card-background w-100 mx-5'>
             <div className='d-flex align-items-center gap-3'>
                 <BiSolidComment className='fs-3 mb-2' />
-                <h2 className='fs-3 fw-bold'>Comments</h2>
+                <h2 className='fs-3'>Comments</h2>
             </div>
 
             <div className='d-flex gap-3 my-3'>
