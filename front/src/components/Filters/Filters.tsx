@@ -12,7 +12,7 @@ const Filters: React.FC<FiltersProps> = (props) => {
     const [occasionChecked, setOccasionChecked] = useState<string[]>([]);
     const [typeChecked, setTypeChecked] = useState<string[]>([]);
 
-    const occasions: string[] = ["Breakfast", "Lunch", "Brunch", "Tea Time", "Dinner", "Appetizers"];
+    const occasions: string[] = ["Lunch", "Breakfast", "Brunch", "Tea Time", "Dinner", "Appetizers"];
 
     const handleOccasionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
@@ -57,7 +57,7 @@ const Filters: React.FC<FiltersProps> = (props) => {
 
             <ListGroup.Item className="py-4 px-2">
                 <h3 className="fs-4">Occasion</h3>
-                <div className="d-flex flex-wrap gap-2 mt-3" role="group" aria-label="Occasion">
+                <div className="d-flex flex-wrap row-gap-2 column-gap-4 mt-3" role="group" aria-label="Occasion">
                     {occasions.map((occasion) => (
                         <div key={occasion}>
                             <Form.Check
@@ -75,7 +75,7 @@ const Filters: React.FC<FiltersProps> = (props) => {
 
             <ListGroup.Item className="py-4 px-2">
                 <h3 className="fs-4">Dietary Type</h3>
-                <div className="d-flex flex-wrap gap-2 mt-3" role="group" aria-label="Occasion">
+                <div className="d-flex flex-wrap gap-4 mt-3" role="group" aria-label="Occasion">
                     {["Vegan", "Vegetarian"].map((type) => (
                         <div key={type}>
                             <Form.Check

@@ -1,6 +1,6 @@
 .recipe-card {
-    width: 90%;
-    height: 500px;
+    width: 310px;
+    height: 490px;
     border-color: var(--primary);
 }
 
@@ -10,6 +10,17 @@
 
 .recipes-section {
     width: 1500px;
+}
+
+.recipe-card-line-clamp {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+}
+
+.green-border {
+    border-top: 1px solid var(--primary);
 }
 
 @media screen and (min-width: 768px) {
