@@ -2,6 +2,7 @@ import React from 'react';
 import { Col, Card, Button } from 'react-bootstrap';
 import { BiSolidFilterAlt, BiLike, BiSolidLike, BiComment } from 'react-icons/bi';
 import { FaRegBookmark, FaBookmark } from 'react-icons/fa6';
+import { NavLink } from 'react-router-dom';
 
 interface RecipeCardProps {
     filteredRecipes: any[]; // Adjust the type as needed
@@ -23,7 +24,7 @@ const RecipeCard: React.FC<RecipeCardProps> = (props) => {
                         <Card.Img
                             src={recipe.recipe_image}
                             alt={recipe.recipe_title}
-                            className="recipe-img object-fit-cover w-100 h-lg-100 rounded-bottom-0"
+                            className="recipe-card-img object-fit-cover w-100 h-lg-100 rounded-bottom-0"
                         />
                         <Card.Body className="mt-2 d-flex flex-column justify-content-between">
                             <Card.Title className="fw-bold line-clamp">{recipe.recipe_title}</Card.Title>
@@ -55,7 +56,7 @@ const RecipeCard: React.FC<RecipeCardProps> = (props) => {
                                     </Button>
                                 </div>
                             </div>
-                            <a href="#" className="stretched-link z-0"></a>
+                            <NavLink to='/recipe' className="stretched-link z-0"></NavLink>
                         </Card.Body>
                     </Card>
                 </Col>
