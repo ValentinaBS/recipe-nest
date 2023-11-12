@@ -19,7 +19,7 @@ const Recipe: React.FC = () => {
                 </p>
                 <div className='d-flex justify-content-between align-items-center mt-3'>
                     <a className='d-flex align-items-center gap-2' href='#'>
-                        <img className='rounded-circle p-1 profile-img shadow-sm' src="https://i.imgur.com/3PnQ2EZ.png" alt="Profile picture" />
+                        <img className='rounded-circle p-1 recipe-profile-img shadow-sm' src="https://i.imgur.com/3PnQ2EZ.png" alt="Profile picture" />
                         <p className='mb-0 fw-bold'>JamesCook</p>
                     </a>
 
