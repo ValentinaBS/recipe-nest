@@ -5,8 +5,8 @@
     }
 }
 
-@media screen and (min-width: 1024px) {
+@media screen and (min-width: 991px) {
     .recipes-filters {
-        width: 320px;
+        width: 300px;
     }
 }
