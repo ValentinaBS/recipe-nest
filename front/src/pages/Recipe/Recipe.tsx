@@ -1,4 +1,5 @@
 import React from 'react'
+import { NavLink } from 'react-router-dom';
 import Card from 'react-bootstrap/Card';
 import Comments from '../../components/Comments/Comments'
 import { BiLike, BiSolidUser, BiSolidTimeFive, BiRightArrowAlt } from 'react-icons/bi';
@@ -18,10 +19,10 @@ const Recipe: React.FC = () => {
                     Vegan - Lunch
                 </p>
                 <div className='d-flex justify-content-between align-items-center mt-3'>
-                    <a className='d-flex align-items-center gap-2' href='#'>
+                    <NavLink className='d-flex align-items-center gap-2' to='/profile'>
                         <img className='rounded-circle p-1 recipe-profile-img shadow-sm' src="https://i.imgur.com/3PnQ2EZ.png" alt="Profile picture" />
                         <p className='mb-0 fw-bold'>JamesCook</p>
-                    </a>
+                    </NavLink>
 
                     <div className='d-flex align-items-center gap-4'>
                         <button className='btn d-flex p-0 border-0'>
@@ -86,9 +87,9 @@ const Recipe: React.FC = () => {
                     <h2 className='fs-3 mb-0'>
                         More Recipes By JamesCook
                     </h2>
-                    <a href='#'>
+                    <NavLink to='/profile'>
                         <BiRightArrowAlt className='fs-2' />
-                    </a>
+                    </NavLink>
                 </div>
 
                 <div className='d-flex flex-wrap justify-content-between'>

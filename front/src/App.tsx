@@ -1,5 +1,6 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import ScrollToTop from './components/ScrollToTop/ScrollToTop';
 import NavBar from './components/NavBar/NavBar';
 import Footer from './components/Footer/Footer';
 import Search from './pages/Search/Search';
@@ -12,9 +13,11 @@ function App() {
 
   return (
     <BrowserRouter>
+      <ScrollToTop />
       <NavBar />
 
       <Routes>
+        
         {/* <Route index element={<Home />} /> */}
         <Route path='/recipe' element={<Recipe />} />
         <Route path='/search' element={<Search />} />

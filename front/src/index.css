@@ -42,6 +42,10 @@ a {
   text-decoration: none;
 }
 
+.nav-link {
+  color: var(--dark);
+}
+
 .nav-link:hover {
   color: var(--primary);
 }
@@ -120,4 +124,8 @@ footer a:hover:after {
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
+}
+
+.active {
+  --bs-navbar-active-color: var(--primary);
 }

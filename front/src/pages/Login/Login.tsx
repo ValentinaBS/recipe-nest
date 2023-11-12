@@ -11,7 +11,7 @@ const Login: React.FC = () => {
 
     return (
         <MagicMotion>
-            <div className={'d-flex justify-content-center align-items-center my-5 mx-2 gap-5' + (isLogin ? '' : ' flex-row-reverse')}>
+            <div className={'d-flex justify-content-center align-items-center login-margin mx-2 gap-5' + (isLogin ? '' : ' flex-row-reverse')}>
                 <img 
                     src={isLogin ? 'https://i.imgur.com/NezeMlu.png' : 'https://i.imgur.com/5zr2YIx.png'}
                     alt='Woman holding vegetables'
