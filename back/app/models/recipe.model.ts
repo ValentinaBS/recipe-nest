@@ -70,13 +70,14 @@ export class Recipe {
       connection.release();
     }
   }
-
+ 
   static async addComment(recipeId: number, comment: string, userId: number, result: Function): Promise<void> {
     const newComment = {
       comment_text: comment,
       recipe_id: recipeId,
       user_Id: userId,
       comment_active: true,
+      comment_likes: 0,
     };
     const connection = await pool.getConnection();
     try {
@@ -85,9 +86,7 @@ export class Recipe {
       result(null, rows);
     } catch (err) {
       console.log("Error al insertar comentario: ", err);
-      
-      result
-result(err, null);
+       result(err, null);
     } finally {
       connection.release();
     }
