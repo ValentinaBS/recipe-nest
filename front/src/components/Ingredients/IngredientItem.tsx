@@ -7,25 +7,32 @@ export default function IngredientItem({
     ingredient: {
         id: `${string}-${string}-${string}-${string}-${string}`;
         text: string;
+        quantity: string;
     };
     setIngredients: Dispatch<
         SetStateAction<
             {
                 id: `${string}-${string}-${string}-${string}-${string}`;
                 text: string;
+                quantity: string;
             }[]
         >
     >;
 }): JSX.Element {
 
     const handleDelete = () => {
-        setIngredients((ingredients) =>
-            ingredients.filter((i) => i.id !== ingredient.id)
-        );
+        setIngredients((ingredients) => {
+            if (ingredients.length > 1) {
+                return ingredients.filter((i) => i.id !== ingredient.id);
+            }
+
+            return ingredients;
+        });
     };
 
     return (
         <li className='d-flex justify-content-between align-items-center ps-3 my-2 rounded ingredient-item'>
+            {ingredient.quantity + ' '}
             {ingredient.text}
             <button
                 type='button'
