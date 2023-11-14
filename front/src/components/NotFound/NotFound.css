@@ -1,0 +1,122 @@
+.not-found-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    padding: 6% 6% 6% 6%;
+  }
+  .not-found-container img {
+    padding: 7% 7% 9% 7%;
+  }
+
+  .not-found-content {
+    text-align: center;
+    padding: 10% 7% 10% 17%;
+  }
+
+  .not-found-content h3 {
+    font-size: 7rem; 
+  }
+  .not-found-content p {
+    font-size: 1rem; 
+    line-height: 0.1rem;
+
+  }
+
+.custom-button {
+    margin-top: 40px;
+    background-color: var(--primary); 
+    color: var(--cream); 
+    border: none; 
+    padding: 10px 70px; 
+    border-radius: 8px; 
+    font-size: 2rem; 
+    
+  }
+  .custom-button:hover {
+    background-color: var(--lightprimary); 
+  }
+
+@media screen and (min-width: 330px) and (max-width: 600px) {
+  .not-found-container {
+    display: flex;
+    flex-direction: column; 
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    padding: 10% 5% 10% 5%; 
+  }
+
+  .not-found-container img {
+    width: 100%; 
+    max-width: 200px; 
+    margin-bottom: 10px; 
+  }
+
+  .not-found-content {
+    text-align: center;
+    padding: 10% 5% 10% 5%; 
+  }
+
+  .not-found-content h3 {
+    font-size: 3rem;
+  }
+
+  .not-found-content p {
+    font-size: 17px; 
+    line-height: 1.5; 
+  }
+
+  .custom-button {
+    margin-top: 20px; 
+    padding: 10px 20px; 
+    font-size: 1.5rem; 
+  }
+
+  .custom-button:hover {
+    background-color: var(--lightprimary);
+  }
+}
+
+@media screen and (max-width: 970px) {
+  .not-found-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    padding: 10% 5% 10% 5%;
+  }
+
+  .not-found-container img {
+    width: 100%;
+    max-width: 100%; 
+    margin-bottom: 20px;
+  }
+
+  .not-found-content {
+    text-align: center;
+    padding: 10% 5% 10% 5%;
+  }
+
+  .not-found-content h3 {
+    font-size: 3rem; 
+    margin-bottom: 10px; 
+  }
+
+  .not-found-content p {
+    font-size: 2rem; 
+    line-height: 1.5;
+  }
+
+  .custom-button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    font-size: 1.3rem; 
+  }
+
+  .custom-button:hover {
+    background-color: var(--lightprimary);
+  }
+}
+
