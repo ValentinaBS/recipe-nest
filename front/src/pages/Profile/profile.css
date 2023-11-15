@@ -1,0 +1,9 @@
+.profile-container {
+    max-width: 900px;
+}
+
+.profile-img {
+    height: 250px;
+    width: 250px;
+    border: 1px solid var(--primary);
+}

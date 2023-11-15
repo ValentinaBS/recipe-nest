@@ -73,8 +73,30 @@ export class User {
         }
       }
      
-    
+      static async findByEmail(email: string, result: Function): Promise<void> {
+        const connection = await pool.getConnection();
+        try {
+            const [rows] = await connection.query("SELECT * FROM user WHERE email = ?", email);
+            if (Array.isArray(rows)) {
+                if (rows.length > 0) {
+                    console.log("found user by email: ", rows[0]);
+                    const userData = rows[0] as any; // Puedes ajustar esto según la estructura de tus datos en la base de datos
+                    const user = new User(userData);
+                    result(null, user);
+                } else {
+                    result({ kind: "not_found" }, null);
+                }
+            }
+        } catch (err) {
+            console.log("error: ", err);
+            result(err, null);
+        } finally {
+            connection.release();
+        }
+    }
 }
+
+
 
 
 
