@@ -8,11 +8,14 @@ import CreateRecipe from './pages/CreateRecipe/CreateRecipe';
 import Login from './pages/Login/Login';
 import Recipe from './pages/Recipe/Recipe';
 import Profile from './pages/Profile/Profile';
+import ProtectedRoute from './routers/ProtectedRoute';
 import NotFound from './components/NotFound/NotFound';
+
 
 function App() {
 
   return (
+    
     <BrowserRouter>
       <ScrollToTop />
       <NavBar />
@@ -22,11 +25,20 @@ function App() {
         {/* <Route index element={<Home />} /> */}
         <Route path='/recipe' element={<Recipe />} />
         <Route path='/search' element={<Search />} />
-        <Route path='/create-recipe' element={<CreateRecipe />} />
+        <Route path='/create-recipe' 
+        element={
+          <ProtectedRoute>
+            <CreateRecipe />
+          </ProtectedRoute>
+        } />
         {/* <Route path='/about' element={<AboutUs />} /> */}
         <Route path='/login' element={<Login />} />
-        <Route path='/profile' element={<Profile />} />
-        { <Route path="*" element={<NotFound />} /> }
+        <Route path='/profile' element={
+          <ProtectedRoute>
+            <Profile />
+          </ProtectedRoute>
+        } />
+        <Route path="/*" element={<NotFound />} />
       </Routes>
 
       <Footer />
