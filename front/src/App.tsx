@@ -9,6 +9,8 @@ import Login from './pages/Login/Login';
 import Recipe from './pages/Recipe/Recipe';
 import Profile from './pages/Profile/Profile';
 import ProtectedRoute from './routers/ProtectedRoute';
+import NotFound from './components/NotFound/NotFound';
+
 
 function App() {
 
@@ -36,7 +38,7 @@ function App() {
             <Profile />
           </ProtectedRoute>
         } />
-        {/* <Route path="/*" element={<NotFound />} /> */}
+        <Route path="/*" element={<NotFound />} />
       </Routes>
 
       <Footer />
