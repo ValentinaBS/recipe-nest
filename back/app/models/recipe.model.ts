@@ -94,7 +94,6 @@ result(err, null);
   }
 }
 
-
   /*Recipe.updateById = (id, recipe, result) => {
     sql.query(
       "UPDATE trecipe SET title = ?, description = ?, published = ? WHERE id = ?",
