@@ -1,5 +1,7 @@
 import express, { Express } from 'express';
 import cors from 'cors';
+import recipeRoutes from './routes/recipe.routes';
+
 
 const app: Express = express();
 const port: number = 3000;
@@ -9,14 +11,16 @@ var corsOptions = {
   };
 
   app.use(cors(corsOptions));
-
   app.use(express.json());
+
+  // Configurar las rutas de recetas
+recipeRoutes(app);
+
 
 app.get('/', (req, res) =>{
     res.send('Hello World!!!')
 });
 
-/*require("./app/routes/tutorial.routes.js")(app);*/
 
 app.listen(port, ()=> {
     console.log(`Example app listening on port http://localhost:${port}`)
