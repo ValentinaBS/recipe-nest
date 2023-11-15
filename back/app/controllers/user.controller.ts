@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { User } from '../models/user.model';
 import jwt from 'jsonwebtoken';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 
 
 // Crear y guardar un nuevo usuario
