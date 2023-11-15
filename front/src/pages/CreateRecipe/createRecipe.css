@@ -11,3 +11,17 @@
 .ingredient-item {
     background-color: var(--cream);
 }
+
+.quantity-input {
+    width: 4.5rem;
+}
+
+.add-ingredient-button {
+    width: 100%;
+}
+
+@media screen and (min-width: 768px) {
+    .add-ingredient-button {
+        width: 50%;
+    }
+}
