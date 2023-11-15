@@ -1,5 +1,8 @@
 import { Request, Response } from 'express';
 import { User } from '../models/user.model';
+import jwt from 'jsonwebtoken';
+import bcrypt from 'bcrypt';
+
 
 // Crear y guardar un nuevo usuario
 export const create = (req: Request, res: Response): void => {
@@ -83,5 +86,26 @@ export const update = (req: Request, res: Response): void => {
     });
 };
 
+export const login = (req: Request, res: Response): void => {
+    const { email, password } = req.body;
+  
+    // Verifica si el usuario existe en la base de datos (deberías implementar esta función)
+    User.findByEmail(email, async (err: Error | null, data?: User) => {
+        if (err) {
+            res.status(500).send({ message: "Error al buscar el usuario" });
+        } else if (!data) {
+            res.status(404).send({ message: "Usuario no encontrado" });
+        } else {
+            const passwordMatches = await bcrypt.compare(password, data.password);
+            if (passwordMatches) {
+                // El usuario existe y la contraseña coincide
+                const token = jwt.sign({ userId: data.id }, 'secret_key', { expiresIn: '1h' });
+                res.send({ token });
+            } else {
+                res.status(401).send({ message: "Credenciales inválidas" });
+            }
+        }
+    });
+};
 
 
