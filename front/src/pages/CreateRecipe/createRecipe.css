@@ -1,0 +1,13 @@
+.create-form {
+    max-width: 600px;
+}
+
+.uploaded-image {
+    max-width: 300px;
+    max-height: 300px;
+    border-radius: 0.6rem;
+}
+
+.ingredient-item {
+    background-color: var(--cream);
+}

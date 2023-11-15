@@ -1,0 +1,30 @@
+.recipe-card {
+    width: 310px;
+    height: 490px;
+    border-color: var(--primary);
+}
+
+.recipe-card-img {
+    max-height: 200px;
+}
+
+.recipes-section {
+    width: 1500px;
+}
+
+.recipe-card-line-clamp {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+}
+
+.green-border {
+    border-top: 1px solid var(--primary);
+}
+
+@media screen and (min-width: 768px) {
+    .recipe-card {
+        width: 320px;
+    }
+}
