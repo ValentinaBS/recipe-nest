@@ -8,6 +8,7 @@ import CreateRecipe from './pages/CreateRecipe/CreateRecipe';
 import Login from './pages/Login/Login';
 import Recipe from './pages/Recipe/Recipe';
 import Profile from './pages/Profile/Profile';
+import NotFound from './components/NotFound/NotFound';
 
 function App() {
 
@@ -25,7 +26,7 @@ function App() {
         {/* <Route path='/about' element={<AboutUs />} /> */}
         <Route path='/login' element={<Login />} />
         <Route path='/profile' element={<Profile />} />
-        {/* <Route path="/*" element={<NotFound />} /> */}
+        { <Route path="*" element={<NotFound />} /> }
       </Routes>
 
       <Footer />
