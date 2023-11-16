@@ -1,4 +1,4 @@
-import { pool } from './db'; // Asegúrate de que la importación sea correcta
+import { pool } from './db';
 import { ResultSetHeader, RowDataPacket } from 'mysql2';
 
 
