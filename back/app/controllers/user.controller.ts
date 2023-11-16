@@ -63,6 +63,7 @@ export const update = (req: Request, res: Response): void => {
 
     // Obtén los datos actualizados del usuario desde la solicitud
     const updatedUserData = {
+        user_id: req.body.user_id,
         username: req.body.username,
         email: req.body.email,
         password: req.body.password,
