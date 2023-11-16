@@ -72,7 +72,29 @@ export class User {
           connection.release();
         }
       }
+
+      static async findByEmail(email: string): Promise<User | null> {
+        const connection = await pool.getConnection();
+
+        try {
+            const [rows] = await connection.query("SELECT * FROM user WHERE email = ?", [email]);
+
+            if (Array.isArray(rows)) {
+                if (rows.length > 0) {
+                    const userData = rows[0] as RowDataPacket;
+                    const user: User = new User(userData); // Crear instancia de User con los datos obtenidos
+                    return user;
+                }
+            }
+            return null; // No se encontró el usuario
+        } catch (err) {
+            throw err;
+        } finally {
+            connection.release();
+        }
+    }
 }
+
 
 
 

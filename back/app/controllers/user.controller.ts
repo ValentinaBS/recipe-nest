@@ -86,26 +86,29 @@ export const update = (req: Request, res: Response): void => {
     });
 };
 
-export const login = (req: Request, res: Response): void => {
+export const login = async (req: Request, res: Response): Promise<void> => {
     const { email, password } = req.body;
-  
-    // Verifica si el usuario existe en la base de datos
-    User.findByEmail(email, async (err: Error | null, data?: User) => {
-        if (err) {
-            res.status(500).send({ message: "Error al buscar el usuario" });
-        } else if (!data) {
+
+    try {
+        const user = await User.findByEmail(email);
+
+        if (!user) {
             res.status(404).send({ message: "Usuario no encontrado" });
-        } else {
-            const passwordMatches = await bcrypt.compare(password, data.password);
-            if (passwordMatches) {
-                // El usuario existe y la contraseña coincide
-                const token = jwt.sign({ userId: data.id }, 'secret_key', { expiresIn: '1h' });
-                res.send({ token });
-            } else {
-                res.status(401).send({ message: "Credenciales inválidas" });
-            }
+            return;
         }
-    });
+
+        const passwordMatches = await bcrypt.compare(password, user.password);
+
+        if (passwordMatches) {
+            // El usuario existe y la contraseña coincide
+            const token = jwt.sign({ userId: user.id }, 'secret_key', { expiresIn: '1h' });
+            res.send({ token });
+        } else {
+            res.status(401).send({ message: "Credenciales inválidas" });
+        }
+    } catch (err) {
+        res.status(500).send({ message: "Error al buscar el usuario" });
+    }
 };
 
 
