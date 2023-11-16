@@ -3,6 +3,7 @@ import { ResultSetHeader, RowDataPacket } from 'mysql2';
 
 
 export class User {
+    user_id: number;
     username: string;
     email: string;
     password: string;
@@ -10,6 +11,7 @@ export class User {
     user_description: string;
 
     constructor(user: any) {
+        this.user_id = user.user_id;
         this.username = user.username;
         this.email = user.email;
         this.password = user.password;

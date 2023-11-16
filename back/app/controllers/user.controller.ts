@@ -15,6 +15,7 @@ export const create = (req: Request, res: Response): void => {
 
     // Crear un usuario
     const user: User = {
+        user_id:req.body.user_id,
         username: req.body.username,
         email: req.body.email,
         password: req.body.password,
