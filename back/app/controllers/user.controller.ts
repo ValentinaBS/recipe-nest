@@ -89,7 +89,7 @@ export const update = (req: Request, res: Response): void => {
 export const login = (req: Request, res: Response): void => {
     const { email, password } = req.body;
   
-    // Verifica si el usuario existe en la base de datos (deberías implementar esta función)
+    // Verifica si el usuario existe en la base de datos
     User.findByEmail(email, async (err: Error | null, data?: User) => {
         if (err) {
             res.status(500).send({ message: "Error al buscar el usuario" });
