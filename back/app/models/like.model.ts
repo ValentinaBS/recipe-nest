@@ -1,7 +1,6 @@
-import { pool } from './db'; 
+import { pool } from './db';
 
 export interface Like{
-    id: Number;
+    recipe_id: Number;
     user_id: Number;
-    recipe_like: Number;
-}
+    recipe_like: Number;}

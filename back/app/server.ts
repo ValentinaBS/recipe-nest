@@ -1,6 +1,7 @@
 import express, { Express } from 'express';
 import cors from 'cors';
 import recipeRoutes from './routes/recipe.routes';
+//import likeRoutes from './routes/like.router';
 
 
 const app: Express = express();
@@ -12,6 +13,7 @@ var corsOptions = {
 
   app.use(cors(corsOptions));
   app.use(express.json());
+  //app.use('/api', likeRoutes);
 
   // Configurar las rutas de recetas
 recipeRoutes(app);

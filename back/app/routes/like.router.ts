@@ -1,19 +1,14 @@
-import express, {Request, Response } from 'express';
-import { Like} from '../models/like.model';
+import  express  from "express";
+import * as likeController from '../controllers/like.controllers';
 
 const router = express.Router();
 
-router.get('/likes', (req: Request, res: Response) =>{
+router.get('/like', likeController.addLike);
 
-});
+router.post('/like', likeController.getLikes);
 
-router.post('/likes', (req: Request, res: Response) => {
-    const nuevoLike: Like = req.body;
-});
-
-router.delete('/likes/:id', (req: Request, res: Response) => {
-    const id = parseInt(req.params.id);
-});
-
+router.delete('/like', likeController.removeLike);
 
 export default router;
+
+
