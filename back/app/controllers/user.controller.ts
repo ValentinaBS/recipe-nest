@@ -101,7 +101,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
 
         if (passwordMatches) {
             // El usuario existe y la contraseña coincide
-            const token = jwt.sign({ userId: user.id }, 'secret_key', { expiresIn: '1h' });
+            const token = jwt.sign({ userId: user.user_id }, 'secret_key', { expiresIn: '1h' });
             res.send({ token });
         } else {
             res.status(401).send({ message: "Credenciales inválidas" });
@@ -110,5 +110,6 @@ export const login = async (req: Request, res: Response): Promise<void> => {
         res.status(500).send({ message: "Error al buscar el usuario" });
     }
 };
+
 
 
