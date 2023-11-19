@@ -1,19 +1,19 @@
-@media screen and (min-width: 330px) and (max-width: 600px){
-  .imagen {
-    width: 100%; 
-    max-width: 200px; 
-    margin-bottom: 10px; 
+@media screen and (min-width: 330px) {
+  .notfound-img {
+    width: 100%;
+    max-width: 200px;
+    margin-bottom: 10px;
   }
-   }
-@media screen and (min-width: 600px) and
-(max-width: 970px) {
-  .imagen{
-  width: 100%;
-  max-width: 100%; 
-  margin-bottom: 20px;
- }
 }
-.text-font{
-  font-size: 4rem; 
-  font-family: SemiBold; 
+
+@media screen and (min-width: 600px) {
+  .notfound-img {
+    width: 100%;
+    max-width: 500px;
+  }
+}
+
+.notfound-title {
+  font-size: 4rem;
+  font-family: var(--title)
 }
