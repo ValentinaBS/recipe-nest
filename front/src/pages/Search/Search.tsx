@@ -2,39 +2,21 @@ import { useState } from 'react';
 import Filters from '../../components/Filters/Filters';
 import RecipeCardContainer from '../../components/RecipeCard/RecipeCardContainer';
 
+interface Recipe {
+    recipe_id: number;
+    recipe_image: string;
+    recipe_title: string;
+    recipe_published_time: string;
+    recipe_instructions: string;
+    recipe_category_type: string;
+    recipe_category_occasion: string;
+    recipe_likes: number;
+}
+
 const Search: React.FC = () => {
     const [searchInput, setSearchInput] = useState('');
     const [occasionFilters, setOccasionFilters] = useState<string[]>([]);
     const [typeFilters, setTypeFilters] = useState<string[]>([]);
-
-    
-/*     const [filters, setFilters] = useState({
-        searchInput: '',
-        occasionFilters: [] as string[],
-        typeFilters: [] as string[],
-    });
-    const [filteredRecipes, setFilteredRecipes] = useState(props.recipesList);
-
-    const handleFilterChange = (type: string, value: string) => {
-        setFilters((prevFilters) => ({
-            ...prevFilters,
-            [type]: value,
-        }));
-    };
-
-    const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        
-        const filteredResults = recipesList.filter((recipe) => {
-            return (
-                recipe.recipe_title.toLowerCase().includes(filters.searchInput.toLowerCase()) &&
-                (filters.occasionFilters.length === 0 || filters.occasionFilters.includes(recipe.recipe_category_occasion)) &&
-                (filters.typeFilters.length === 0 || filters.typeFilters.includes(recipe.recipe_category_type))
-            );
-        });
-
-        setFilteredRecipes(filteredResults);
-    }; */
 
     const recipes = [
         {
@@ -45,6 +27,7 @@ const Search: React.FC = () => {
             recipe_instructions: 'Pasta for everyone! Gluten-free and vegan gnocchi with pesto, a perfect recipe for the most demanding palates.',
             recipe_category_type: 'Vegan',
             recipe_category_occasion: 'Lunch',
+            recipe_likes: 15,
         },
         {
             recipe_id: 2,
@@ -54,6 +37,7 @@ const Search: React.FC = () => {
             recipe_instructions: 'Juicy grilled avocado seasoned with fresh rosemary and garlic, a delightful dish for your next barbecue.',
             recipe_category_type: 'Vegan',
             recipe_category_occasion: 'Dinner',
+            recipe_likes: 23,
         },
         {
             recipe_id: 3,
@@ -63,6 +47,7 @@ const Search: React.FC = () => {
             recipe_instructions: 'Classic chocolate chip cookies with a twist of added cinnamon and nutmeg, perfect for satisfying your sweet tooth.',
             recipe_category_type: 'Vegetarian',
             recipe_category_occasion: 'Tea Time',
+            recipe_likes: 10,
         },
         {
             recipe_id: 4,
@@ -72,26 +57,83 @@ const Search: React.FC = () => {
             recipe_instructions: 'Colorful bell peppers stuffed with a delicious mix of quinoa, black beans, corn, and spices, a healthy and flavorful option for dinner.',
             recipe_category_type: 'Vegetarian',
             recipe_category_occasion: 'Dinner',
-        }
+            recipe_likes: 30,
+        },
+    
     ];
+
+    const [filteredRecipes, setFilteredRecipes] = useState<Recipe[]>(recipes);
+
+    const allOccasions = [...new Set(recipes.map((recipe) => recipe.recipe_category_occasion))];
+    const allTypes = [...new Set(recipes.map((recipe) => recipe.recipe_category_type))];
+
+    const handleOccasionChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
+        const occasion = e.target.value;
+        setOccasionFilters((prevFilters) =>
+            prevFilters.includes(occasion)
+                ? prevFilters.filter((filter) => filter !== occasion)
+                : [...prevFilters, occasion]
+        );
+    };
+
+    const handleTypeChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
+        const type = e.target.value;
+        setTypeFilters((prevFilters) =>
+            prevFilters.includes(type)
+                ? prevFilters.filter((filter) => filter !== type)
+                : [...prevFilters, type]
+        );
+    };
+
+    const handleSearchInputChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
+        setSearchInput(e.target.value);
+    };
+
+    const onSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        // Filter recipes based on the form input and filters
+        const newFilteredRecipes = recipes.filter((recipe) => {
+            const matchesSearch =
+                recipe.recipe_title.toLowerCase().includes(searchInput.toLowerCase()) ||
+                recipe.recipe_instructions.toLowerCase().includes(searchInput.toLowerCase());
+
+            const matchesOccasion = occasionFilters.length === 0 || occasionFilters.includes(recipe.recipe_category_occasion);
+            const matchesType = typeFilters.length === 0 || typeFilters.includes(recipe.recipe_category_type);
+
+            return matchesSearch && matchesOccasion && matchesType;
+        });
+
+        // Update the state with the filtered recipes
+        setFilteredRecipes(newFilteredRecipes);
+    };
+
+    const clearFilters = () => {
+        setSearchInput('');
+        setOccasionFilters([]);
+        setTypeFilters([]);
+        setFilteredRecipes(recipes);
+    };
 
     return (
         <>
             <section className="mb-5 mt-3 pt-4 pt-md-5 mx-2 mx-md-4 d-flex column-gap-3">
-                {/*             <Offcanvas className='h-75' placement='bottom' show={show} onHide={() => setShow(false)}>
-                <Offcanvas.Header className='my-2' closeButton />
-                    <Offcanvas.Body>
-                        <Filters />
-                    </Offcanvas.Body>
-                </Offcanvas> */}
                 <Filters
-                    display=' d-none d-lg-block'
-                    onFilterChange={handleFilterChange}
                     searchInput={searchInput}
                     occasionFilters={occasionFilters}
                     typeFilters={typeFilters}
+                    allOccasions={allOccasions}
+                    allTypes={allTypes}
+                    handleOccasionChange={handleOccasionChange}
+                    handleTypeChange={handleTypeChange}
+                    handleSearchInputChange={handleSearchInputChange}
+                    onSubmit={onSubmit}
+                    clearFilters={clearFilters}
                 />
-                <RecipeCardContainer title='Search your ideal recipe!' recipesList={recipes} />
+
+                <RecipeCardContainer
+                    title='Search your ideal recipe!'
+                    recipesList={filteredRecipes}
+                />
             </section>
         </>
     )

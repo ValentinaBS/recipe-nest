@@ -10,6 +10,7 @@ type RecipeCardProps = {
         recipe_title: string;
         recipe_published_time: string;
         recipe_instructions: string;
+        recipe_likes: number;
     };
     //bookmarkRecipe: (recipeId: number) => void;
 };
@@ -44,7 +45,7 @@ const RecipeCard: React.FC<RecipeCardProps> = ({ recipe }) => {
                                 </div>
                                 <button type='button' className='btn z-1 secondary-btn border-0 d-flex align-items-center gap-2'>
                                     <BiLike className='fs-5' />
-                                    10
+                                    {recipe.recipe_likes}
                                 </button>
                             </div>
                         </div>
