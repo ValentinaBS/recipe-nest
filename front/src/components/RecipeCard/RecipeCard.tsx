@@ -3,17 +3,18 @@ import { NavLink } from 'react-router-dom';
 import { FaRegBookmark } from 'react-icons/fa6';
 import { BiLike, BiComment } from 'react-icons/bi';
 
-interface RecipeCardProps {
-    recipe: Record<string, any>;
+type RecipeCardProps = {
+    recipe: {
+        recipe_id: number;
+        recipe_image: string;
+        recipe_title: string;
+        recipe_published_time: string;
+        recipe_instructions: string;
+    };
     //bookmarkRecipe: (recipeId: number) => void;
-}
+};
 
-const RecipeCard: React.FC<RecipeCardProps> = (props) => {
-
-    const {
-        recipe,
-        //bookmarkRecipe,
-    } = props;
+const RecipeCard: React.FC<RecipeCardProps> = ({ recipe }) => {
 
     return (
         <>
@@ -25,7 +26,7 @@ const RecipeCard: React.FC<RecipeCardProps> = (props) => {
                         className='card-img-top recipe-card-img object-fit-cover w-100 h-lg-100 rounded-bottom-0'
                     />
                     <div className='card-body mt-2 d-flex flex-column justify-content-between'>
-                        <h5 className='card-title fw-bold line-clamp'>{recipe.recipe_title}</h5>
+                        <h5 className='card-title card-title-height fw-bold line-clamp'>{recipe.recipe_title}</h5>
                         <div className='d-flex pt-3 green-border'>
                             <p className='mb-1'>{recipe.recipe_published_time}</p>
                             <span className='mx-1'>-</span>

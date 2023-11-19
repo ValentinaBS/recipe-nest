@@ -4,36 +4,36 @@ import { Form, ListGroup, InputGroup, Button } from 'react-bootstrap';
 import './filters.css';
 
 interface FiltersProps {
-    display: string;
+    display?: string;
+    onFilterChange: (type: string, value: string) => void;
+    onSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
+    searchInput: string;
+    occasionFilters: string[];
+    typeFilters: string[];
 }
 
 const Filters: React.FC<FiltersProps> = (props) => {
-    const [searchInput, setSearchInput] = useState('');
-    const [occasionChecked, setOccasionChecked] = useState<string[]>([]);
-    const [typeChecked, setTypeChecked] = useState<string[]>([]);
+    const {
+        onFilterChange,
+        onSubmit,
+        searchInput,
+        occasionFilters,
+        typeFilters,
+        display,
+    } = props;
 
     const occasions: string[] = ["Lunch", "Breakfast", "Brunch", "Tea Time", "Dinner", "Appetizers"];
 
     const handleOccasionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const value = e.target.value;
-        if (occasionChecked.includes(value)) {
-            setOccasionChecked(occasionChecked.filter((occasion) => occasion !== value));
-        } else {
-            setOccasionChecked([...occasionChecked, value]);
-        }
+        onFilterChange('occasion', e.target.value);
     };
 
-    const handleType = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const value = e.target.value;
-        if (typeChecked.includes(value)) {
-            setTypeChecked(typeChecked.filter((type) => type !== value));
-        } else {
-            setTypeChecked([...typeChecked, value]);
-        }
+    const handleTypeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        onFilterChange('type', e.target.value);
     };
 
     return (
-        <Form className={"col-lg-6 recipes-filters list-group list-group-flush mx-auto py-2 px-3 border rounded-4 border-black animate__animated animate__slideInLeft" + props.display || ""}>
+        <Form onSubmit={onSubmit} className={"col-lg-6 recipes-filters list-group list-group-flush mx-auto py-2 px-3 border rounded-4 border-black animate__animated animate__slideInLeft" + props.display || ""}>
             <ListGroup.Item className="px-2 py-3 d-flex justify-content-between align-items-center">
                 <h3 className='mb-0'>Filters</h3>
                 <BiSolidFilterAlt className='fs-4' />
@@ -48,7 +48,6 @@ const Filters: React.FC<FiltersProps> = (props) => {
                     <Form.Control
                         type="text"
                         value={searchInput}
-                        onChange={(e) => setSearchInput(e.target.value)}
                         id="searchInput"
                         placeholder="Tomato Soup..."
                     />
@@ -65,7 +64,7 @@ const Filters: React.FC<FiltersProps> = (props) => {
                                 id={occasion}
                                 label={occasion}
                                 value={occasion}
-                                checked={occasionChecked.includes(occasion)}
+                                checked={occasionFilters.includes(occasion)}
                                 onChange={handleOccasionChange}
                             />
                         </div>
@@ -83,8 +82,8 @@ const Filters: React.FC<FiltersProps> = (props) => {
                                 id={type}
                                 label={type}
                                 value={type}
-                                checked={typeChecked.includes(type)}
-                                onChange={handleType}
+                                checked={typeFilters.includes(type)}
+                                onChange={handleTypeChange}
                             />
                         </div>
                     ))}

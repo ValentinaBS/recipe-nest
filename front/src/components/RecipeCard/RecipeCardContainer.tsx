@@ -5,15 +5,27 @@ import Filters from '../Filters/Filters';
 import RecipeCard from './RecipeCard';
 import './recipeCard.css';
 
-interface RecipeCardContainerProps {
+type Recipe = {
+    recipe_id: number;
+    recipe_image: string;
+    recipe_title: string;
+    recipe_published_time: string;
+    recipe_instructions: string;
+    recipe_category_type: string;
+    recipe_category_occasion: string;
+};
+
+type RecipeCardContainerProps = {
     title: string;
-}
+    recipesList: Recipe[];
+};
 
 const RecipeCardContainer: React.FC<RecipeCardContainerProps> = (props) => {
     const [show, setShow] = useState(false);
 
     const {
         title,
+        recipesList
     } = props;
 
     return (
@@ -49,44 +61,12 @@ const RecipeCardContainer: React.FC<RecipeCardContainerProps> = (props) => {
                 </Row>
 
                 <div className="row mx-3 d-flex flex-wrap column-gap-5 row-gap-5 align-items-center justify-content-center">
-                    <RecipeCard recipe={{
-                        recipe_id: 1,
-                        recipe_image: 'https://i.imgur.com/xIkRscC.jpg',
-                        recipe_title: 'Tomato Salad With Lemon, Avocado, Sesame Seeds and more',
-                        recipe_published_time: '10/12/2023',
-                        recipe_instructions: 'Pasta for everyone! Gluten free and vegan gnocchi with pesto, a perfect recipe for the most demanding palates aa',
-                    }} />
-                    <RecipeCard recipe={{
-                        recipe_id: 2,
-                        recipe_image: 'https://i.imgur.com/xIkRscC.jpg',
-                        recipe_title: 'Tomato Salad With Lemon, Avocado, Sesame Seeds and more',
-                        recipe_published_time: '10/12/2023',
-                        recipe_instructions: 'Pasta for everyone! Gluten free and vegan gnocchi with pesto, a perfect recipe for the most demanding palates aa',
-                    }} />
-                    <RecipeCard recipe={{
-                        recipe_id: 3,
-                        recipe_image: 'https://i.imgur.com/xIkRscC.jpg',
-                        recipe_title: 'Tomato Salad With Lemon, Avocado, Sesame Seeds and more',
-                        recipe_published_time: '10/12/2023',
-                        recipe_instructions: 'Pasta for everyone! Gluten free and vegan gnocchi with pesto, a perfect recipe for the most demanding palates aa',
-                    }} />
-                    <RecipeCard recipe={{
-                        recipe_id: 4,
-                        recipe_image: 'https://i.imgur.com/xIkRscC.jpg',
-                        recipe_title: 'Tomato Salad With Lemon, Avocado, Sesame Seeds and more',
-                        recipe_published_time: '10/12/2023',
-                        recipe_instructions: 'Pasta for everyone! Gluten free and vegan gnocchi with pesto, a perfect recipe for the most demanding palates aa',
-                    }} />
+                    {recipesList.map((recipe) => (
+                        <RecipeCard key={recipe.recipe_id} recipe={recipe} />
+                    ))}
                 </div>
 
             </section>
-
-            <Offcanvas className='h-75' placement='bottom' show={show} onHide={() => setShow(false)}>
-                <Offcanvas.Header className='my-2' closeButton />
-                <Offcanvas.Body>
-                    <Filters display='' />
-                </Offcanvas.Body>
-            </Offcanvas>
         </>
     );
 };
