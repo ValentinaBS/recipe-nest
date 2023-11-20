@@ -3,7 +3,6 @@ import { User } from '../models/user.model';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 
-
 // Crear y guardar un nuevo usuario
 export const create = (req: Request, res: Response): void => {
     // Validar la solicitud
@@ -112,6 +111,4 @@ export const login = async (req: Request, res: Response): Promise<void> => {
         res.status(500).send({ message: "Error al buscar el usuario" });
     }
 };
-
-
 
