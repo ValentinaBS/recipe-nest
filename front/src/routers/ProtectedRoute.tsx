@@ -1,7 +1,7 @@
 import { Navigate } from 'react-router-dom';
 
 const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
-    const auth = false;
+    const auth = true;
 
     return auth ? children : <Navigate to="/login" replace />;
 };

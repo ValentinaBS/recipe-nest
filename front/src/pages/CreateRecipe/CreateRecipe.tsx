@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import Button from 'react-bootstrap/Button';
-import Col from 'react-bootstrap/Col';
-import Form from 'react-bootstrap/Form';
-import Row from 'react-bootstrap/Row';
-import { Ingredients } from '../../components/Ingredients/Ingredients';
+import { Button, Col, Row } from 'react-bootstrap';
+import FormBootstrap from 'react-bootstrap/Form';
+import { Formik, Form, Field, ErrorMessage } from 'formik';
+import * as Yup from 'yup';
 import { MdOutlineAddCircle } from 'react-icons/md';
+import { Ingredients } from '../../components/Ingredients/Ingredients';
 import './createRecipe.css';
 
 const CreateRecipe: React.FC = () => {
@@ -21,94 +21,137 @@ const CreateRecipe: React.FC = () => {
         }
     };
 
+    const validationSchema = Yup.object().shape({
+        imageUpload: Yup.mixed().required('Image is required'),
+        title: Yup.string().required('Title is required'),
+        serves: Yup.string().required('Serves is required'),
+        cookTime: Yup.string().required('Cook Time is required'),
+        ingredients: Yup.array().min(1, 'At least one ingredient is required'),
+        instructions: Yup.string()
+        .required('Instructions are required')
+        .min(150, 'Instructions must have at least 150 characters'),
+        occasion: Yup.string().notOneOf(['- Select an occasion -'], 'Occasion is required'),
+        type: Yup.string().required('Type is required'),
+    });
+
     return (
-        <Form className='my-5 mx-4 mx-md-auto create-form'>
-            <Form.Group className='mb-4'>
-                <Form.Label className='d-flex flex-column row-gap-3 justify-content-center align-items-center' role="button" htmlFor='imageUpload'>
-                    {selectedFile && (
-                        <img
-                            src={selectedFile as string}
-                            alt="Uploaded"
-                            className='uploaded-image'
-                        />
-                    )}
-                    Show others your finished dish!
-                </Form.Label>
+        <Formik
+            initialValues={{
+                imageUpload: '',
+                title: '',
+                serves: '',
+                cookTime: '',
+                ingredients: [],
+                instructions: '',
+                occasion: '- Select an occasion -',
+                type: '',
+            }}
+            validationSchema={validationSchema}
+            onSubmit={(values) => {
+                console.log(values);
+            }}
+        >
+            <Form className='my-5 mx-4 mx-md-auto create-form'>
+                <FormBootstrap.Group className='mb-4'>
+                    <FormBootstrap.Label className='d-flex flex-column row-gap-3 justify-content-center align-items-center' role='button' htmlFor='imageUpload'>
+                        {selectedFile && (
+                            <img
+                                src={selectedFile as string}
+                                alt='Uploaded'
+                                className='uploaded-image'
+                            />
+                        )}
+                        Show others your finished dish!
+                    </FormBootstrap.Label>
 
-                <Form.Control
-                    type='file'
-                    accept="image/*"
-                    id="imageUpload"
-                    onChange={handleFileChange}
-                    className='d-none'
-                />
-            </Form.Group>
+                    <Field
+                        type='file'
+                        accept='image/*'
+                        id='imageUpload'
+                        onChange={handleFileChange}
+                        className='d-none'
+                        name='imageUpload'
+                    />
+                    <ErrorMessage name='imageUpload' component='div' className='text-danger' />
+                </FormBootstrap.Group>
 
-            <Form.Group className='mb-4' controlId='title'>
-                <Form.Label>Title</Form.Label>
-                <Form.Control placeholder='Traditional Tomato Soup...' />
-            </Form.Group>
+                <FormBootstrap.Group className='mb-4' controlId='title'>
+                    <FormBootstrap.Label>Title</FormBootstrap.Label>
+                    <Field type='text' name='title' className='form-control' placeholder='Traditional Tomato Soup...' />
+                    <ErrorMessage name='title' component='div' className='text-danger' />
+                </FormBootstrap.Group>
 
-            <Row className='mb-4'>
-                <Form.Group as={Col} controlId='serves'>
-                    <Form.Label>Serves</Form.Label>
-                    <Form.Control type='text' placeholder='3 people' />
-                </Form.Group>
+                <Row className='mb-4'>
+                    <FormBootstrap.Group as={Col} controlId='serves'>
+                        <FormBootstrap.Label>Serves</FormBootstrap.Label>
+                        <Field type='text' name='serves' className='form-control' placeholder='3 people' />
+                        <ErrorMessage name='serves' component='div' className='text-danger' />
+                    </FormBootstrap.Group>
 
-                <Form.Group as={Col} controlId='cookTime'>
-                    <Form.Label>Cook Time</Form.Label>
-                    <Form.Control type='text' placeholder='2hr 30mins' />
-                </Form.Group>
-            </Row>
+                    <FormBootstrap.Group as={Col} controlId='cookTime'>
+                        <FormBootstrap.Label>Cook Time</FormBootstrap.Label>
+                        <Field type='text' name='cookTime' className='form-control' placeholder='2hr 30mins' />
+                        <ErrorMessage name='cookTime' component='div' className='text-danger' />
+                    </FormBootstrap.Group>
+                </Row>
 
-            <Form.Group className='mb-4' controlId='ingredients'>
-                <Form.Label>Ingredients</Form.Label>
-                <Ingredients />
-            </Form.Group>
+                <FormBootstrap.Group className='mb-4' controlId='ingredients'>
+                    <FormBootstrap.Label>Ingredients</FormBootstrap.Label>
+                    <Ingredients />
+                    <ErrorMessage name='ingredients' component='div' className='text-danger' />
+                </FormBootstrap.Group>
 
-            <Form.Group className='mb-4' controlId='instructions'>
-                <Form.Label>Instructions</Form.Label>
-                <Form.Control as='textarea' rows={3} placeholder='Step 1: Preheat the oven...' />
-            </Form.Group>
+                <FormBootstrap.Group className='mb-4' controlId='instructions'>
+                    <FormBootstrap.Label>Instructions</FormBootstrap.Label>
+                    <Field as='textarea' name='instructions' rows={3} className='form-control' placeholder='Step 1: Preheat the oven...' />
+                    <ErrorMessage name='instructions' component='div' className='text-danger' />
+                </FormBootstrap.Group>
 
-            <Form.Group className='mb-4' controlId='occasion'>
-                <Form.Label>Occasion</Form.Label>
-                <Form.Select defaultValue='- Select an occasion -'>
-                    <option disabled>- Select an occasion -</option>
-                    <option value='breakfast'>Breakfast</option>
-                    <option value='lunch'>Lunch</option>
-                    <option value='brunch'>Brunch</option>
-                    <option value='tea time'>Tea Time</option>
-                    <option value='dinner'>Dinner</option>
-                    <option value='appetizers'>Appetizers</option>
-                </Form.Select>
-            </Form.Group>
+                <FormBootstrap.Group className='mb-4' controlId='occasion'>
+                    <FormBootstrap.Label>Occasion</FormBootstrap.Label>
+                    <Field as='select' name='occasion' className='form-control'>
+                        <option disabled>- Select an occasion -</option>
+                        <option value='breakfast'>Breakfast</option>
+                        <option value='lunch'>Lunch</option>
+                        <option value='brunch'>Brunch</option>
+                        <option value='tea time'>Tea Time</option>
+                        <option value='dinner'>Dinner</option>
+                        <option value='appetizers'>Appetizers</option>
+                    </Field>
+                    <ErrorMessage name='occasion' component='div' className='text-danger' />
+                </FormBootstrap.Group>
 
-            <Form.Group className='mb-5' controlId='type'>
-                <Form.Label className='w-100'>Type</Form.Label>
-                <Form.Check
-                    inline
-                    label='Vegan'
-                    name='type'
-                    type='radio'
-                    id='radioVegan'
-                />
-                <Form.Check
-                    inline
-                    label='Vegetarian'
-                    name='type'
-                    type='radio'
-                    id='radioVegetarian'
-                />
-            </Form.Group>
+                <FormBootstrap.Group className='mb-5' controlId='type'>
+                    <FormBootstrap.Label className='w-100'>Type</FormBootstrap.Label>
+                    <Field
+                        name='type'
+                        type='radio'
+                        value='Vegan'
+                        id='radioVegan'
+                        label='Vegan'
+                        inline
+                        as={FormBootstrap.Check}
+                    />
+                    <Field
+                        name='type'
+                        type='radio'
+                        value='Vegetarian'
+                        id='radioVegetarian'
+                        label='Vegetarian'
+                        inline
+                        as={FormBootstrap.Check}
+                    />
+                    <ErrorMessage name='type' component='div' className='text-danger' />
+                </FormBootstrap.Group>
 
-            <div className='d-flex justify-content-center'>
-                <Button className='primary-btn d-flex align-items-center column-gap-2 py-2' type='submit'>
-                    <MdOutlineAddCircle className='fs-5' />
-                    Create a New Recipe!
-                </Button>
-            </div>
-        </Form>
+                <div className='d-flex justify-content-center'>
+                    <Button className='primary-btn d-flex align-items-center column-gap-2 py-2' type='submit'>
+                        <MdOutlineAddCircle className='fs-5' />
+                        Create a New Recipe!
+                    </Button>
+                </div>
+            </Form>
+        </Formik>
     );
 };
 
