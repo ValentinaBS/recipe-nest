@@ -71,7 +71,7 @@ export class Recipe {
       connection.release();
     }
   }
- //Crear un comentario en una receta 
+
   static async addComment(recipeId: number, comment: string, userId: number, result: Function): Promise<void> {
     const newComment = {
       comment_text: comment,
