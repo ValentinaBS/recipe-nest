@@ -1,4 +1,3 @@
-import { log } from 'console';
 import { pool } from './db'; // Asegúrate de que la importación sea correcta
 import { ResultSetHeader, RowDataPacket } from 'mysql2/promise';
 
