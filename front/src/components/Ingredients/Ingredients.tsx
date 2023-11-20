@@ -1,72 +1,79 @@
-import { useRef, useState } from 'react';
+import React from 'react';
 import IngredientItem from './IngredientItem'
-import { MagicMotion } from 'react-magic-motion';
+import { FaPlus } from "react-icons/fa6";
+import { Field, ErrorMessage, useFormikContext } from 'formik';
+
+interface Ingredient {
+    id: `${string}-${string}-${string}-${string}-${string}`; 
+    text: string;
+    quantity: string;
+}
 
 export const Ingredients: React.FC = () => {
-    const [ingredients, setIngredients] = useState([
-        { id: crypto.randomUUID(), text: 'water', quantity: '1l' },
-        { id: crypto.randomUUID(), text: 'tomatos', quantity: '3' },
-    ]);
+    const formikContext = useFormikContext<any>();
 
-    const newIngredientInput = useRef<HTMLInputElement>(null);
-    const newQuantityInput = useRef<HTMLInputElement>(null);
+    const removeIngredient = (id: string) => {
+        if (formikContext.values.ingredients.length > 1) {
+            const updatedIngredients = formikContext.values.ingredients.filter((ingredient: Ingredient) => ingredient.id !== id);
+            formikContext.setFieldValue('ingredients', updatedIngredients);
+        }
+    };
 
     const addIngredient = () => {
-        if (!newIngredientInput.current?.value || !newQuantityInput.current?.value) return;
+        const newIngredientText = formikContext.values.newIngredientText;
+        const newIngredientQuantity = formikContext.values.newIngredientQuantity;
 
-        setIngredients([
-            ...ingredients,
+        if (!newIngredientText || !newIngredientQuantity) return;
+
+        formikContext.setFieldValue('ingredients', [
+            ...formikContext.values.ingredients,
             {
                 id: crypto.randomUUID(),
-                text: newIngredientInput.current.value,
-                quantity: newQuantityInput.current.value,
+                text: newIngredientText,
+                quantity: newIngredientQuantity,
             },
         ]);
 
-        newIngredientInput.current.value = '';
-        newQuantityInput.current.value = '';
+        formikContext.setFieldValue('newIngredientText', '');
+        formikContext.setFieldValue('newIngredientQuantity', '');
     };
 
     return (
-        <MagicMotion>
-            <div>
-                <ul className='d-flex flex-column gap-3 ps-0 overflow-hidden'>
-                    {ingredients.map((ingredient) => (
-                        <IngredientItem
-                            key={ingredient.id}
-                            ingredient={ingredient}
-                            setIngredients={setIngredients}
-                        />
-                    ))}
-                </ul>
-                <div className='d-flex flex-column flex-md-row gap-3 mt-4'>
-                    <div className='d-flex gap-3 w-100'>
-                        <input
-                            ref={newQuantityInput}
-                            type='text'
-                            placeholder='3 kg...'
-                            className='form-control quantity-input'
-                        />
-
-                        <input
-                            ref={newIngredientInput}
-                            type='text'
-                            placeholder='Add a new ingredient...'
-                            className='form-control'
-                        />
-                    </div>
-
-                    <button
-                        type='button'
-                        title='Add a new ingredient'
-                        className='btn primary-btn d-flex align-items-center justify-content-center gap-2 add-ingredient-button'
-                        onClick={addIngredient}
-                    >
-                        <span>+</span>
-                        Add Ingredient
-                    </button>
+        <>
+            <ul className='d-flex flex-column gap-3 ps-0 overflow-hidden'>
+                {formikContext.values.ingredients.map((ingredient: Ingredient) => (
+                    <IngredientItem key={ingredient.id} ingredient={ingredient} removeIngredient={removeIngredient} />
+                ))}
+            </ul>
+            <div className='d-flex flex-column flex-md-row gap-3 mt-4'>
+                <div className='d-flex gap-3 w-100'>
+                    <Field
+                        name='newIngredientQuantity'
+                        type='text'
+                        placeholder='3 kg...'
+                        className='form-control quantity-input'
+                        value={formikContext.values.newIngredientQuantity || ''}
+                    />
+                    <ErrorMessage name='newIngredientQuantity' component='div' className='text-danger' />
+                    <Field
+                        name='newIngredientText'
+                        type='text'
+                        placeholder='Add a new ingredient...'
+                        className='form-control'
+                        value={formikContext.values.newIngredientText || ''}
+                    />
+                    <ErrorMessage name='newIngredientText' component='div' className='text-danger' />
                 </div>
+                <button
+                    type='button'
+                    title='Add a new ingredient'
+                    className='btn primary-btn d-flex align-items-center justify-content-center gap-2 add-ingredient-button'
+                    onClick={addIngredient}
+                >
+                    <FaPlus />
+                    Add Ingredient
+                </button>
             </div>
-        </MagicMotion>
-    )
-}
+        </>
+    );
+};
