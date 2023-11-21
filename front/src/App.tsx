@@ -10,6 +10,7 @@ import Recipe from './pages/Recipe/Recipe';
 import Profile from './pages/Profile/Profile';
 import ProtectedRoute from './routers/ProtectedRoute';
 import NotFound from './components/NotFound/NotFound';
+import AboutUs from "./components/AboutUs/AboutUs"
 
 
 function App() {
@@ -31,7 +32,7 @@ function App() {
             <CreateRecipe />
           </ProtectedRoute>
         } />
-        {/* <Route path='/about' element={<AboutUs />} /> */}
+        {<Route path='/AboutUs' element={<AboutUs />} /> }
         <Route path='/login' element={<Login />} />
         <Route path='/profile' element={
           <ProtectedRoute>
