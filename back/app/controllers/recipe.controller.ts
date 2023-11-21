@@ -19,7 +19,7 @@ export const create = (req: Request, res: Response): void => {
     recipe_comments: req.body.recipe_comments,
     recipe_cooktime: req.body.recipe_cooktime,
     recipe_portions: req.body.recipe_portions,
-    recipe_published: req.body.recipe_published,
+    recipe_published_time: req.body.recipe_published_time,
     recipe_image: req.body.recipe_image,
     recipe_category_type: req.body.recipe_category_type,
     user_id: req.body.user_id,

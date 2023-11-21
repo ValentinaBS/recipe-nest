@@ -18,12 +18,7 @@ var corsOptions = {
 
   // Configurar las rutas de recetas
 recipeRoutes(app);
-
-
-  // Configurar las rutas de recetas
-recipeRoutes(app);
 userRoutes(app);
-
 
 app.get('/', (req, res) =>{
     res.send('Hello World!!!')
