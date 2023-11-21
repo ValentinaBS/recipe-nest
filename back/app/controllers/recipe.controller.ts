@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { Recipe } from '../models/recipe.model'; // Asegúrate de que la importación sea correcta
+import { Recipe, SavedRecipe } from '../models/recipe.model'; // Asegúrate de que la importación sea correcta
 
 // Crear y guardar una nueva Receta
 export const create = (req: Request, res: Response): void => {
@@ -19,7 +19,7 @@ export const create = (req: Request, res: Response): void => {
     recipe_comments: req.body.recipe_comments,
     recipe_cooktime: req.body.recipe_cooktime,
     recipe_portions: req.body.recipe_portions,
-    recipe_published: req.body.recipe_published,
+    recipe_published_time: req.body.recipe_published_time,
     recipe_image: req.body.recipe_image,
     recipe_category_type: req.body.recipe_category_type,
     user_id: req.body.user_id,
@@ -71,6 +71,45 @@ export const addComment = (req: Request, res: Response): void => {
       });
     }
       });
+  };
+
+  export const saveRecipe = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const userId = req.body.userId;
+      const recipeId = req.body.recipeId; 
+  
+      // Llama al método estático para guardar la receta en el perfil del usuario
+      SavedRecipe.savedRecipe(userId, recipeId, (err: any, result: any) => {
+        if (err) {
+          res.status(500).json({ error: 'Error al guardar la receta en el perfil' });
+        } else {
+          res.status(201).json(result);
+        }
+      });
+    } catch (error) {
+      console.error("Error en el controlador de guardar receta en el perfil: ", error);
+      res.status(500).json({ error: 'Error interno del servidor' });
+    }
+  };
+  
+  export const getSavedRecipes = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const userId = req.body.userId;
+  
+      // Llama al método estático para obtener las recetas guardadas del perfil del usuario
+      SavedRecipe.getSavedRecipes(userId, (err: any, result: any) => {
+        if (err) {
+          res.status(500).json({ error: 'Error al obtener las recetas guardadas' });
+        } else {
+          res.status(200).json(result);
+        }
+      });
+    } catch (error) {
+      console.error("Error en el controlador de obtener recetas guardadas: ", error);
+      res.
+     
+  status(500).json({ error: 'Error interno del servidor' });
+    }
   };
 
 
