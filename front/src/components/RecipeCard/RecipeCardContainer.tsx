@@ -1,92 +1,95 @@
-import React, { useState } from 'react';
-import { Row, Col, Button, Form, Offcanvas } from 'react-bootstrap';
-import { BiSolidFilterAlt } from 'react-icons/bi';
-import Filters from '../Filters/Filters';
+import React, { useState, useEffect } from 'react';
 import RecipeCard from './RecipeCard';
 import './recipeCard.css';
 
-interface RecipeCardContainerProps {
+type Recipe = {
+    recipe_id: number;
+    recipe_image: string;
+    recipe_title: string;
+    recipe_published_time: string;
+    recipe_instructions: string;
+    recipe_category_type: string;
+    recipe_category_occasion: string;
+    recipe_likes: number;
+};
+
+type RecipeCardContainerProps = {
     title: string;
-}
+    recipesList: Recipe[];
+};
 
 const RecipeCardContainer: React.FC<RecipeCardContainerProps> = (props) => {
-    const [show, setShow] = useState(false);
 
-    const {
-        title,
-    } = props;
+    const { title, recipesList } = props;
+
+    const [sortedRecipes, setSortedRecipes] = useState(recipesList);
+    const [sortOrder, setSortOrder] = useState('');
+
+    useEffect(() => {
+        // Apply sorting logic whenever recipesList or sortOrder changes
+        sortRecipes();
+    }, [recipesList, sortOrder]);
+
+    const sortOptions: Record<string, (a: Recipe, b: Recipe) => number> = {
+        'A-Z': (a, b) => a.recipe_title.localeCompare(b.recipe_title),
+        'Z-A': (a, b) => b.recipe_title.localeCompare(a.recipe_title),
+        'most-liked': (a, b) => b.recipe_likes - a.recipe_likes,
+        'recent': (a, b) => b.recipe_published_time.localeCompare(a.recipe_published_time),
+    };
+
+    const sortRecipes = () => {
+        const sortingFunction = sortOptions[sortOrder];
+        const sorted = sortingFunction ? [...recipesList].sort(sortingFunction) : [...recipesList];
+        setSortedRecipes(sorted);
+    };
+
+    const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        setSortOrder(e.target.value);
+    };
 
     return (
         <>
-            <section className="recipes-section">
-                <Row className="mb-4 mx-3 mx-md-3">
-                    <Col className='px-0' md={9}>
-                        <h2 className="fw-bold text-center text-md-start">
+            <section className='recipes-section'>
+                <div className='row mb-4 mx-3 mx-md-3'>
+                    <div className='px-0 col-md-8'>
+                        <h2 className='fw-bold text-center text-md-start'>
                             {title}
                         </h2>
-                    </Col>
-                    <Col className='px-0' md={3}>
-                        <div className="d-flex align-items-center column-gap-2 my-2 my-md-0 mx-2 mx-md-0">
-                            <Form.Select
-                                onChange={(e) => console.log(e.target.value)}
-                                className="rounded p-1"
-                                aria-label="Sort filters"
+                    </div>
+                    <div className='px-0 col-md-4'>
+                        <div className='d-flex align-items-center justify-content-md-end justify-content-center column-gap-2 my-2 my-md-0 mx-2 mx-md-0'>
+                            <span>Sort by:</span>
+                            <select
+                                onChange={handleSortChange}
+                                className='rounded p-1 w-50'
+                                aria-label='Sort filters'
+                                defaultValue=''
                             >
-                                <option disabled value="">- Sort by -</option>
-                                <option value="A-Z">A-Z</option>
-                                <option value="Z-A">Z-A</option>
-                                <option value="most-liked">Most Liked</option>
-                                <option value="most-commented">Most Commented</option>
-                            </Form.Select>
-                            <Button
-                                onClick={() => setShow(true)}
-                                className="btn primary-btn d-lg-none"
-                            >
-                                <BiSolidFilterAlt />
-                            </Button>
+                                <option disabled value=''>- Sort by -</option>
+                                <option value='A-Z'>A-Z</option>
+                                <option value='Z-A'>Z-A</option>
+                                <option value='most-liked'>Most Liked</option>
+                                <option value='recent'>Recent</option>
+                            </select>
                         </div>
-                    </Col>
-                </Row>
+                    </div>
+                </div>
 
-                <div className="row mx-3 d-flex flex-wrap column-gap-5 row-gap-5 align-items-center justify-content-center">
-                    <RecipeCard recipe={{
-                        recipe_id: 1,
-                        recipe_image: 'https://i.imgur.com/xIkRscC.jpg',
-                        recipe_title: 'Tomato Salad With Lemon, Avocado, Sesame Seeds and more',
-                        recipe_published_time: '10/12/2023',
-                        recipe_instructions: 'Pasta for everyone! Gluten free and vegan gnocchi with pesto, a perfect recipe for the most demanding palates aa',
-                    }} />
-                    <RecipeCard recipe={{
-                        recipe_id: 2,
-                        recipe_image: 'https://i.imgur.com/xIkRscC.jpg',
-                        recipe_title: 'Tomato Salad With Lemon, Avocado, Sesame Seeds and more',
-                        recipe_published_time: '10/12/2023',
-                        recipe_instructions: 'Pasta for everyone! Gluten free and vegan gnocchi with pesto, a perfect recipe for the most demanding palates aa',
-                    }} />
-                    <RecipeCard recipe={{
-                        recipe_id: 3,
-                        recipe_image: 'https://i.imgur.com/xIkRscC.jpg',
-                        recipe_title: 'Tomato Salad With Lemon, Avocado, Sesame Seeds and more',
-                        recipe_published_time: '10/12/2023',
-                        recipe_instructions: 'Pasta for everyone! Gluten free and vegan gnocchi with pesto, a perfect recipe for the most demanding palates aa',
-                    }} />
-                    <RecipeCard recipe={{
-                        recipe_id: 4,
-                        recipe_image: 'https://i.imgur.com/xIkRscC.jpg',
-                        recipe_title: 'Tomato Salad With Lemon, Avocado, Sesame Seeds and more',
-                        recipe_published_time: '10/12/2023',
-                        recipe_instructions: 'Pasta for everyone! Gluten free and vegan gnocchi with pesto, a perfect recipe for the most demanding palates aa',
-                    }} />
+                <div className='row mx-3 d-flex flex-wrap column-gap-5 row-gap-5 align-items-center justify-content-center'>
+                    {sortedRecipes.length === 0 ? (
+                        <p className='text-center m-5'>
+                            No recipes match the selected filters.
+                        </p>
+                    ) : (
+                        <>
+                            {sortedRecipes.map((recipe) => (
+                                <RecipeCard key={recipe.recipe_id} recipe={recipe} />
+                            ))}
+                        </>
+                    )}
                 </div>
 
             </section>
-
-            <Offcanvas className='h-75' placement='bottom' show={show} onHide={() => setShow(false)}>
-                <Offcanvas.Header className='my-2' closeButton />
-                <Offcanvas.Body>
-                    <Filters display='' />
-                </Offcanvas.Body>
-            </Offcanvas>
         </>
     );
 };

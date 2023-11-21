@@ -1,33 +1,19 @@
-import { type Dispatch, type SetStateAction } from 'react';
+import { FaTrash } from "react-icons/fa6";
 
-export default function IngredientItem({
-    ingredient,
-    setIngredients,
-}: {
-    ingredient: {
-        id: `${string}-${string}-${string}-${string}-${string}`;
-        text: string;
-        quantity: string;
-    };
-    setIngredients: Dispatch<
-        SetStateAction<
-            {
-                id: `${string}-${string}-${string}-${string}-${string}`;
-                text: string;
-                quantity: string;
-            }[]
-        >
-    >;
-}): JSX.Element {
+interface Ingredient {
+    id: string;
+    text: string;
+    quantity: string;
+}
 
+interface IngredientItemProps {
+    ingredient: Ingredient;
+    removeIngredient: (id: string) => void;
+}
+
+const IngredientItem: React.FC<IngredientItemProps> = ({ ingredient, removeIngredient }) => {
     const handleDelete = () => {
-        setIngredients((ingredients) => {
-            if (ingredients.length > 1) {
-                return ingredients.filter((i) => i.id !== ingredient.id);
-            }
-
-            return ingredients;
-        });
+        removeIngredient(ingredient.id);
     };
 
     return (
@@ -40,8 +26,10 @@ export default function IngredientItem({
                 className='btn secondary-btn'
                 onClick={handleDelete}
             >
-                ✖
+                <FaTrash />
             </button>
         </li>
     );
-}
+};
+
+export default IngredientItem;
