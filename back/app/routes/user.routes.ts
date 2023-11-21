@@ -10,6 +10,6 @@ router.post("/", user.create);
 router.get("/:id", user.findOne);
 
 const userRoutes = (app: Express): void => {
-    app.use('/api/recipes', router);
+    app.use('/api/create', router);
   };
 export default userRoutes;
