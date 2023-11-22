@@ -8,15 +8,18 @@ import "./AboutUs.css";
 
 const AboutUs: React.FC = () => {
   return (
-    <Card className="aboutus-img">
-      <Card.Img src="https://i.imgur.com/TWNlpMH.png" alt="Card image" />
-      <Card.ImgOverlay>
-        <Card.Title>Know More About Us </Card.Title>
-      </Card.ImgOverlay>
+    <Card className="aboutus-img"> 
+    <Card.Img src="https://i.imgur.com/TWNlpMH.png" alt="Imagen de tarjeta " /> 
+    <Card.ImgOverlay> 
+    <div className="d-flex justify-content-between align-items-center w-100"> 
+    <Card.Title className="aboutus-title">Know More</Card.Title > 
+    <Card.Title className="aboutus-title">About Us</Card.Title>
+     </div>
+     </Card.ImgOverlay> 
 
       <Container className='aboutus-conteiner'>
         <div className='content'>
-          <h1>About us</h1>
+          <h1>We are Green Plant</h1>
           <p>
             At Green Plates, we are dedicated to promoting a healthy and
             sustainable lifestyle through the magic of food. Our passion for plant-based
@@ -33,7 +36,7 @@ const AboutUs: React.FC = () => {
           </p>
         </div>
 
-        <h1 className="about-boldtitle">Our Community of Food Lovers!</h1>
+        <h1 className="about-boldtitle" style={{ textAlign: 'center' }}>Our Community of Food Lovers!</h1>
         <Row className="justify-content-center" style={{ marginTop: '3%' }}>
           <Col xs={6} md={4}>
             <Image src="https://i.imgur.com/6CIcNuv.png" alt="Image 1" className="img-fluid" />
@@ -42,6 +45,7 @@ const AboutUs: React.FC = () => {
             <Image src="https://i.imgur.com/xJ0RQfO.png" alt="Image 2" className="img-fluid" />
           </Col>
         </Row>
+
         <div className='mb-4 py-4 w-100'>
     <h2 className='fs-3 mb-0'>
     Our Commitment
@@ -63,7 +67,8 @@ const AboutUs: React.FC = () => {
         
     </ol>
 </div>
-<Card.Title className='fs-3 mb-4'> Our Community of Food Lovers!</Card.Title>
+
+<Card.Title className="about-boldtitle" style={{ textAlign: 'center' }}> Stay Green. Eat Well. Live Vibrantly.</Card.Title>
 <Row>
         <Col xs={6} md={4}>
           <Image src="https://i.imgur.com/dHk3emF.png" rounded className="img-fluid"/>
