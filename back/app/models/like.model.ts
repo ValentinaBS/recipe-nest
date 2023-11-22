@@ -1,5 +1,5 @@
-import { pool } from "./db";
-import { ResultSetHeader, RowDataPacket } from 'mysql2/promise';
+import { pool } from './db';
+import { ResultSetHeader, RowDataPacket } from 'mysql2';
 
 /*export interface Like{
     recipe_id: Number;
@@ -78,5 +78,6 @@ export class Likemodel {
         throw error;
         }
     }
+}
 
 export default Likemodel;

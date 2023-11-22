@@ -1,5 +1,6 @@
-import { Request, Response, query } from 'express';
+import { Request, Response } from 'express';
 import { Likemodel } from '../models/like.model';
+
 
 export const getLikes = (req: Request, res: Response) => {
     const sql = 'SELECT * FROM recipe_like';

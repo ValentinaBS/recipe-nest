@@ -1,5 +1,6 @@
-import  express, from 'express';
+import  express, { Express, Request, Response } from 'express';
 import * as likeController from '../controllers/like.controllers';
+import db from '../models/db';
 
 const router = express.Router();
 
