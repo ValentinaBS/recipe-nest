@@ -91,7 +91,7 @@ const Search: React.FC = () => {
 
     const onSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        // Filter recipes based on the form input and filters
+        
         const newFilteredRecipes = recipes.filter((recipe) => {
             const matchesSearch =
                 recipe.recipe_title.toLowerCase().includes(searchInput.toLowerCase()) ||
@@ -103,7 +103,6 @@ const Search: React.FC = () => {
             return matchesSearch && matchesOccasion && matchesType;
         });
 
-        // Update the state with the filtered recipes
         setFilteredRecipes(newFilteredRecipes);
     };
 

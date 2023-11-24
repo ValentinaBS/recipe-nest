@@ -10,7 +10,7 @@ import './createRecipe.css';
 const CreateRecipe: React.FC = () => {
     const [selectedFile, setSelectedFile] = useState<string | ArrayBuffer | null>('https://i.imgur.com/GEL53cL.png');
 
-    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+/*     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
         if (file) {
             const reader = new FileReader();
@@ -19,17 +19,26 @@ const CreateRecipe: React.FC = () => {
             };
             reader.readAsDataURL(file);
         }
-    };
+    }; */
 
     const validationSchema = Yup.object().shape({
         imageUpload: Yup.mixed().required('Image is required'),
-        title: Yup.string().required('Title is required'),
-        serves: Yup.string().required('Serves is required'),
-        cookTime: Yup.string().required('Cook Time is required'),
+        title: Yup.string()
+            .required('Title is required')
+            .max(45, 'The title must have less than 45 characters'),
+        serves: Yup.number()
+            .required('Serves is required')
+            .positive('Servings must be a positive number')
+            .integer('Servings must be an integer')
+            .moreThan(0, 'Servings must be greater than 0'),
+        cookTime: Yup.string()
+            .required('Cook Time is required')
+            .max(20, 'The cook time must have less than 20 characters'),
         ingredients: Yup.array().min(1, 'At least one ingredient is required'),
         instructions: Yup.string()
-        .required('Instructions are required')
-        .min(150, 'Instructions must have at least 150 characters'),
+            .required('Instructions are required')
+            .min(150, 'Instructions must have at least 150 characters')
+            .max(1000, 'The instructions must have less than 1000 characters'),
         occasion: Yup.string().notOneOf(['- Select an occasion -'], 'Occasion is required'),
         type: Yup.string().required('Type is required'),
     });
@@ -45,10 +54,13 @@ const CreateRecipe: React.FC = () => {
                 instructions: '',
                 occasion: '- Select an occasion -',
                 type: '',
+                newIngredientQuantity: '',
+                newIngredientText: ''
             }}
             validationSchema={validationSchema}
             onSubmit={(values) => {
-                console.log(values);
+                const { newIngredientQuantity, newIngredientText, ...cleanValues } = values;
+                console.log(cleanValues);
             }}
         >
             <Form className='my-5 mx-4 mx-md-auto create-form'>
@@ -68,8 +80,8 @@ const CreateRecipe: React.FC = () => {
                         type='file'
                         accept='image/*'
                         id='imageUpload'
-                        onChange={handleFileChange}
-                        className='d-none'
+                        /* onChange={handleFileChange} */
+                        className=''
                         name='imageUpload'
                     />
                     <ErrorMessage name='imageUpload' component='div' className='text-danger' />
@@ -84,7 +96,7 @@ const CreateRecipe: React.FC = () => {
                 <Row className='mb-4'>
                     <FormBootstrap.Group as={Col} controlId='serves'>
                         <FormBootstrap.Label>Serves</FormBootstrap.Label>
-                        <Field type='text' name='serves' className='form-control' placeholder='3 people' />
+                        <Field type='number' min='1' name='serves' className='form-control' placeholder='3' />
                         <ErrorMessage name='serves' component='div' className='text-danger' />
                     </FormBootstrap.Group>
 
