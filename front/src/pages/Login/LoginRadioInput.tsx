@@ -14,7 +14,7 @@ const LoginRadioInput: React.FC<LoginRadioInputProps> = ({ id, imageSrc, alt }) 
             name="profileImg"
             id={id}
             className="form-check-input d-none"
-            value={id}
+            value={imageSrc}
         />
         <label className="form-check-label" htmlFor={id}>
             <img className='rounded-circle p-1' src={imageSrc} alt={alt} />
