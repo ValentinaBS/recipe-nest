@@ -9,8 +9,8 @@ import Login from './pages/Login/Login';
 import Recipe from './pages/Recipe/Recipe';
 import Profile from './pages/Profile/Profile';
 import ProtectedRoute from './routers/ProtectedRoute';
-import NotFound from './components/NotFound/NotFound';
-import AboutUs from "./components/AboutUs/AboutUs"
+import NotFound from './pages/NotFound/NotFound';
+import AboutUs from "./pages/AboutUs/AboutUs"
 
 
 function App() {
@@ -32,7 +32,7 @@ function App() {
             <CreateRecipe />
           </ProtectedRoute>
         } />
-        {<Route path='/AboutUs' element={<AboutUs />} /> }
+        {<Route path='/about-us' element={<AboutUs />} /> }
         <Route path='/login' element={<Login />} />
         <Route path='/profile' element={
           <ProtectedRoute>
