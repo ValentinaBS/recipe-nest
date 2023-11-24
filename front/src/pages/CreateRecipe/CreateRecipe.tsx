@@ -1,16 +1,21 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 import { Button, Col, Row } from 'react-bootstrap';
 import FormBootstrap from 'react-bootstrap/Form';
-import { Formik, Form, Field, ErrorMessage } from 'formik';
+import { Formik, Form, Field, ErrorMessage, FieldProps } from 'formik';
 import * as Yup from 'yup';
 import { MdOutlineAddCircle } from 'react-icons/md';
 import { Ingredients } from '../../components/Ingredients/Ingredients';
 import './createRecipe.css';
 
+interface FileUploadFormValues {
+    file: File | null;
+}
+
 const CreateRecipe: React.FC = () => {
     const [selectedFile, setSelectedFile] = useState<string | ArrayBuffer | null>('https://i.imgur.com/GEL53cL.png');
 
-/*     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
         if (file) {
             const reader = new FileReader();
@@ -19,10 +24,10 @@ const CreateRecipe: React.FC = () => {
             };
             reader.readAsDataURL(file);
         }
-    }; */
+    };
 
     const validationSchema = Yup.object().shape({
-        imageUpload: Yup.mixed().required('Image is required'),
+        recipe_image: Yup.mixed().required('Image is required'),
         title: Yup.string()
             .required('Title is required')
             .max(45, 'The title must have less than 45 characters'),
@@ -46,7 +51,7 @@ const CreateRecipe: React.FC = () => {
     return (
         <Formik
             initialValues={{
-                imageUpload: '',
+                recipe_image: undefined,
                 title: '',
                 serves: '',
                 cookTime: '',
@@ -58,14 +63,40 @@ const CreateRecipe: React.FC = () => {
                 newIngredientText: ''
             }}
             validationSchema={validationSchema}
-            onSubmit={(values) => {
+            onSubmit={async (values) => {
                 const { newIngredientQuantity, newIngredientText, ...cleanValues } = values;
-                console.log(cleanValues);
+
+                const api_key = "128255215253675";
+                const cloud_name = "dx1etk0x2";
+                const upload_preset = "f5vfvkh2";
+
+                const data = new FormData();
+                if (values.recipe_image) {
+                    data.append("file", values.recipe_image);
+                }
+                data.append("api_key", api_key);
+                data.append("upload_preset", upload_preset);
+
+                try {
+                    const cloudinaryResponse = await axios.post(
+                        `https://api.cloudinary.com/v1_1/${cloud_name}/image/upload`,
+                        data,
+                        {
+                            headers: { "Content-Type": "multipart/form-data" },
+                        }
+                    );
+
+                    cleanValues.recipe_image = cloudinaryResponse.data.secure_url;
+                    console.log("Upload successful:", cloudinaryResponse.data);
+                    console.log("Clean values:", cleanValues);
+                } catch (error) {
+                    console.error("Error uploading image:", error);
+                }
             }}
         >
             <Form className='my-5 mx-4 mx-md-auto create-form'>
                 <FormBootstrap.Group className='mb-4'>
-                    <FormBootstrap.Label className='d-flex flex-column row-gap-3 justify-content-center align-items-center' role='button' htmlFor='imageUpload'>
+                    <FormBootstrap.Label className='d-flex flex-column row-gap-3 justify-content-center align-items-center' role='button' htmlFor='recipe_image'>
                         {selectedFile && (
                             <img
                                 src={selectedFile as string}
@@ -78,13 +109,24 @@ const CreateRecipe: React.FC = () => {
 
                     <Field
                         type='file'
-                        accept='image/*'
-                        id='imageUpload'
-                        /* onChange={handleFileChange} */
-                        className=''
-                        name='imageUpload'
+                        component={({ form }: FieldProps<FileUploadFormValues['file']>) => (
+                            <>
+                                <input
+                                    type="file"
+                                    id='recipe_image'
+                                    accept='image/*'
+                                    name='recipe_image'
+                                    className='d-none'
+                                    onChange={(e) => {
+                                        const file = e.currentTarget.files ? e.currentTarget.files[0] : null;
+                                        form.setFieldValue('recipe_image', file);
+                                        handleFileChange(e)
+                                    }}
+                                />
+                            </>
+                        )}
                     />
-                    <ErrorMessage name='imageUpload' component='div' className='text-danger' />
+                    <ErrorMessage name='recipe_image' component='div' className='text-danger' />
                 </FormBootstrap.Group>
 
                 <FormBootstrap.Group className='mb-4' controlId='title'>
