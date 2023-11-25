@@ -2,19 +2,7 @@ import React, { useState } from 'react';
 import { BiSearchAlt, BiSolidFilterAlt } from 'react-icons/bi';
 import { Form, ListGroup, InputGroup, Button, Offcanvas } from 'react-bootstrap';
 import './filters.css';
-
-interface FiltersProps {
-    searchInput: string;
-    occasionFilters: string[];
-    typeFilters: string[];
-    allOccasions: string[];
-    allTypes: string[];
-    handleOccasionChange: React.ChangeEventHandler<HTMLInputElement>;
-    handleTypeChange: React.ChangeEventHandler<HTMLInputElement>;
-    handleSearchInputChange: React.ChangeEventHandler<HTMLInputElement>;
-    onSubmit: (e: React.FormEvent) => void;
-    clearFilters: () => void;
-}
+import FiltersProps from '../../types/filtersProps.ts'
 
 const Filters: React.FC<FiltersProps> = (props) => {
     const {
@@ -176,7 +164,13 @@ const Filters: React.FC<FiltersProps> = (props) => {
                             </div>
                         </ListGroup.Item>
 
-                        <Button type='submit' className='primary-btn mt-3 w-100'>
+                        <Button 
+                            type='submit' 
+                            className='primary-btn mt-3 w-100'
+                            onClick={() => {
+                                setShowFilters(false);
+                            }}
+                        >
                             Apply filters
                         </Button>
                         <Button

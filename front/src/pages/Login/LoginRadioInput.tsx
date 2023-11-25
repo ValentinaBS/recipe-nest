@@ -1,11 +1,6 @@
 import React from 'react';
 import { Field } from 'formik';
-
-interface LoginRadioInputProps {
-    id: string;
-    imageSrc: string;
-    alt: string;
-}
+import LoginRadioInputProps from '../../types/loginRadioInputProps';
 
 const LoginRadioInput: React.FC<LoginRadioInputProps> = ({ id, imageSrc, alt }) => (
     <div className="custom-checkbox">

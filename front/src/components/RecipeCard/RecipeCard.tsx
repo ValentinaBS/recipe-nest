@@ -2,20 +2,7 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { FaRegBookmark } from 'react-icons/fa6';
 import { BiLike, BiComment, BiSolidLeaf } from 'react-icons/bi';
-
-type RecipeCardProps = {
-    recipe: {
-        recipe_id: number;
-        recipe_image: string;
-        recipe_title: string;
-        recipe_published_time: string;
-        recipe_instructions: string;
-        recipe_category_type: string;
-        recipe_category_occasion: string;
-        recipe_likes: number;
-    };
-    //bookmarkRecipe: (recipeId: number) => void;
-};
+import { RecipeCardProps } from '../../types/recipe';
 
 const RecipeCard: React.FC<RecipeCardProps> = ({ recipe }) => {
 

@@ -2,12 +2,7 @@ import React from 'react';
 import IngredientItem from './IngredientItem'
 import { FaPlus } from "react-icons/fa6";
 import { Field, ErrorMessage, useFormikContext } from 'formik';
-
-interface Ingredient {
-    id: `${string}-${string}-${string}-${string}-${string}`; 
-    text: string;
-    quantity: string;
-}
+import { Ingredient } from '../../types/ingredient';
 
 export const Ingredients: React.FC = () => {
     const formikContext = useFormikContext<any>();

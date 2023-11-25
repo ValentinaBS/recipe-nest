@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import FileUploadFormValues from '../../types/fileUpload';
 import { Button, Col, Row } from 'react-bootstrap';
 import FormBootstrap from 'react-bootstrap/Form';
 import { Formik, Form, Field, ErrorMessage, FieldProps } from 'formik';
@@ -7,10 +8,6 @@ import * as Yup from 'yup';
 import { MdOutlineAddCircle } from 'react-icons/md';
 import { Ingredients } from '../../components/Ingredients/Ingredients';
 import './createRecipe.css';
-
-interface FileUploadFormValues {
-    file: File | null;
-}
 
 const CreateRecipe: React.FC = () => {
     const [selectedFile, setSelectedFile] = useState<string | ArrayBuffer | null>('https://i.imgur.com/GEL53cL.png');
