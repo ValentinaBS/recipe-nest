@@ -42,7 +42,7 @@ const RecipeCard: React.FC<RecipeCardProps> = ({ recipe }) => {
                                 </button>
                             </div>
                         </div>
-                        <NavLink to='/recipe' className='stretched-link z-0'></NavLink>
+                        <NavLink to='/recipe' data-testid='recipeNavLink' className='stretched-link z-0'></NavLink>
                     </div>
                 </div>
             </div>

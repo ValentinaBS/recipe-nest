@@ -22,13 +22,13 @@ const Footer: React.FC = () => {
                                 Our mission is to connect like-minded individuals who are dedicated to a plant-based lifestyle and inspire them to create delicious, cruelty-free meals.
                             </p>
                             <Nav className='d-flex column-gap-2 mt-4 justify-content-center justify-content-lg-start'>
-                                <Nav.Link className='text-white' href='https://www.facebook.com/' target='_blank'>
+                                <Nav.Link className='text-white' data-testid='facebook-link' href='https://www.facebook.com/' target='_blank'>
                                     <BiLogoFacebookCircle className='fs-2' />
                                 </Nav.Link>
-                                <Nav.Link className='text-white' href='https://www.instagram.com/' target='_blank'>
+                                <Nav.Link className='text-white' data-testid='instagram-link' href='https://www.instagram.com/' target='_blank'>
                                     <BiLogoInstagramAlt className='fs-2' />
                                 </Nav.Link>
-                                <Nav.Link className='text-white' href='https://www.tiktok.com/' target='_blank'>
+                                <Nav.Link className='text-white' data-testid='tiktok-link' href='https://www.tiktok.com/' target='_blank'>
                                     <BiLogoTiktok className='fs-2' />
                                 </Nav.Link>
                             </Nav>
