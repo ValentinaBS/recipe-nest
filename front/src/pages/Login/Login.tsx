@@ -12,16 +12,26 @@ const Login: React.FC = () => {
     };
 
     const validationSchema = Yup.object().shape({
-        emailLogin: Yup.string().email('Introduce a valid email').required('Email is required'),
+        emailLogin: Yup.string()
+            .email('Introduce a valid email')
+            .required('Email is required')
+            .max(45, 'Your email must have less than 45 characters'),
         passwordLogin: Yup.string()
             .required('Password is required')
             .min(8, 'Password must be at least 8 characters')
             .matches(
                 /^(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+{}\[\]:;<>,.?~\\/-]).*$/,
                 'Password must contain at least one uppercase letter, one lowercase letter, and one special character'
-            ),
-        usernameLogin: Yup.string().required('Username is required'),
-        profileImg: Yup.string().required('Profile image is required'),
+            )
+            .max(45, 'Your password must have less than 45 characters'),
+        usernameLogin: Yup.string()
+            .required('Username is required')
+            .max(45, 'Your username must have less than 45 characters'),
+        profileDescript: Yup.string()
+            .required('A description is required')
+            .min(100, 'Your description must have at least 100 characters')
+            .max(500, 'Your description must have less than 500 characters'),
+        profileImg: Yup.string().required('A profile image is required'),
     });
 
     return (
@@ -30,6 +40,7 @@ const Login: React.FC = () => {
                 usernameLogin: '',
                 emailLogin: '',
                 passwordLogin: '',
+                profileDescript: '',
                 profileImg: '',
             }}
             validationSchema={validationSchema}
@@ -84,6 +95,20 @@ const Login: React.FC = () => {
                         />
                         <ErrorMessage name='passwordLogin' component='div' className='text-danger' />
                     </div>
+
+                    {!isLoginSignUp &&
+                        <div className='mb-4'>
+                            <label htmlFor='profileDescript' className='form-label'>Profile Description</label>
+                            <Field
+                                as='textarea'
+                                id='profileDescript'
+                                name='profileDescript'
+                                className='form-control'
+                                placeholder='My name is Jane and I love vegan food because...'
+                            />
+                            <ErrorMessage name='profileDescript' component='div' className='text-danger' />
+                        </div>
+                    }
 
                     {!isLoginSignUp &&
                         <fieldset>

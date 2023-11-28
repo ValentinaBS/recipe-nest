@@ -1,19 +1,8 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { FaRegBookmark } from 'react-icons/fa6';
-import { BiLike, BiComment } from 'react-icons/bi';
-
-type RecipeCardProps = {
-    recipe: {
-        recipe_id: number;
-        recipe_image: string;
-        recipe_title: string;
-        recipe_published_time: string;
-        recipe_instructions: string;
-        recipe_likes: number;
-    };
-    //bookmarkRecipe: (recipeId: number) => void;
-};
+import { BiLike, BiComment, BiSolidLeaf } from 'react-icons/bi';
+import { RecipeCardProps } from '../../types/recipe';
 
 const RecipeCard: React.FC<RecipeCardProps> = ({ recipe }) => {
 
@@ -33,6 +22,10 @@ const RecipeCard: React.FC<RecipeCardProps> = ({ recipe }) => {
                             <span className='mx-1'>-</span>
                             <p className='mb-1'>(Replace with user)</p>
                         </div>
+                        <span className='my-2 fw-bold'>
+                            <BiSolidLeaf className='fs-5 me-2 leaf-color' />
+                            {recipe.recipe_category_type} - {recipe.recipe_category_occasion}
+                        </span>
                         <p className='mb-1 recipe-card-line-clamp'>{recipe.recipe_instructions}</p>
                         <div className='d-flex justify-content-between column-gap-4 mt-3'>
                             <button type='button' className='btn secondary-btn border-0 pt-1 z-1'>
@@ -49,7 +42,7 @@ const RecipeCard: React.FC<RecipeCardProps> = ({ recipe }) => {
                                 </button>
                             </div>
                         </div>
-                        <NavLink to='/recipe' className='stretched-link z-0'></NavLink>
+                        <NavLink to='/recipe' data-testid='recipeNavLink' className='stretched-link z-0'></NavLink>
                     </div>
                 </div>
             </div>

@@ -1,15 +1,5 @@
 import { FaTrash } from "react-icons/fa6";
-
-interface Ingredient {
-    id: string;
-    text: string;
-    quantity: string;
-}
-
-interface IngredientItemProps {
-    ingredient: Ingredient;
-    removeIngredient: (id: string) => void;
-}
+import { IngredientItemProps } from "../../types/ingredient";
 
 const IngredientItem: React.FC<IngredientItemProps> = ({ ingredient, removeIngredient }) => {
     const handleDelete = () => {

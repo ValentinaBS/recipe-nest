@@ -3,6 +3,7 @@ import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import { FaLeaf } from 'react-icons/fa';
 import { BiLogoInstagramAlt, BiLogoFacebookCircle, BiLogoTiktok } from 'react-icons/bi';
+import { NavLink } from 'react-router-dom';
 
 const Footer: React.FC = () => {
     return (
@@ -21,14 +22,14 @@ const Footer: React.FC = () => {
                                 Our mission is to connect like-minded individuals who are dedicated to a plant-based lifestyle and inspire them to create delicious, cruelty-free meals.
                             </p>
                             <Nav className='d-flex column-gap-2 mt-4 justify-content-center justify-content-lg-start'>
-                                <Nav.Link className='text-white' href='https://www.facebook.com/' target='_blank'>
-                                    <BiLogoFacebookCircle className='fs-2'/>
+                                <Nav.Link className='text-white' data-testid='facebook-link' href='https://www.facebook.com/' target='_blank'>
+                                    <BiLogoFacebookCircle className='fs-2' />
                                 </Nav.Link>
-                                <Nav.Link className='text-white' href='https://www.instagram.com/' target='_blank'>
-                                    <BiLogoInstagramAlt className='fs-2'/>
+                                <Nav.Link className='text-white' data-testid='instagram-link' href='https://www.instagram.com/' target='_blank'>
+                                    <BiLogoInstagramAlt className='fs-2' />
                                 </Nav.Link>
-                                <Nav.Link className='text-white' href='https://www.tiktok.com/' target='_blank'>
-                                    <BiLogoTiktok className='fs-2'/>
+                                <Nav.Link className='text-white' data-testid='tiktok-link' href='https://www.tiktok.com/' target='_blank'>
+                                    <BiLogoTiktok className='fs-2' />
                                 </Nav.Link>
                             </Nav>
                         </div>
@@ -38,9 +39,9 @@ const Footer: React.FC = () => {
                                 Company
                             </h6>
                             <Nav className='d-flex flex-column row-gap-2'>
-                                <Nav.Link className='text-white px-0' href='#'>
+                                <NavLink className='nav-link text-white px-0' to='/about-us'>
                                     About Us
-                                </Nav.Link>
+                                </NavLink>
                                 <Nav.Link className='text-white px-0' href='#'>
                                     Features
                                 </Nav.Link>
@@ -103,10 +104,10 @@ const Footer: React.FC = () => {
                             </p>
                         </div>
                         <div className='col-md-4 ml-lg-0 text-center text-md-end'>
-                            <img 
-                                className='footer-img' 
+                            <img
+                                className='footer-img'
                                 src='https://i.imgur.com/aFkf7gZ.png'
-                                alt='Hundred percent natural' 
+                                alt='Hundred percent natural'
                             />
                         </div>
                     </Row>

@@ -1,22 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import RecipeCard from './RecipeCard';
 import './recipeCard.css';
-
-type Recipe = {
-    recipe_id: number;
-    recipe_image: string;
-    recipe_title: string;
-    recipe_published_time: string;
-    recipe_instructions: string;
-    recipe_category_type: string;
-    recipe_category_occasion: string;
-    recipe_likes: number;
-};
-
-type RecipeCardContainerProps = {
-    title: string;
-    recipesList: Recipe[];
-};
+import { RecipeCardContainerProps, Recipe } from '../../types/recipe';
 
 const RecipeCardContainer: React.FC<RecipeCardContainerProps> = (props) => {
 
@@ -26,7 +11,6 @@ const RecipeCardContainer: React.FC<RecipeCardContainerProps> = (props) => {
     const [sortOrder, setSortOrder] = useState('');
 
     useEffect(() => {
-        // Apply sorting logic whenever recipesList or sortOrder changes
         sortRecipes();
     }, [recipesList, sortOrder]);
 
@@ -77,7 +61,7 @@ const RecipeCardContainer: React.FC<RecipeCardContainerProps> = (props) => {
 
                 <div className='row mx-3 d-flex flex-wrap column-gap-5 row-gap-5 align-items-center justify-content-center'>
                     {sortedRecipes.length === 0 ? (
-                        <p className='text-center m-5'>
+                        <p className='text-center m-5 fs-4'>
                             No recipes match the selected filters.
                         </p>
                     ) : (
