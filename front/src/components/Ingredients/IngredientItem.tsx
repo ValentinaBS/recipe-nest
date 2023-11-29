@@ -8,8 +8,7 @@ const IngredientItem: React.FC<IngredientItemProps> = ({ ingredient, removeIngre
 
     return (
         <li className='d-flex justify-content-between align-items-center ps-3 my-2 rounded ingredient-item'>
-            {ingredient.quantity + ' '}
-            {ingredient.text}
+            {`${ingredient.quantity} ${ingredient.unit} ${ingredient.text}`}
             <button
                 type='button'
                 title='Delete this item'
