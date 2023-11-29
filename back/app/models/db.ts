@@ -1,11 +1,12 @@
 import {createPool, Pool, Connection} from "mysql2/promise";
-import {dbConfig} from "../config/db.config";
+import dotenv from 'dotenv';
+dotenv.config();
 
 export const pool: Pool = createPool({
-  host: dbConfig.HOST,
-  user: dbConfig.USER,
-  password: dbConfig.PASSWORD,
-  database: dbConfig.DB,
+  host: process.env.HOST,
+  user: process.env.USER,
+  password: process.env.PASSWORD,
+  database: process.env.DB,
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0
