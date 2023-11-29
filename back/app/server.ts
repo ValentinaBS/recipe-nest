@@ -5,13 +5,15 @@ import userRoutes from './routes/user.routes';
 import CommentRoutes from './routes/comment.router';
 import LikeRoutes from './routes/like.router';
 import SavedRecipeRoutes from './routes/SaveR.router';
+import dotenv from 'dotenv';
+dotenv.config();
 
 const app: Express = express();
-const port: number = 3000;
+const PORT = process.env.PORT || 3000;
 
 var corsOptions = {
     origin: "http://localhost:8081"
-  };
+};
 
   app.use(cors(corsOptions));
   app.use(express.json());
@@ -29,6 +31,6 @@ app.get('/', (req, res) =>{
 });
 
 
-app.listen(port, ()=> {
-    console.log(`Example app listening on port http://localhost:${port}`)
+app.listen(PORT, ()=> {
+    console.log(`Example app listening on port http://localhost:${PORT}`)
 });
