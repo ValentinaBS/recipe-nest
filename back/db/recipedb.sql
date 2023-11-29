@@ -22,7 +22,7 @@ USE `recipedb` ;
 -- Table `recipedb`.`User`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `recipedb`.`User` (
-  `user_id` INT NOT NULL,
+  `user_id` INT AUTO_INCREMENT NOT NULL,
   `username` VARCHAR(45) NULL,
   `email` VARCHAR(45) NULL,
   `password` VARCHAR(45) NULL,
@@ -31,17 +31,14 @@ CREATE TABLE IF NOT EXISTS `recipedb`.`User` (
   PRIMARY KEY (`user_id`))
 ENGINE = InnoDB;
 
-
 -- -----------------------------------------------------
 -- Table `recipedb`.`recipe`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `recipedb`.`recipe` (
-  `recipe_id` INT NOT NULL,
+  `recipe_id` INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
   `recipe_title` VARCHAR(45) NULL,
   `recipe_instructions` VARCHAR(1000) NULL,
-  `recipe_ingredients` VARCHAR(100) NULL,
   `recipe_likes` INT NULL,
-  `recipe_comments` VARCHAR(500) NULL,
   `recipe_cooktime` VARCHAR(45) NULL,
   `recipe_portions` INT NULL,
   `recipe_published_time` DATE NULL,
@@ -50,14 +47,13 @@ CREATE TABLE IF NOT EXISTS `recipedb`.`recipe` (
   `user_id` INT NOT NULL,
   `recipe_active` TINYINT NULL,
   `recipe_category_occasion` VARCHAR(45) NULL,
-  PRIMARY KEY (`recipe_id`, `user_id`),
   INDEX `user_id_idx` (`user_id` ASC) VISIBLE,
   CONSTRAINT `user_id`
     FOREIGN KEY (`user_id`)
     REFERENCES `recipedb`.`User` (`user_id`)
     ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+    ON UPDATE NO ACTION
+) ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
@@ -66,8 +62,7 @@ ENGINE = InnoDB;
 CREATE TABLE IF NOT EXISTS `recipedb`.`UserRecipe` (
   `recipe_id` INT NOT NULL,
   `user_id` INT NOT NULL,
-  `user_recipe_id` INT NOT NULL,
-  PRIMARY KEY (`recipe_id`, `user_id`, `user_recipe_id`),
+  `user_recipe_id` INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
   INDEX `user_id_idx` (`user_id` ASC) VISIBLE,
   CONSTRAINT `recipe_id`
     FOREIGN KEY (`recipe_id`)
@@ -86,9 +81,10 @@ ENGINE = InnoDB;
 -- Table `recipedb`.`Ingredient`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `recipedb`.`Ingredient` (
-  `ingredient_id` INT NOT NULL,
+  `ingredient_id` INT AUTO_INCREMENT NOT NULL,
   `ingredient_name` VARCHAR(45) NULL,
-  `ingredient_quantity` VARCHAR(45) NULL,
+  `ingredient_quantity` INT NULL,
+  `ingredient_unit` VARCHAR(45) NULL,
   PRIMARY KEY (`ingredient_id`))
 ENGINE = InnoDB;
 
@@ -99,8 +95,7 @@ ENGINE = InnoDB;
 CREATE TABLE IF NOT EXISTS `recipedb`.`RecipeIngredient` (
   `ingredient_id` INT NOT NULL,
   `recipe_id` INT NOT NULL,
-  `recipe_ingredient` INT NOT NULL,
-  PRIMARY KEY (`ingredient_id`, `recipe_id`, `recipe_ingredient`),
+  `recipe_ingredient` INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
   INDEX `recipe_id_idx` (`recipe_id` ASC) VISIBLE,
   CONSTRAINT `recipe_id_recipeingredient`
     FOREIGN KEY (`recipe_id`)
@@ -119,7 +114,7 @@ ENGINE = InnoDB;
 -- Table `recipedb`.`Comment`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `recipedb`.`Comment` (
-  `comment_id` INT NOT NULL,
+  `comment_id` INT AUTO_INCREMENT NOT NULL,
   `comment_text` VARCHAR(500) NULL,
   `comment_likes` INT NULL,
   `comment_published_time` DATETIME NULL,
@@ -145,4 +140,3 @@ ENGINE = InnoDB;
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
-
