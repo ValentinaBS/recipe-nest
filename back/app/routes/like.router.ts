@@ -1,4 +1,4 @@
-import  express, { Express, Request, Response }  from "express";
+/*import  express, { Express, Request, Response }  from "express";
 import * as likeController from '../controllers/like.controllers';
 
 const router = express.Router();
@@ -13,5 +13,5 @@ const LikeRoutes = (app: Express): void => {
     app.use('/api/likes', router);
   };
 export default LikeRoutes;
-
+*/
 

@@ -1,4 +1,4 @@
-import { Request, Response, query } from 'express';
+/*import { Request, Response, query } from 'express';
 import { Like } from '../models/like.model';
 
 export const getLikes = (req: Request, res: Response) => {
@@ -54,4 +54,4 @@ export const removeLike = (req: Request, res: Response) => {
 
         res.json({ message: 'Like successfully removed' });
     });
-};
+};*/
