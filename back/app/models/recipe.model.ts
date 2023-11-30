@@ -1,4 +1,4 @@
-import { pool } from './db'; // Asegúrate de que la importación sea correcta
+import { pool } from './db'; 
 import { RowDataPacket } from 'mysql2/promise';
 
 export class Recipe {
