@@ -1,0 +1,18 @@
+.home-title{
+    font-family: poppins;
+    white-space: pre-line;
+    font-size: 100px;
+    color: var(--dark);
+    
+    font-weight: bold;
+}
+.home-text{
+    font-family: var(--dark);
+    color:black;
+    white-space: pre-line;
+    font-size: 30px;
+    padding: 4%  50% 1% 3%;
+}
+.home-bottom{
+    padding: 1%  4% 1% 4%;
+}

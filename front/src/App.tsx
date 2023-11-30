@@ -10,7 +10,8 @@ import Recipe from './pages/Recipe/Recipe';
 import Profile from './pages/Profile/Profile';
 import ProtectedRoute from './routers/ProtectedRoute';
 import NotFound from './pages/NotFound/NotFound';
-import AboutUs from "./pages/AboutUs/AboutUs"
+import AboutUs from "./pages/AboutUs/AboutUs";
+import Home from "./pages/Home/Home"
 
 
 function App() {
@@ -23,7 +24,7 @@ function App() {
 
       <Routes>
         
-        {/* <Route index element={<Home />} /> */}
+        <Route index element={< Home />} />
         <Route path='/recipe' element={<Recipe />} />
         <Route path='/search' element={<Search />} />
         <Route path='/create-recipe' 
