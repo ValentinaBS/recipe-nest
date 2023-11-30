@@ -81,9 +81,9 @@ ENGINE = InnoDB;
 -- Table `recipedb`.`Ingredient`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `recipedb`.`Ingredient` (
-  `ingredient_id` INT AUTO_INCREMENT NOT NULL,
+  `ingredient_id` VARCHAR(45) NOT NULL,
   `ingredient_name` VARCHAR(45) NULL,
-  `ingredient_quantity` INT NULL,
+  `ingredient_quantity` DOUBLE NULL,
   `ingredient_unit` VARCHAR(45) NULL,
   PRIMARY KEY (`ingredient_id`))
 ENGINE = InnoDB;
