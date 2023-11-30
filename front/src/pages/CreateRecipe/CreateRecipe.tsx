@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import FileUploadFormValues from '../../types/fileUpload';
-import { Button, Col, Row } from 'react-bootstrap';
+import { Button, Col, Row, Modal, ProgressBar } from 'react-bootstrap';
 import FormBootstrap from 'react-bootstrap/Form';
 import { Formik, Form, Field, ErrorMessage, FieldProps } from 'formik';
 import * as Yup from 'yup';
@@ -11,6 +11,9 @@ import './createRecipe.css';
 
 const CreateRecipe: React.FC = () => {
     const [selectedFile, setSelectedFile] = useState<string | ArrayBuffer | null>('https://i.imgur.com/GEL53cL.png');
+    const [showModal, setShowModal] = useState(false);
+    const [modalMessage, setModalMessage] = useState('');
+    const [uploadProgress, setUploadProgress] = useState(0);
 
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
@@ -43,6 +46,12 @@ const CreateRecipe: React.FC = () => {
             .max(1000, 'The instructions must have less than 1000 characters'),
         occasion: Yup.string().notOneOf(['- Select an occasion -'], 'Occasion is required'),
         type: Yup.string().required('Type is required'),
+        newIngredientQuantity: Yup.number()
+            .typeError('Please enter a valid numeric value')
+            .positive('Quantity must be a positive number'),
+        newIngredientUnit: Yup.string(),
+        newIngredientText: Yup.string()
+            .max(45, 'The ingedient must have less than 45 characters'),
     });
 
     return (
@@ -56,12 +65,14 @@ const CreateRecipe: React.FC = () => {
                 instructions: '',
                 occasion: '- Select an occasion -',
                 type: '',
-                newIngredientQuantity: '',
-                newIngredientText: ''
+                newIngredientQuantity: 0,
+                newIngredientText: '',
+                newIngredientUnit: ''
             }}
             validationSchema={validationSchema}
-            onSubmit={async (values) => {
-                const { newIngredientQuantity, newIngredientText, ...cleanValues } = values;
+            onSubmit={async (values, formikBag) => {
+                const { newIngredientQuantity, newIngredientText, newIngredientUnit, ingredients, ...recipeValues } = values;
+                setShowModal(true)
 
                 const api_key = "128255215253675";
                 const cloud_name = "dx1etk0x2";
@@ -80,18 +91,48 @@ const CreateRecipe: React.FC = () => {
                         data,
                         {
                             headers: { "Content-Type": "multipart/form-data" },
+                            onUploadProgress: (progressEvent) => {
+                                if(progressEvent.total) {
+                                    const progress = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+                                    setUploadProgress(progress);
+                                }
+                            }
                         }
                     );
 
-                    cleanValues.recipe_image = cloudinaryResponse.data.secure_url;
                     console.log("Upload successful:", cloudinaryResponse.data);
-                    console.log("Clean values:", cleanValues);
+                    console.log("Clean values:", recipeValues);
+
+                    recipeValues.recipe_image = cloudinaryResponse.data.secure_url;
+                    setModalMessage('Your recipe has been uploaded successfully!');
+                    formikBag.resetForm();
+                    setSelectedFile('https://i.imgur.com/GEL53cL.png')
                 } catch (error) {
                     console.error("Error uploading image:", error);
+                    setModalMessage('There was an error trying to upload your recipe. Try again!');
                 }
             }}
         >
             <Form className='my-5 mx-4 mx-md-auto create-form'>
+                <Modal 
+                    show={showModal} 
+                    onHide={() => setShowModal(false)}
+                    backdrop="static"
+                    keyboard={false}
+                    centered
+                >
+                    <Modal.Body className='text-center py-5 px-5'>
+                        <ProgressBar animated now={uploadProgress} label={`${uploadProgress}%`} />
+
+                        {modalMessage &&
+                        <p className='mt-3'>{modalMessage}</p>}
+
+                        {modalMessage &&                      
+                        <Button className='secondary-btn d-block mx-auto mt-4' onClick={() => setShowModal(false)}>
+                            Close
+                        </Button>}
+                    </Modal.Body>
+                </Modal>
                 <FormBootstrap.Group className='mb-4'>
                     <FormBootstrap.Label className='d-flex flex-column row-gap-3 justify-content-center align-items-center' role='button' htmlFor='recipe_image'>
                         {selectedFile && (
@@ -102,6 +143,7 @@ const CreateRecipe: React.FC = () => {
                             />
                         )}
                         Show others your finished dish!
+                        
                     </FormBootstrap.Label>
 
                     <Field
@@ -160,7 +202,7 @@ const CreateRecipe: React.FC = () => {
 
                 <FormBootstrap.Group className='mb-4' controlId='occasion'>
                     <FormBootstrap.Label>Occasion</FormBootstrap.Label>
-                    <Field as='select' name='occasion' className='form-control'>
+                    <Field as='select' name='occasion' className='form-select'>
                         <option disabled>- Select an occasion -</option>
                         <option value='breakfast'>Breakfast</option>
                         <option value='lunch'>Lunch</option>

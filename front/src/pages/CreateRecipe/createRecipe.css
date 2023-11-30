@@ -12,16 +12,14 @@
     background-color: var(--cream);
 }
 
-.quantity-input {
-    width: 4.5rem;
+.quantity-ingredient-input {
+    width: 4rem;
 }
 
-.add-ingredient-button {
-    width: 100%;
+.unit-ingredient-input {
+    min-width: 12rem;
 }
 
-@media screen and (min-width: 768px) {
-    .add-ingredient-button {
-        width: 50%;
-    }
+.title-ingredient-input {
+    min-width: 15.7rem;
 }
