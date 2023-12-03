@@ -1,4 +1,4 @@
-import  express  from "express";
+import  express, { Express, Request, Response }  from "express";
 import * as likeController from '../controllers/like.controllers';
 
 const router = express.Router();
@@ -9,6 +9,9 @@ router.post('/like', likeController.getLikes);
 
 router.delete('/like', likeController.removeLike);
 
-export default router;
+const LikeRoutes = (app: Express): void => {
+    app.use('/api/likes', router);
+  };
+export default LikeRoutes;
 
 
