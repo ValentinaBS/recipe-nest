@@ -1,5 +1,5 @@
 import { pool } from './db'; // Asegúrate de que la importación sea correcta
-import { ResultSetHeader, RowDataPacket } from 'mysql2/promise';
+import { ResultSetHeader, RowDataPacket, FieldPacket } from 'mysql2/promise';
 
 export class Recipe {
 
@@ -130,6 +130,56 @@ static async getSavedRecipes(userId: number, result: Function): Promise<void> {
   }
 }
 }
+
+export class Likemodel {  
+
+    recipe_id: Number;
+    recipe_likes: Number;
+    user_id: Number;
+
+    constructor(like: any){
+        this.recipe_id = like.recipe_id;
+        this.recipe_likes = like.recipe_likes;
+        this.user_id = like.user_id;
+      }
+      //añadir like
+      static async addLike(recipeId: Number, userId: Number, recipe_likes: Number): Promise<void> {
+        const connection = await pool.getConnection();
+        try {
+          const [existingLikes] = await connection.query('SELECT * FROM likes WHERE recipe_id = ? AND user_id = ? AND recipe_likes = ?', [recipeId, userId, recipe_likes]);
+  
+          if ((existingLikes as any[]).length === 0) {
+              await connection.query('INSERT INTO likes (recipe_id, user_id, recipe_likes) VALUES (?, ?, ?)', [recipeId, userId, recipe_likes]);
+              console.log('Like added successfully.');
+          } else {
+              console.log('The user has already "Liked" this recipe.');
+          }
+      } catch (error) {
+          console.error('Error adding "Like":', error);
+          throw error;
+      }
+  }   
+      //eliminar like
+      static async removeLike(recipeId: Number, userId: Number, recipe_likes: Number): Promise<void> {
+        const connection = await pool.getConnection();
+          try {
+              const [existingLikes, _]: [RowDataPacket[], FieldPacket[]] = await connection.query('SELECT * FROM likes WHERE recipe_id = ? AND user_id = ? AND recipe_likes = ?', [recipeId, userId, recipe_likes]); 
+              if (existingLikes.length > 0) {
+                  await connection.query('DELETE FROM likes WHERE recipe_id = ? AND user_id = ? AND recipe_likes = ?',[recipeId, userId,  recipe_likes]);
+                  console.log('Like successfully removed.');
+           } else {
+              console.log('The user has not "Liked" this recipe.');
+          } 
+          }catch (error){
+              console.error('Error deleting likes:', error);
+              throw error;
+          }
+      }
+
+    }
+
+
+
 
   /*Recipe.updateById = (id, recipe, result) => {
     sql.query(

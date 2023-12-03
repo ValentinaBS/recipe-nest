@@ -19,13 +19,13 @@ export class Likemodel {
     }
     
 //Añadir like
-    static async addLike(recipeId: Number, userId: Number): Promise<void> {
+    static async addLike(recipeId: Number, userId: Number, recipe_like: Number): Promise<void> {
       const connection = await pool.getConnection();
       try {
-        const [existingLikes] = await connection.query('SELECT * FROM likes WHERE recipe_id = ? AND user_id = ?', [recipeId, userId]);
+        const [existingLikes] = await connection.query('SELECT * FROM likes WHERE recipe_id = ? AND user_id = ?', [recipeId, userId, recipe_like]);
 
         if ((existingLikes as any[]).length === 0) {
-            await connection.query('INSERT INTO likes (recipe_id, user_id) VALUES (?, ?)', [recipeId, userId]);
+            await connection.query('INSERT INTO likes (recipe_id, user_id) VALUES (?, ?)', [recipeId, userId, recipe_like]);
             console.log('Like added successfully.');
         } else {
             console.log('The user has already "Liked" this recipe.');
@@ -37,13 +37,13 @@ export class Likemodel {
 }   
    
 //Eliminar like
-    static async removeLike(recipeId: Number, userId: Number): Promise<void> {
+    static async removeLike(recipeId: Number, userId: Number, recipe_like: Number): Promise<void> {
       const connection = await pool.getConnection();
         try {
           //  const [existingLikes]: [RowDataPacket[]] = await connection.query('SELECT * FROM likes WHERE recipe_id = ? AND user_id = ?',[recipeId, userId]);
-            const [existingLikes, _]: [RowDataPacket[], FieldPacket[]] = await connection.query('SELECT * FROM likes WHERE recipe_id = ? AND user_id = ?', [recipeId, userId]); 
+            const [existingLikes, _]: [RowDataPacket[], FieldPacket[]] = await connection.query('SELECT * FROM likes WHERE recipe_id = ? AND user_id = ?', [recipeId, userId, recipe_like]); 
             if (existingLikes.length > 0) {
-                await connection.query('DELETE FROM likes WHERE recipe_id = ? AND user_id = ?',[recipeId, userId]);
+                await connection.query('DELETE FROM likes WHERE recipe_id = ? AND user_id = ?',[recipeId, userId,  recipe_like]);
                 console.log('Like successfully removed.');
          } else {
             console.log('The user has not "Liked" this recipe.');
@@ -54,13 +54,13 @@ export class Likemodel {
         }
     }
 
-    //Recuento de Like
-    static async getLikesCount(recipeId: Number): Promise<Number>{
+    //Recuento de Like (no es necesario)
+    static async getLikesCount(recipeId: Number, recipe_like: Number): Promise<Number>{
         const connection = await pool.getConnection();
         try{
            const [rows]: [RowDataPacket[], FieldPacket[]] = await connection.query(
             'SELECT COUNT(*) as count FROM likes WHERE recipe_id = ?',
-            [recipeId]);
+            [recipeId,  recipe_like]);
            
           const likesCount: number = rows[0].count;
 

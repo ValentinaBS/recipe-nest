@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { Recipe, SavedRecipe } from '../models/recipe.model'; // Asegúrate de que la importación sea correcta
+import { error } from 'console';
 
 // Crear y guardar una nueva Receta
 export const create = (req: Request, res: Response): void => {
@@ -110,6 +111,44 @@ export const addComment = (req: Request, res: Response): void => {
     }
   };
 
+  //Funcion de like
+  export const addLike = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const recipe_likes: number = Number(req.params.id);
+      //añadir like
+     
+      Recipe.addLike(recipe_likes, (err: Error | null, data?: any) =>{
+      if (err) {
+          return res.status(500).send({
+            message: "Error adding like to recipe"
+          });
+        }
+        res.status(200).send({
+          message: "Like added to recipe successfully"
+        });
+      }
+    });
+};
+
+
+export const removeLike = async (req: Request, res: Response) => {
+  try {
+    const recipe_likes: number = Number(req.params.id);
+    //eliminar like
+    
+    if (isNaN(recipe_likes) || recipe_likes <= 0) {
+    return res.status(400).json({ Error: 'Invalid like ID'});
+    }
+    if (error) {
+    console.error('Error deleting like from database:', error);
+    return res.status(500).json({ Error:'Internal Server Error'});
+    }
+    if (result.affectedRows === 0) {
+    return res.status(404).json({ Error: 'Like not found' });
+    }
+    res.json({ message: 'Like successfully removed' });
+    }
+};
 
 // Update a Recipe identified by the id in the request
 /*exports.update = (req, res) => {

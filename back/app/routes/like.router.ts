@@ -1,4 +1,4 @@
-import  express, { Express, Request, Response } from 'express';
+/*import  express, { Express, Request, Response } from 'express';
 import * as likeController from '../controllers/like.controllers';
 import db from '../models/db';
 
@@ -12,4 +12,4 @@ router.delete('/like', likeController.removeLike);
 
 export default likeRouter;
 
-
+*/
