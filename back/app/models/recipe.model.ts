@@ -1,5 +1,6 @@
-import { pool } from './db'; // Asegúrate de que la importación sea correcta
-import { RowDataPacket } from 'mysql2/promise';
+import { pool } from './db';
+import { ResultSetHeader, RowDataPacket, FieldPacket } from 'mysql2/promise';
+
 
 export class Recipe {
 
@@ -62,4 +63,20 @@ export class Recipe {
       connection.release();
     }
   }
+}
+
+//Encuentra la receta guardada en tu perfil
+static async getSavedRecipes(userId: number, result: Function): Promise<void> {
+  const connection = await pool.getConnection();
+  try {
+    const [rows] = await connection.query("SELECT * FROM userrecipe WHERE user_id = ?", userId);
+    console.log(`Recetas guardadas para el usuario con ID ${userId}:`, rows);
+    result(null, rows);
+  } catch (err) {
+    console.log("Error al obtener las recetas guardadas: ", err);
+    result(err, null);
+  } finally {
+    connection.release();
+  }
+}
 }
