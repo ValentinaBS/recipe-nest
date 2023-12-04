@@ -67,11 +67,12 @@ export const getAll = async (req: Request, res: Response): Promise<void> => {
     const title: string | null = req.query.recipe_title ? String(req.query.recipe_title): null;
     const recipes = await Recipe.getAll(title);
     res.json(recipes);
-  } catch (err);
+  } catch (err){
   console.log("Error al obtener todas las recetas:", err);
   res.status(500).json({
     massage: "Error al obtener las recetas."
   })
+}
 }
 
   //Funcion de like
