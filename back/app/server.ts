@@ -2,10 +2,11 @@ import express, { Express } from 'express';
 import cors from 'cors';
 import recipeRoutes from './routes/recipe.routes';
 import userRoutes from './routes/user.routes';
+import CommentRoutes from './routes/comment.router';
+import LikeRoutes from './routes/like.router';
+import SavedRecipeRoutes from './routes/SaveR.router';
 import dotenv from 'dotenv';
 dotenv.config();
-
-//import likeRoutes from './routes/like.router';
 
 const app: Express = express();
 const PORT = process.env.PORT || 3000;
@@ -16,11 +17,14 @@ var corsOptions = {
 
   app.use(cors(corsOptions));
   app.use(express.json());
-  //app.use('/api', likeRoutes);
+  
 
-  // Configurar las rutas de recetas
+  // Configuracion de rutas 
 recipeRoutes(app);
 userRoutes(app);
+CommentRoutes(app);
+LikeRoutes(app);
+SavedRecipeRoutes(app);
 
 app.get('/', (req, res) =>{
     res.send('Hello World!!!')
