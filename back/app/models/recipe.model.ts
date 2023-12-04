@@ -1,3 +1,4 @@
+import { error } from 'console';
 import { pool } from './db'; // Asegúrate de que la importación sea correcta
 import { ResultSetHeader, RowDataPacket, FieldPacket } from 'mysql2/promise';
 
@@ -143,7 +144,7 @@ export class Likemodel {
         this.user_id = like.user_id;
       }
       //añadir like
-      static async addLike(recipeId: Number, userId: Number, recipe_likes: Number): Promise<void> {
+      static async addLike(recipeId: Number, userId: Number, recipe_likes: Number, result: Function): Promise<void> {
         const connection = await pool.getConnection();
         try {
           const [existingLikes] = await connection.query('SELECT * FROM likes WHERE recipe_id = ? AND user_id = ? AND recipe_likes = ?', [recipeId, userId, recipe_likes]);
@@ -151,8 +152,10 @@ export class Likemodel {
           if ((existingLikes as any[]).length === 0) {
               await connection.query('INSERT INTO likes (recipe_id, user_id, recipe_likes) VALUES (?, ?, ?)', [recipeId, userId, recipe_likes]);
               console.log('Like added successfully.');
+              result(null, { receta_id: recipeId, user_id: userId, recipe_likes: recipe_likes });
           } else {
               console.log('The user has already "Liked" this recipe.');
+              result(null);
           }
       } catch (error) {
           console.error('Error adding "Like":', error);
@@ -160,7 +163,7 @@ export class Likemodel {
       }
   }   
       //eliminar like
-      static async removeLike(recipeId: Number, userId: Number, recipe_likes: Number): Promise<void> {
+      static async removeLike(recipeId: Number, userId: Number, recipe_likes: Number, result: Function): Promise<void> {
         const connection = await pool.getConnection();
           try {
               const [existingLikes, _]: [RowDataPacket[], FieldPacket[]] = await connection.query('SELECT * FROM likes WHERE recipe_id = ? AND user_id = ? AND recipe_likes = ?', [recipeId, userId, recipe_likes]); 

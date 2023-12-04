@@ -12,8 +12,15 @@ router.get("/:id", recipes.findOne);
 // Add comment to a recipe
 router.post("/:id/comments", recipes.addComment);
 
+//Añadir like
+router.get('/', recipes.addLike);
+
+//eliminar like
+router.delete ('/', recipes.removeLike);
+
 const recipeRoutes = (app: Express): void => {
   app.use('/api/recipes', router);
+
 };
 export default recipeRoutes;
 
