@@ -60,17 +60,6 @@ export const findOne = (req: Request, res: Response): void => {
   });
 };
 
-export const addComment = (req: Request, res: Response): void => {
-
-  Recipe.addComment(req.body.recipeId, req.body.comment, req.body.userId, (err: Error | null, _data?: any) => {
-    if (err) {
-      return res.status(500).send({
-        message: "Error adding comment to recipe"
-      });
-    }
-      });
-  };
-
   export const saveRecipe = async (req: Request, res: Response): Promise<void> => {
     try {
       const userId = req.body.userId;
