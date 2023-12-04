@@ -128,14 +128,16 @@ export const addLike = async (req: Request, res: Response): Promise<void> => {
         //eliminar like
          /* if (isNaN(recipeId) || recipeId <= 0) {
           return res.status(400).json({ Error: 'Invalid like ID'});*/
-        Likemodel.removeLike(recipe_likes, recipeId, userId, (err: Error | null, data?: number)=>{})
-          if (err) {
-            console.error('Error deleting like from database:');
-            return res.status(500).json({ Error:'Internal Server Error'});
-          }
-          if (result.affectedRows === 0) {
-            return res.status(404).json({ Error: 'Like not found' });
-          }
+          Likemodel.removeLike(recipe_likes, recipeId, userId, (err: Error | null, data?: number)=>{
+
+            if (err) {
+              console.error('Error deleting like from database:');
+              return res.status(500).json({ Error:'Internal Server Error'});
+            }
+            if (recipe_likes.affectedRows === 0) {
+              return res.status(404).json({ Error: 'Like not found' });
+            }
+          })
            res.json({ message: 'Like successfully removed' });
            } catch (error) {
             console.error("Error en el controlador de eliminar el like", error);

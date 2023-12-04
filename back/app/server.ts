@@ -3,7 +3,6 @@ import cors from 'cors';
 import recipeRoutes from './routes/recipe.routes';
 import userRoutes from './routes/user.routes';
 import CommentRoutes from './routes/comment.router';
-import LikeRoutes from './routes/like.router';
 import SavedRecipeRoutes from './routes/SaveR.router';
 import dotenv from 'dotenv';
 dotenv.config();
@@ -23,7 +22,6 @@ var corsOptions = {
 recipeRoutes(app);
 userRoutes(app);
 CommentRoutes(app);
-LikeRoutes(app);
 SavedRecipeRoutes(app);
 
 app.get('/', (req, res) =>{

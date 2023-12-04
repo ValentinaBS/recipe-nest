@@ -10,7 +10,7 @@ router.post("/", recipes.create);
 router.get("/:id", recipes.findOne);
 
 // Add comment to a recipe
-router.post("/:id/comments", recipes.addComment);
+//router.post("/:id/comments", recipes.addComment);
 
 //Añadir like
 router.get('/', recipes.addLike);
