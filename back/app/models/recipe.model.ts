@@ -1,5 +1,5 @@
 import { pool } from './db'; 
-import { RowDataPacket } from 'mysql2/promise';
+//import { RowDataPacket } from 'mysql2/promise';
 
 export class Recipe {
 
@@ -62,4 +62,23 @@ export class Recipe {
       connection.release();
     }
   }
+
+
+static async getAll(title: string | null): Promise<Recipe[]> {
+const connection = await pool.getConnection();
+  let query = "SELEC * FROM recipe";
+
+  if (title) { 
+    query += ` WHERE title LIKE '%${title}%' `;
+  }
+  try{
+  const [rows] = await connection.query(query);
+  const recipes: Recipe[] = rows as Recipe[];
+   return recipes;
+} catch (err) {
+  throw err;
+} finally {
+  connection.release(); 
+}
+}
 }

@@ -9,6 +9,9 @@ router.post("/", recipes.create);
 // Retrieve a single recipe with id
 router.get("/:id", recipes.findOne);
 
+// Obtener todas las recetas 
+router.get('/AllRecipe', recipes.getAll);
+
 const recipeRoutes = (app: Express): void => {
   app.use('/api/recipes', router);
 };
