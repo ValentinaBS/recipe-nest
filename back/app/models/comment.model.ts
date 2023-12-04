@@ -4,6 +4,7 @@ export class Comment {
     comment_text: string;
     recipe_id: number;
     user_Id: number;
+    comment_published_time: string;
     comment_active: boolean;
     comment_likes: number;
 
@@ -11,6 +12,7 @@ export class Comment {
         this.comment_text = newComment.comment_text;
         this.recipe_id = newComment.receta_id;
         this.user_Id = newComment.user_Id;
+        this.comment_published_time = newComment.comment_published_time;
         this.comment_active = newComment.comment_active;
         this.comment_likes = newComment.comment_likes;
     }

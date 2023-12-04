@@ -1,6 +1,5 @@
 import { pool } from './db';
-import { ResultSetHeader, RowDataPacket, FieldPacket } from 'mysql2/promise';
-
+import { RowDataPacket, FieldPacket } from 'mysql2/promise';
 
 export class Recipe {
 
@@ -29,7 +28,7 @@ export class Recipe {
     this.recipe_active = recipe.recipe_active;
     this.recipe_category_occasion = recipe.recipe_category_occasion;
   }
-//Crear una receta 
+  //Crear una receta 
   static async create(newRecipe: any, result: Function): Promise<void> {
     const connection = await pool.getConnection();
     try {
@@ -43,18 +42,18 @@ export class Recipe {
       connection.release();
     }
   }
-  
+
   static async findById(id: number, result: Function): Promise<void> {
     const connection = await pool.getConnection();
     try {
       const [rows] = await connection.query("SELECT * FROM recipe WHERE recipe_id = ?", id);
       if (Array.isArray(rows)) {
         if (rows.length > 0) {
-        console.log("found recipe: ", rows[0]);
-        result(null, rows[0]);
-      } else {
-        result({ kind: "not_found" }, null);
-      }
+          console.log("found recipe: ", rows[0]);
+          result(null, rows[0]);
+        } else {
+          result({ kind: "not_found" }, null);
+        }
       }
     } catch (err) {
       console.log("error: ", err);
@@ -63,157 +62,72 @@ export class Recipe {
       connection.release();
     }
   }
-}
 
-//Encuentra la receta guardada en tu perfil
-/*static async getSavedRecipes(userId: number, result: Function): Promise<void> {
-  const connection = await pool.getConnection();
-  try {
-    const [rows] = await connection.query("SELECT * FROM userrecipe WHERE user_id = ?", userId);
-    console.log(`Recetas guardadas para el usuario con ID ${userId}:`, rows);
-    result(null, rows);
-  } catch (err) {
-    console.log("Error al obtener las recetas guardadas: ", err);
-    result(err, null);
-  } finally {
-    connection.release();
+
+  static async getAll(title: string | null): Promise<Recipe[]> {
+    const connection = await pool.getConnection();
+    let query = "SELEC * FROM recipe";
+
+    if (title) {
+      query += ` WHERE title LIKE '%${title}%' `;
+    }
+    try {
+      const [rows] = await connection.query(query);
+      const recipes: Recipe[] = rows as Recipe[];
+      return recipes;
+    } catch (err) {
+      throw err;
+    } finally {
+      connection.release();
+    }
   }
 }
-}*/
 
-export class Likemodel {  
+export class Likemodel {
 
-    recipe_id: Number;
-    recipe_likes: Number;
-    user_id: Number;
+  recipe_id: Number;
+  recipe_likes: Number;
+  user_id: Number;
 
-    constructor(like: any){
-        this.recipe_id = like.recipe_id;
-        this.recipe_likes = like.recipe_likes;
-        this.user_id = like.user_id;
+  constructor(like: any) {
+    this.recipe_id = like.recipe_id;
+    this.recipe_likes = like.recipe_likes;
+    this.user_id = like.user_id;
+  }
+  //añadir like
+  static async addLike(recipeId: Number, userId: Number, recipe_likes: Number, result: Function): Promise<void> {
+    const connection = await pool.getConnection();
+    try {
+      const [existingLikes] = await connection.query('SELECT * FROM likes WHERE recipe_id = ? AND user_id = ? AND recipe_likes = ?', [recipeId, userId, recipe_likes]);
+
+      if ((existingLikes as any[]).length === 0) {
+        await connection.query('INSERT INTO likes (recipe_id, user_id, recipe_likes) VALUES (?, ?, ?)', [recipeId, userId, recipe_likes]);
+        console.log('Like added successfully.');
+        result(null, { receta_id: recipeId, user_id: userId, recipe_likes: recipe_likes });
+      } else {
+        console.log('The user has already "Liked" this recipe.');
+        result(null);
       }
-      //añadir like
-      static async addLike(recipeId: Number, userId: Number, recipe_likes: Number, result: Function): Promise<void> {
-        const connection = await pool.getConnection();
-        try {
-          const [existingLikes] = await connection.query('SELECT * FROM likes WHERE recipe_id = ? AND user_id = ? AND recipe_likes = ?', [recipeId, userId, recipe_likes]);
-  
-          if ((existingLikes as any[]).length === 0) {
-              await connection.query('INSERT INTO likes (recipe_id, user_id, recipe_likes) VALUES (?, ?, ?)', [recipeId, userId, recipe_likes]);
-              console.log('Like added successfully.');
-              result(null, { receta_id: recipeId, user_id: userId, recipe_likes: recipe_likes });
-          } else {
-              console.log('The user has already "Liked" this recipe.');
-              result(null);
-          }
-      } catch (error) {
-          console.error('Error adding "Like":', error);
-          throw error;
-      }
-  }   
-      //eliminar like
-      static async removeLike(recipeId: Number, userId: Number, recipe_likes: Number, result: Function): Promise<void> {
-        const connection = await pool.getConnection();
-          try {
-              const [existingLikes, _]: [RowDataPacket[], FieldPacket[]] = await connection.query('SELECT * FROM likes WHERE recipe_id = ? AND user_id = ? AND recipe_likes = ?', [recipeId, userId, recipe_likes]); 
-              if (existingLikes.length > 0) {
-                  await connection.query('DELETE FROM likes WHERE recipe_id = ? AND user_id = ? AND recipe_likes = ?',[recipeId, userId,  recipe_likes]);
-                  console.log('Like successfully removed.');
-           } else {
-              console.log('The user has not "Liked" this recipe.');
-          } 
-          }catch (error){
-              console.error('Error deleting likes:', error);
-              throw error;
-          }
-      }
-
+    } catch (error) {
+      console.error('Error adding "Like":', error);
+      throw error;
     }
-
-
-
-
-  /*Recipe.updateById = (id, recipe, result) => {
-    sql.query(
-      "UPDATE trecipe SET title = ?, description = ?, published = ? WHERE id = ?",
-      [recipe.title, recipe.description, recipe.published, id],
-      (err, res) => {
-        if (err) {
-          console.log("error: ", err);
-          result(null, err);
-          return;
-        }
-  
-        if (res.affectedRows == 0) {
-          // not found Recipe with the id
-          result({ kind: "not_found" }, null);
-          return;
-        }
-  
-        console.log("updated recipe: ", { id: id, ...recipe });
-        result(null, { id: id, ...recipe });
+  }
+  //eliminar like
+  static async removeLike(recipeId: Number, userId: Number, recipe_likes: Number, result: Function): Promise<void> {
+    const connection = await pool.getConnection();
+    try {
+      const [existingLikes, _]: [RowDataPacket[], FieldPacket[]] = await connection.query('SELECT * FROM likes WHERE recipe_id = ? AND user_id = ? AND recipe_likes = ?', [recipeId, userId, recipe_likes]);
+      if (existingLikes.length > 0) {
+        await connection.query('DELETE FROM likes WHERE recipe_id = ? AND user_id = ? AND recipe_likes = ?', [recipeId, userId, recipe_likes]);
+        console.log('Like successfully removed.');
+      } else {
+        console.log('The user has not "Liked" this recipe.');
       }
-    );
-  };*/
-
-  /*Recipe.remove = (id, result) => {
-    sql.query("DELETE FROM recipe WHERE id = ?", id, (err, res) => {
-      if (err) {
-        console.log("error: ", err);
-        result(null, err);
-        return;
-      }
-  
-      if (res.affectedRows == 0) {
-        // not found Recipe with the id
-        result({ kind: "not_found" }, null);
-        return;
-      }
-  
-      console.log("deleted recipe with id: ", id);
-      result(null, res);
-    });
-  };*/
-
-//constructor
-/*const User = function(user) {
-  this.user_id = recipe.user_id;
-  this.username = recipe.username;
-  this.email = recipe.email;
-  this.password = recipe.password;
-  this.user_image = recipe.user_image;
-  this.user_description = recipe.user_description ;
-};
-
-User.create = (newUser, result) => {
-  sql.query("INSERT INTO user SET ?", newUser, (err, res) => {
-    if (err) {
-      console.log("error: ", err);
-      result(err, null);
-      return;
+    } catch (error) {
+      console.error('Error deleting likes:', error);
+      throw error;
     }
+  }
 
-    console.log("created user: ", { id: res.insertId, ...newUser });
-    result(null, { id: res.insertId, ...newUser });
-  });
-};
-
-User.findById = (id, result) => {
-  sql.query(`SELECT * FROM user WHERE id = ${id}`, (err, res) => {
-    if (err) {
-      console.log("error: ", err);
-      result(err, null);
-      return;
-    }
-
-    if (res.length) {
-      console.log("found user: ", res[0]);
-      result(null, res[0]);
-      return;
-    }
-
-    // not found Recipe with the id
-    result({ kind: "not_found" }, null);
-  });
-};
-*/
+}
