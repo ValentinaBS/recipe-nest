@@ -1,5 +1,6 @@
-import React from 'react'
-import { NavLink } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import { NavLink, useParams } from 'react-router-dom';
 import Card from 'react-bootstrap/Card';
 import Comments from '../../components/Comments/Comments'
 import { BiLike, BiSolidUser, BiSolidTimeFive, BiRightArrowAlt } from 'react-icons/bi';
@@ -7,16 +8,33 @@ import { FaRegBookmark } from 'react-icons/fa6';
 import './recipe.css'
 
 const Recipe: React.FC = () => {
+    const { id } = useParams<{ id: string }>();
+    const [recipeData, setRecipeData] = useState<any>(null);
+
+    useEffect(() => {
+        const getRecipeData = async () => {
+            try {
+                const response = await axios.get(`http://localhost:3000/api/recipes/${id}`);
+                setRecipeData(response.data);
+                console.log(response.data)
+            } catch (error) {
+                console.error('Error fetching recipe:', error);
+            }
+        };
+
+        getRecipeData();
+    }, [id]);
+
     return (
         <div className='d-flex flex-column align-items-center mx-auto my-5 recipe-container'>
-            <img className='rounded recipe-img' src="https://i.imgur.com/xIkRscC.jpg" alt="Recipe image" />
+            <img className='rounded recipe-img' src={recipeData.recipe_image} alt={recipeData.recipe_title} />
 
             <div className='my-4 py-4 card-background w-100'>
                 <h1 className='fs-2'>
-                    Poke Salad
+                    {recipeData.recipe_title}
                 </h1>
                 <p className='mb-0'>
-                    Vegan - Lunch
+                    {recipeData.recipe_category_type} - {recipeData.recipe_category_occasion}
                 </p>
                 <div className='d-flex justify-content-between align-items-center mt-3'>
                     <NavLink className='d-flex align-items-center gap-2' to='/profile'>
@@ -30,7 +48,7 @@ const Recipe: React.FC = () => {
                         </button>
                         <button className='btn d-flex gap-2 p-0 border-0'>
                             <BiLike className='fs-3' />
-                            <span className='fw-bold fs-5'>43</span>
+                            <span className='fw-bold fs-5'>{recipeData.recipe_likes}</span>
                         </button>
                     </div>
                 </div>
@@ -43,9 +61,13 @@ const Recipe: React.FC = () => {
                     </h2>
                     <div className='d-flex align-items-center'>
                         <BiSolidTimeFive className='fs-4' />
-                        <span className='ms-2 me-4'>30 minutes</span>
+                        <span className='ms-2 me-4'>
+                            {recipeData.recipe_cooktime}
+                        </span>
                         <BiSolidUser className='fs-4' />
-                        <span className='ms-2'>2 people</span>
+                        <span className='ms-2'>
+                            {recipeData.recipe_portions} people
+                        </span>
                     </div>
                 </div>
                 <ul className='p-0 recipe-list list-group'>
@@ -69,21 +91,13 @@ const Recipe: React.FC = () => {
                     Instructions
                 </h2>
 
-                <ol className='p-0 list-group recipe-list'>
-                    <li className='mt-4'>
-                        Prepare the Tuna: Begin by cutting the sushi-grade ahi tuna into bite-sized cubes. Make sure your knife is sharp to ensure clean cuts. Place the cubed tuna in a large mixing bowl.
-                    </li>
-                    <li className='mt-4'>
-                        Prepare the Base: While the tuna is marinating, you can prepare your base. You can use sushi rice, brown rice, quinoa, or even mixed greens as a base. If you're using rice, be sure it's cooled to room temperature.
-                    </li>
-                    <li className='mt-4'>
-                        Serve: Serve your Poke Salad immediately. If desired, you can also add a side of seaweed salad for an extra touch of authenticity.
-                    </li>
-                </ol>
+                <p className='my-3'>
+                    {recipeData.recipe_instructions}
+                </p>
             </div>
 
             <div className='mb-4 py-4 card-background w-100'>
-                <div className='mb-4 d-flex flex-wrap gap-2 justify-content-between align-items-center'>
+                <div className='mb-4 d-flex gap-2 justify-content-between align-items-center'>
                     <h2 className='fs-3 mb-0'>
                         More Recipes By JamesCook
                     </h2>
@@ -92,7 +106,7 @@ const Recipe: React.FC = () => {
                     </NavLink>
                 </div>
 
-                <div className='d-flex flex-wrap justify-content-between'>
+                <div className='d-flex flex-wrap justify-content-md-between justify-content-center'>
                     <Card className='border-0 more-recipes-card bg-transparent'>
                         <Card.Img className='rounded' variant="top" src="https://i.imgur.com/xIkRscC.jpg" />
                         <Card.Body className='p-0 pt-3'>
