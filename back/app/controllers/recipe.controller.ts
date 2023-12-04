@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
-import { Recipe, SavedRecipe } from '../models/recipe.model';
-import { error } from 'console';
+import { Recipe } from '../models/recipe.model';
+//import { error } from 'console';
 
 // Crear y guardar una nueva Receta
 export const create = (req: Request, res: Response): void => {
@@ -61,47 +61,21 @@ export const findOne = (req: Request, res: Response): void => {
   });
 };
 
-  export const saveRecipe = async (req: Request, res: Response): Promise<void> => {
-    try {
-      const userId = req.body.userId;
-      const recipeId = req.body.recipeId; 
-  
-      // Llama al método estático para guardar la receta en el perfil del usuario
-      SavedRecipe.savedRecipe(userId, recipeId, (err: any, result: any) => {
-        if (err) {
-          res.status(500).json({ error: 'Error al guardar la receta en el perfil' });
-        } else {
-          res.status(201).json(result);
-        }
-      });
-    } catch (error) {
-      console.error("Error en el controlador de guardar receta en el perfil: ", error);
-      res.status(500).json({ error: 'Error interno del servidor' });
-    }
-  };
-  
-  export const getSavedRecipes = async (req: Request, res: Response): Promise<void> => {
-    try {
-      const userId = req.body.userId;
-  
-      // Llama al método estático para obtener las recetas guardadas del perfil del usuario
-      SavedRecipe.getSavedRecipes(userId, (err: any, result: any) => {
-        if (err) {
-          res.status(500).json({ error: 'Error al obtener las recetas guardadas' });
-        } else {
-          res.status(200).json(result);
-        }
-      });
-    } catch (error) {
-      console.error("Error en el controlador de obtener recetas guardadas: ", error);
-      res.
-     
-  status(500).json({ error: 'Error interno del servidor' });
-    }
-  };
+//encontrar todas las recetas por titulo
+export const getAll = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const title: string | null = req.query.recipe_title ? String(req.query.recipe_title): null;
+    const recipes = await Recipe.getAll(title);
+    res.json(recipes);
+  } catch (err);
+  console.log("Error al obtener todas las recetas:", err);
+  res.status(500).json({
+    massage: "Error al obtener las recetas."
+  })
+}
 
   //Funcion de like
-  export const addLike = async (req: Request, res: Response): Promise<void> => {
+/*  export const addLike = async (req: Request, res: Response): Promise<void> => {
     try {
       const recipe_likes: number = Number(req.params.id);
       //añadir like
@@ -138,3 +112,4 @@ export const removeLike = async (req: Request, res: Response) => {
     res.json({ message: 'Like successfully removed' });
     }
 };
+*/
