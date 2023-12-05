@@ -7,8 +7,7 @@ router.post("/register", user.create);
 
 router.post("/login", user.login);
 
-// Retrieve a single user with id
-router.get("/:id", user.findOne);
+router.get("/current", user.current);
 
 const userRoutes = (app: Express): void => {
     app.use('/api/user', router);
