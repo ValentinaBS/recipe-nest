@@ -4,12 +4,12 @@ import { Comment } from '../models/comment.model';
 
 export const createComment = (req: Request, res: Response): void => {
 
-    Comment.addComment(req.body, (err: Error | null, data?: any) => {
+    Comment.addComment(req.body, (err: Error | null, data?: Comment) => {
       if (err) {
-        return res.status(500).send({
-          message: "Error adding comment to recipe"
+         res.status(500).json({
+          message: "Error adding comment to recipe",
+          error: err.message,
         });
       }
-      res.status(201).json(data);
         });
     };
