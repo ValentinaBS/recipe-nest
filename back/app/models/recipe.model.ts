@@ -43,6 +43,47 @@ export class Recipe {
     }
   }
 
+  //Actualizar una receta 
+  static async updateById(recipe_id: number, updateRecipe: any, result: Function): Promise<void>{
+const connection = await pool.getConnection();
+try {
+  const [resultInfo] = await connection.query('UPDATE recipe SET ? WHERE recipe_id = ?', [updateRecipe, recipe_id]);
+  if ((resultInfo as any).affectedRows >0 ) {
+    console.log('Recipe whit ID ${recipe_id} update successfully.');
+    result(null, { status: 'updated'});
+  }else {
+    console.log(`Recipe with ID ${recipe_id} not found.`);
+    result({ kind: 'not_found' }, null);
+  }
+} catch (err) {
+  console.log('Error updating recipe:', err);
+  result(err, null);
+} finally {
+  connection.release();
+}
+}
+
+// Cambiar el estado de recipe_active a false 
+ static async deactivateRecipe(recipe_id: number, result: Function): Promise<void> {
+  const connection = await pool.getConnection();
+  try {
+   const [resultInfo] = await connection.query('UPDATE recipe SET recipe_active = false WHERE recipe_id = ?', recipe_id);
+    if ((resultInfo as any).affectedRows > 0) {
+       console.log(`Recipe with ID ${recipe_id} deactivated successfully.`);
+       result(null, { status: 'deactivated' });
+    } else {
+       console.log(`Recipe with ID ${recipe_id} not found.`);
+      result({ kind: 'not_found' }, null);
+     }
+   } catch (err) {
+      console.log('Error deactivating recipe:', err);
+      result(err, null);
+   } finally {
+      connection.release();
+   }
+  }
+  
+//Encontrar una receta por su ID 
   static async findById(id: number, result: Function): Promise<void> {
     const connection = await pool.getConnection();
     try {
@@ -63,7 +104,7 @@ export class Recipe {
     }
   }
 
-
+//Encontrar todas las recetas 
   static async getAll(title: string | null): Promise<Recipe[]> {
     const connection = await pool.getConnection();
     let query = "SELEC * FROM recipe";
