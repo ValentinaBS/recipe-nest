@@ -38,9 +38,84 @@ export const create = (req: Request, res: Response): void => {
   });
 };
 
+//Actualizar una receta 
+export const updateRecipe = async (req: Request, res: Response): Promise<void> => {
+  const recipe_id: number = Number(req.params.recipe_id);
+  if (!req.body) {
+    res.status(400).send({
+      message: "¡El contenido no puede estar vacio!"
+    });
+    return;
+  }
+  const updateRecipe: Recipe = {
+    recipe_title: req.body.recipe_title,
+    recipe_instructions: req.body.recipe_instructions,
+    recipe_likes: req.body.recipe_likes,
+    recipe_cooktime: req.body.recipe_cooktime,
+    recipe_portions: req.body.recipe_portions,
+    recipe_published_time: req.body.recipe_published_time,
+    recipe_image: req.body.recipe_image,
+    recipe_category_type: req.body.recipe_category_type,
+    user_id: req.body.user_id,
+    recipe_active: req.body.recipe_active || true,
+    recipe_category_occasion: req.body.recipe_category_occasion
+  };
+  try {
+    await Recipe.updateById(recipe_id, updateRecipe, (err: Error | null, data?: Recipe) => {
+      if (err) {
+        if (err.message === "not_found") {
+          res.status(400).send({
+          message: `no se encontro la reseta con el id ${recipe_id}.` 
+          });
+        } else {
+          res.status(500).send({
+           message: "Error al actualizar la receta." 
+          });
+        }
+      } else {
+        res.send(data);
+      }
+    });
+  } catch (Error) {
+    console.log("Error en el controlador de actualizar la receta:", Error);
+     res.status(500).json({
+    message: "Error al actualizar la receta."
+  });
+}
+};
+
+//Desactivar una receta 
+
+export const deactivateRecipe = async (req: Request, res: Response): Promise<void> => {
+  const recipeId: number = Number(req.params.recipe_id);
+
+  try {
+    await Recipe.deactivateRecipe(recipeId, (err: Error | null, data?: Recipe) => {
+      if (err) {
+        if (err.message === "not_found") {
+          res.status(404).send({
+            message: `No se encontró la Receta con el ID ${recipeId}.`
+          });
+        } else {
+          res.status(500).send({
+            message: "Error al desactivar la Receta con el ID " + recipeId
+          });
+        }
+      } else {
+        res.send(data);
+      }
+    });
+  } catch (error) {
+    console.error("Error en el controlador de desactivar la receta:", error);
+    res.status(500).json({
+      message: "Error al desactivar la receta."
+    });
+  }
+};
+
 // Encontrar una sola receta por su ID
 export const findOne = (req: Request, res: Response): void => {
-  const recipeId: number = Number(req.params.id);
+  const recipeId: number = Number(req.params.recipe_id);
 
 
   Recipe.findById(recipeId, (err: Error | null, data?: Recipe) => {
@@ -78,7 +153,7 @@ export const getAll = async (req: Request, res: Response): Promise<void> => {
 export const addLike = async (req: Request, res: Response): Promise<void> => {
   try {
     const recipe_likes: number = Number(req.body.recipe_likes);
-    const recipeId: number = Number(req.params.id);
+    const recipeId: number = Number(req.params.recipe_id);
     const userId: number = Number(req.body.user_id);
     //añadir like
     const result = await new Promise<Error | null | number>((resolve) => {
