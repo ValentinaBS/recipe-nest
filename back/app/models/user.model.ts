@@ -2,18 +2,11 @@ import { pool } from './db';
 import { ResultSetHeader, RowDataPacket } from 'mysql2';
 import bcrypt from 'bcryptjs';
 import jwt, { JwtPayload } from 'jsonwebtoken';
-import mysql from 'mysql2/promise';
 
 interface CustomJwtPayload extends JwtPayload {
   email: string;
 }
 
-const dbConfig = {
-  host: process.env.HOST,
-  user: process.env.USER,
-  password: process.env.PASSWORD,
-  database: process.env.DB,
-};
 export class User {
   username: string;
   email: string;
@@ -167,6 +160,28 @@ export class User {
       return null;
     } catch (err) {
       throw err;
+    } finally {
+      connection.release();
+    }
+  }
+
+  static async findByUsername(username: string, result: Function): Promise<void> {
+    const connection = await pool.getConnection();
+
+    try {
+      const [rows] = await connection.query("SELECT username, email, user_image, user_description FROM user WHERE username = ?", username);
+
+      if (Array.isArray(rows)) {
+        if (rows.length > 0) {
+          console.log("found user: ", rows[0]);
+          result(null, rows[0]);
+        } else {
+          result({ kind: "not_found" }, null);
+        }
+      }
+    } catch (err) {
+      console.log("error: ", err);
+      result(err, null);
     } finally {
       connection.release();
     }
