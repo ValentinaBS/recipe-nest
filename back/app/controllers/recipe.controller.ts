@@ -63,8 +63,8 @@ export const findOne = (req: Request, res: Response): void => {
 //encontrar todas las recetas por titulo
 export const getAll = async (req: Request, res: Response): Promise<void> => {
   try {
-    const title: string | null = req.query.recipe_title ? String(req.query.recipe_title): null;
-    const recipes = await Recipe.getAll(title);
+    const recipe_title: string | null = req.query.recipe_title ? String(req.query.recipe_title): null;
+    const recipes = await Recipe.getAll(recipe_title);
     res.json(recipes);
   } catch (err){
   console.log("Error al obtener todas las recetas:", err);

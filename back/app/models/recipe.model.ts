@@ -67,7 +67,6 @@ export class Recipe {
   static async getAll(title: string | null): Promise<Recipe[]> {
     const connection = await pool.getConnection();
     let query = "SELEC * FROM recipe";
-
     if (title) {
       query += ` WHERE title LIKE '%${title}%' `;
     }

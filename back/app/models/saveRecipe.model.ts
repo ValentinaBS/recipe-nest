@@ -2,12 +2,12 @@ import { pool } from './db';
 import { RowDataPacket } from 'mysql2/promise';
 
 export class SavedRecipe {
-    receta_id: number;
+    recipe_id: number;
     user_id: number;
     user_recipe_id: number;
   
   constructor(savedRecipe: any) {
-      this.receta_id = savedRecipe.receta_id;
+      this.recipe_id = savedRecipe.recipe_id;
       this.user_id = savedRecipe.user_id;
       this.user_recipe_id = savedRecipe.user_recipe_id;
     }
@@ -16,12 +16,12 @@ export class SavedRecipe {
   static async savedRecipe(userId: number, recipeId: number, result: Function): Promise<void> {
   const connection = await pool.getConnection();
   try {
-    const [rows] = await connection.query("INSERT INTO userrecipe (receta_id, user_id) VALUES (?, ?)", [recipeId, userId]);
+    const [rows] = await connection.query("INSERT INTO userrecipe (recipe_id, user_id) VALUES (?, ?)", [recipeId, userId]);
     const queryResult = rows as RowDataPacket[];
     if (queryResult[0] && queryResult[0].insertId) {
       const insertId = queryResult[0].insertId;
-      console.log("Receta guardada en el perfil con éxito: ", { id: insertId, receta_id: recipeId, user_id: userId });
-      result(null, { id: insertId, receta_id: recipeId, user_id: userId });
+      console.log("Receta guardada en el perfil con éxito: ", { id: insertId, recipe_id: recipeId, user_id: userId });
+      result(null, { id: insertId, recipe_id: recipeId, user_id: userId });
   }
   } catch (err) {
     console.log("Error al guardar la receta en el perfil", err);
