@@ -9,6 +9,8 @@ router.post("/login", user.login);
 
 router.get("/current", user.current);
 
+router.get("/:username", user.findByUsername);
+
 const userRoutes = (app: Express): void => {
     app.use('/api/user', router);
   };

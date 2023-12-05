@@ -118,3 +118,27 @@ export const update = (req: Request, res: Response): void => {
     });
 };
 
+export const findByUsername = (req: Request, res: Response): void => {
+    const username: string = req.params.username;
+
+    try {
+        User.findByUsername(username, (err: Error | null, data?: User) => {
+            if (err) {
+                if (err.message === "not_found") {
+                    res.status(404).send({
+                        message: `User with username '${username}' not found`
+                    });
+                } else {
+                    res.status(500).send({
+                        message: `Internal server error`
+                    });
+                }
+            } else {
+                res.status(200).send(data);
+            }
+        })
+    } catch (error) {
+        res.status(500).json({ message: 'Internal server error' });
+    }
+};
+
