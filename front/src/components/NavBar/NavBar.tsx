@@ -1,12 +1,26 @@
-import Container from 'react-bootstrap/Container';
-import Navbar from 'react-bootstrap/Navbar';
-import Nav from 'react-bootstrap/Nav';
-import { NavLink } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { Container, Navbar, Nav, Button } from 'react-bootstrap';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { MdOutlineAddCircle } from 'react-icons/md';
 import { BiSearchAlt, BiLogOut, BiSolidUser } from 'react-icons/bi';
+import './navbar.css'
 
 const NavBar: React.FC = () => {
-    const isLoggedIn = false;
+    const [isLoggedIn, setisLoggedIn] = useState(false);
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        const userToken = localStorage.getItem('userToken');
+
+        if (userToken) {
+            setisLoggedIn(true); 
+        }
+    }, [navigate]);
+
+    const handleLogout = () => {
+        localStorage.removeItem('userToken');
+        location.reload();
+    };
 
     return (
         <Navbar expand='md' sticky='top' className='nav-general shadow'>
@@ -30,10 +44,13 @@ const NavBar: React.FC = () => {
                                 <BiSolidUser className='fs-4' />
                                 Profile
                             </NavLink>
-                            <NavLink to='/logout' className='nav-link d-flex align-items-center justify-content-center column-gap-1'>
+                            <Button 
+                                className='nav-link d-flex align-items-center justify-content-center column-gap-1 btn-nav-link'
+                                onClick={handleLogout}
+                            >
                                 <BiLogOut className='fs-4' />
                                 Log Out
-                            </NavLink>
+                            </Button>
                         </Nav>
                     ) : (
                         <Nav className="gap-4 my-3 my-md-0">

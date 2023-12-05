@@ -1,7 +1,17 @@
-import { Navigate } from 'react-router-dom';
+import { useEffect } from 'react'
+import { Navigate, useNavigate } from 'react-router-dom';
 
 const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
-    const auth = true;
+    const navigate = useNavigate();
+    let auth = false;
+
+    useEffect(() => {
+        const userToken = localStorage.getItem('userToken');
+
+        if (userToken) {
+            auth = true; 
+        }
+    }, [navigate]);
 
     return auth ? children : <Navigate to="/login" replace />;
 };

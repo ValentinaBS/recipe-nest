@@ -1,0 +1,5 @@
+.btn-nav-link {
+    --bs-btn-hover-bg: none;
+    --bs-btn-active-color: var(--primary);
+    --bs-btn-active-bg: none;
+}

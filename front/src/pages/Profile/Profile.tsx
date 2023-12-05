@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { NavLink, useParams } from 'react-router-dom';
 import useRecipeFilter from '../../hooks/UseRecipeFilter';
 import './profile.css';
 import { BiEdit, BiEnvelope, BiHeart, BiSolidHeart } from 'react-icons/bi';
@@ -7,6 +8,7 @@ import Filters from '../../components/Filters/Filters';
 import RecipeCardContainer from '../../components/RecipeCard/RecipeCardContainer';
 
 const Profile: React.FC = () => {
+    const { username } = useParams<{ username: string }>();
     const [activeTab, setActiveTab] = useState<'bookmarked' | 'own'>('own');
 
     const handleTabChange = (tab: 'bookmarked' | 'own') => {
