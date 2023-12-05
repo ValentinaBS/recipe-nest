@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS `recipedb`.`User` (
   `user_id` INT AUTO_INCREMENT NOT NULL,
   `username` VARCHAR(45) NULL,
   `email` VARCHAR(45) NULL,
-  `password` VARCHAR(45) NULL,
+  `password` VARCHAR(255) NULL,
   `user_image` VARCHAR(45) NULL,
   `user_description` VARCHAR(500) NULL,
   PRIMARY KEY (`user_id`))
@@ -37,7 +37,7 @@ ENGINE = InnoDB;
 CREATE TABLE IF NOT EXISTS `recipedb`.`recipe` (
   `recipe_id` INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
   `recipe_title` VARCHAR(45) NULL,
-  `recipe_instructions` VARCHAR(1000) NULL,
+  `recipe_instructions` VARCHAR(1500) NULL,
   `recipe_likes` INT NULL,
   `recipe_cooktime` VARCHAR(45) NULL,
   `recipe_portions` INT NULL,
