@@ -1,9 +1,19 @@
 import { pool } from './db';
 import { ResultSetHeader, RowDataPacket } from 'mysql2';
 import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
-import crypto from 'crypto';
+import jwt, { JwtPayload } from 'jsonwebtoken';
+import mysql from 'mysql2/promise';
 
+interface CustomJwtPayload extends JwtPayload {
+  email: string;
+}
+
+const dbConfig = {
+  host: process.env.HOST,
+  user: process.env.USER,
+  password: process.env.PASSWORD,
+  database: process.env.DB,
+};
 export class User {
   username: string;
   email: string;
@@ -22,6 +32,13 @@ export class User {
   static async create(newUser: any, result: Function): Promise<void> {
     const connection = await pool.getConnection();
     try {
+      const existingUser = await connection.query("SELECT * FROM user WHERE email = ?", newUser.email);
+
+      if (existingUser && existingUser.length > 0) {
+        result({ message: "User already exists" }, null);
+        return;
+      }
+
       const hashedPassword = await bcrypt.hash(newUser.password, 10);
       newUser.password = hashedPassword;
 
@@ -49,15 +66,16 @@ export class User {
 
       const user: User = rows[0] as User;
       const passwordMatch = await bcrypt.compare(password, user.password);
+      const secretKey = process.env.SECRET_KEY;
+
+      if (!secretKey) {
+        result("Secret key is missing or undefined", null);
+        return;
+      }
 
       if (passwordMatch) {
 
-        const token = jwt.sign(
-          { email: user.email },
-          // Secret key random generation 
-          crypto.randomBytes(32).toString('hex'), 
-          { expiresIn: '1h' }
-        );
+        const token = jwt.sign({ email: user.email }, secretKey, { expiresIn: '1h' });
 
         console.log("Logged in: ", { email, token });
         result(null, { email, token });
@@ -72,10 +90,31 @@ export class User {
     }
   };
 
-  static async findById(id: number, result: Function): Promise<void> {
-    const connection = await pool.getConnection();
+  static async current(token: string, result: Function): Promise<void> {
+    let connection;
+
     try {
-      const [rows] = await connection.query("SELECT * FROM user WHERE user_id = ?", id);
+      connection = await pool.getConnection();
+
+      const secretKey = process.env.SECRET_KEY;
+
+      if (!secretKey) {
+        result("Secret key is missing or undefined", null);
+        return;
+      }
+
+      let decodedToken;
+      try {
+        decodedToken = jwt.verify(token, secretKey) as CustomJwtPayload;
+      } catch (error) {
+        result("Invalid token", null);
+        return;
+      }
+
+      const userEmail = decodedToken.email;
+
+      const [rows] = await connection.query("SELECT * FROM user WHERE email = ?", userEmail);
+
       if (Array.isArray(rows)) {
         if (rows.length > 0) {
           console.log("found user: ", rows[0]);
@@ -88,7 +127,9 @@ export class User {
       console.log("error: ", err);
       result(err, null);
     } finally {
-      connection.release();
+      if (connection) {
+        connection.release();
+      }
     }
   }
 
@@ -119,11 +160,11 @@ export class User {
       if (Array.isArray(rows)) {
         if (rows.length > 0) {
           const userData = rows[0] as RowDataPacket;
-          const user: User = new User(userData); // Crear instancia de User con los datos obtenidos
+          const user: User = new User(userData);
           return user;
         }
       }
-      return null; // No se encontró el usuario
+      return null;
     } catch (err) {
       throw err;
     } finally {
