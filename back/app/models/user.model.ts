@@ -1,10 +1,14 @@
 import { pool } from './db';
 import { ResultSetHeader, RowDataPacket } from 'mysql2';
 import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
-import crypto from 'crypto';
+import jwt, { JwtPayload } from 'jsonwebtoken';
+
+interface CustomJwtPayload extends JwtPayload {
+  email: string;
+}
 
 export class User {
+  user_id: number | undefined;
   username: string;
   email: string;
   password: string;
@@ -12,6 +16,7 @@ export class User {
   user_description: string;
 
   constructor(user: any) {
+    this.user_id = user.user_id;
     this.username = user.username;
     this.email = user.email;
     this.password = user.password;
@@ -22,6 +27,13 @@ export class User {
   static async create(newUser: any, result: Function): Promise<void> {
     const connection = await pool.getConnection();
     try {
+      const [rows] = await connection.query("SELECT * FROM user WHERE email = ? OR username = ?", [newUser.email, newUser.username]);
+
+      if (Array.isArray(rows) && rows.length > 0) {
+        result({ message: "User already exists" }, null);
+        return;
+      }
+
       const hashedPassword = await bcrypt.hash(newUser.password, 10);
       newUser.password = hashedPassword;
 
@@ -51,16 +63,8 @@ export class User {
       const passwordMatch = await bcrypt.compare(password, user.password);
 
       if (passwordMatch) {
-
-        const token = jwt.sign(
-          { email: user.email },
-          // Secret key random generation 
-          crypto.randomBytes(32).toString('hex'), 
-          { expiresIn: '1h' }
-        );
-
-        console.log("Logged in: ", { email, token });
-        result(null, { email, token });
+        console.log("Logged in: ", { email });
+        result(null, { email });
       } else {
         result("Invalid password", null);
       }
@@ -72,10 +76,31 @@ export class User {
     }
   };
 
-  static async findById(id: number, result: Function): Promise<void> {
-    const connection = await pool.getConnection();
+  static async current(token: string, result: Function): Promise<void> {
+    let connection;
+
     try {
-      const [rows] = await connection.query("SELECT * FROM user WHERE user_id = ?", id);
+      connection = await pool.getConnection();
+
+      const secretKey = process.env.SECRET_KEY;
+
+      if (!secretKey) {
+        result("Secret key is missing or undefined", null);
+        return;
+      }
+
+      let decodedToken;
+      try {
+        decodedToken = jwt.verify(token, secretKey) as CustomJwtPayload;
+      } catch (error) {
+        result("Invalid token", null);
+        return;
+      }
+
+      const userEmail = decodedToken.email;
+
+      const [rows] = await connection.query("SELECT username, email, user_image, user_description FROM user WHERE email = ?", userEmail);
+
       if (Array.isArray(rows)) {
         if (rows.length > 0) {
           console.log("found user: ", rows[0]);
@@ -88,7 +113,9 @@ export class User {
       console.log("error: ", err);
       result(err, null);
     } finally {
-      connection.release();
+      if (connection) {
+        connection.release();
+      }
     }
   }
 
@@ -114,18 +141,40 @@ export class User {
     const connection = await pool.getConnection();
 
     try {
-      const [rows] = await connection.query("SELECT * FROM user WHERE email = ?", [email]);
+      const [rows] = await connection.query("SELECT user_id, username, email, user_image, user_description FROM user WHERE email = ?", [email]);
 
       if (Array.isArray(rows)) {
         if (rows.length > 0) {
           const userData = rows[0] as RowDataPacket;
-          const user: User = new User(userData); // Crear instancia de User con los datos obtenidos
+          const user: User = new User(userData);
           return user;
         }
       }
-      return null; // No se encontró el usuario
+      return null;
     } catch (err) {
       throw err;
+    } finally {
+      connection.release();
+    }
+  }
+
+  static async findByUsername(username: string, result: Function): Promise<void> {
+    const connection = await pool.getConnection();
+
+    try {
+      const [rows] = await connection.query("SELECT user_id, username, email, user_image, user_description FROM user WHERE username = ?", username);
+
+      if (Array.isArray(rows)) {
+        if (rows.length > 0) {
+          console.log("found user: ", rows[0]);
+          result(null, rows[0]);
+        } else {
+          result({ kind: "not_found" }, null);
+        }
+      }
+    } catch (err) {
+      console.log("error: ", err);
+      result(err, null);
     } finally {
       connection.release();
     }

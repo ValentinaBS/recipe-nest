@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
-import { NavLink, useParams } from 'react-router-dom';
+import React, { useState, useContext, useEffect } from 'react';
+import axios from 'axios';
+import { AuthContext } from '../../context/authContext';
+import { useParams } from 'react-router-dom';
 import useRecipeFilter from '../../hooks/UseRecipeFilter';
 import './profile.css';
 import { BiEdit, BiEnvelope, BiHeart, BiSolidHeart } from 'react-icons/bi';
@@ -9,11 +11,33 @@ import RecipeCardContainer from '../../components/RecipeCard/RecipeCardContainer
 
 const Profile: React.FC = () => {
     const { username } = useParams<{ username: string }>();
+    const { currentUser } = useContext(AuthContext);
+    const [profileUser, setProfileUser] = useState(currentUser);
+    const [isCurrentUser, setIsCurrentUser] = useState(true)
     const [activeTab, setActiveTab] = useState<'bookmarked' | 'own'>('own');
 
     const handleTabChange = (tab: 'bookmarked' | 'own') => {
         setActiveTab(tab);
     };
+
+    useEffect(() => {
+        setIsCurrentUser(username === currentUser?.username);
+
+        const getUserByUsername = async () => {
+            try {
+                const response = await axios.get(`http://localhost:3000/api/user/${username}`);
+                const foundUser = response.data;
+                console.log(foundUser);
+                setProfileUser(foundUser);
+            } catch (error) {
+                console.error('Error fetching user:', error);
+            }
+        };
+
+        if (!isCurrentUser) {
+            getUserByUsername();
+        }
+    }, [username]);
 
     const recipes = [
         {
@@ -76,43 +100,49 @@ const Profile: React.FC = () => {
     return (
         <>
             <section className='profile-container d-flex flex-column flex-md-row gap-5 align-items-center mx-4 mx-md-auto my-5'>
-                <img className='profile-img rounded-circle shadow-sm p-3' src="https://i.imgur.com/3PnQ2EZ.png" alt="Profile picture" />
+                <img className='profile-img rounded-circle shadow-sm p-3' src={profileUser?.user_image} alt={`Profile picture from ${profileUser?.username}`} />
                 <div>
                     <div className='d-flex justify-content-between mb-4'>
-                        <h1 className='mb-0'>JaneD123</h1>
-                        <button className='btn d-flex align-items-center gap-2'>
-                            <BiEdit className='fs-5' />
-                            <span>Edit profile</span>
-                        </button>
+                        <h1 className='mb-0'>{profileUser?.username}</h1>
+                        {isCurrentUser && 
+                            <button className='btn d-flex align-items-center gap-2'>
+                                <BiEdit className='fs-5' />
+                                <span>Edit profile</span>
+                            </button>
+                        }
                     </div>
-                    <div className='d-flex align-items-center gap-2 mb-4'>
-                        <BiEnvelope className='fs-5' />
-                        <span>Email: jane@gmail.com</span>
-                    </div>
+                    {isCurrentUser && 
+                        <div className='d-flex align-items-center gap-2 mb-4'>
+                            <BiEnvelope className='fs-5' />
+                            <span>Email: {profileUser?.email}</span>
+                        </div>
+                    }
                     <p>
-                        Hello there! I'm Jane, and I'm on a delicious journey through the world of plant-based cuisine. As a proud vegan, my passion for cruelty-free, earth-friendly, and mouthwatering food knows no bounds.
+                        {profileUser?.user_description}
                     </p>
-                    <div className='d-flex flex-column flex-md-row justify-content-between mt-4 gap-4'>
-                        <button 
-                            className={`btn py-2 w-100 ${activeTab === 'bookmarked' ? 'primary-btn' : 'secondary-btn'}`}
-                            onClick={() => handleTabChange('bookmarked')}
-                        >
-                            {activeTab === 'bookmarked' ? <FaBookmark className='me-3' /> : <FaRegBookmark className='me-3' />}
-                            Bookmarked Recipes
-                        </button>
-                        <button 
-                            className={`btn py-2 w-100 ${activeTab === 'own' ? 'primary-btn' : 'secondary-btn'}`}
-                            onClick={() => handleTabChange('own')}
-                        >
-                            {activeTab === 'own' ? <BiSolidHeart className='fs-5 me-3' /> : <BiHeart className='fs-5 me-3' />}
-                            Your Recipes
-                        </button>
-                    </div>
+                    {isCurrentUser && 
+                        <div className='d-flex flex-column flex-md-row justify-content-between mt-4 gap-4'>
+                            <button
+                                className={`btn py-2 w-100 ${activeTab === 'bookmarked' ? 'primary-btn' : 'secondary-btn'}`}
+                                onClick={() => handleTabChange('bookmarked')}
+                            >
+                                {activeTab === 'bookmarked' ? <FaBookmark className='me-3' /> : <FaRegBookmark className='me-3' />}
+                                Bookmarked Recipes
+                            </button>
+                            <button
+                                className={`btn py-2 w-100 ${activeTab === 'own' ? 'primary-btn' : 'secondary-btn'}`}
+                                onClick={() => handleTabChange('own')}
+                            >
+                                {activeTab === 'own' ? <BiSolidHeart className='fs-5 me-3' /> : <BiHeart className='fs-5 me-3' />}
+                                Your Recipes
+                            </button>
+                        </div>
+                    }
                 </div>
             </section>
-            
+
             <section className="mb-5 mt-3 pt-4 pt-md-5 mx-2 mx-md-4 d-flex column-gap-3">
-                <Filters                     searchInput={searchInput}
+                <Filters searchInput={searchInput}
                     occasionFilters={occasionFilters}
                     typeFilters={typeFilters}
                     allOccasions={allOccasions}
@@ -121,10 +151,13 @@ const Profile: React.FC = () => {
                     handleTypeChange={handleTypeChange}
                     handleSearchInputChange={handleSearchInputChange}
                     onSubmit={onSubmit}
-                    clearFilters={clearFilters} 
+                    clearFilters={clearFilters}
                 />
-                <RecipeCardContainer 
-                    title={activeTab === 'bookmarked' ? 'Your Bookmarked Recipes' : 'Your Recipes'} 
+                <RecipeCardContainer
+                    title={isCurrentUser ? 
+                        (activeTab === 'bookmarked' ? 'Your Bookmarked Recipes' : 'Your Recipes') 
+                        : `${profileUser?.username}'s Recipes`
+                    }
                     recipesList={filteredRecipes}
                 />
             </section>
