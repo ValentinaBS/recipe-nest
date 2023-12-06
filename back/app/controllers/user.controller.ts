@@ -6,6 +6,7 @@ import bcrypt from 'bcryptjs';
 export const create = async (req: Request, res: Response): Promise<void> => {
 
     const newUser: User = {
+        user_id: undefined,
         username: req.body.username,
         email: req.body.email,
         password: req.body.password,
@@ -16,21 +17,10 @@ export const create = async (req: Request, res: Response): Promise<void> => {
     User.create(newUser, (err: Error | null, data?: User) => {
         if (err) {
             res.status(500).send({
-                message:
-                    err.message || "Error registering user"
+                message: err.message || "Error registering user"
             });
         } else {
-            res.send(data);
-            User.login(newUser.email, newUser.password, (err: Error | null, data?: User) => {
-                if (err) {
-                    res.status(500).send({
-                        message:
-                            err.message || "Error logging user."
-                    });
-                } else {
-                    res.send(data);
-                }
-            })
+            res.status(200).json({ message: "User has been created", user: data });
         }
     });
 };
@@ -39,6 +29,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
 
     try {
         const user = await User.findByEmail(req.body.email);
+        console.log(user)
 
         if (!user) {
             res.status(404).send({ message: "User not found" });
@@ -55,13 +46,33 @@ export const login = async (req: Request, res: Response): Promise<void> => {
                 });
             } else {
                 const { email, username } = user;
-                res.status(200).send({ email, username });
+
+                const secretKey = process.env.SECRET_KEY;
+
+                if (!secretKey) {
+                    res.status(404).send("Secret key is missing or undefined");
+                    return;
+                }
+
+                const token = jwt.sign({ email, username }, secretKey, { expiresIn: '1h' });
+
+                const {password, ...others} = user; 
+                res.cookie("accessToken", token, {
+                    httpOnly: true,
+                }).status(200).json(others);
             }
         })
 
     } catch (err) {
         res.status(500).send({ message: "Error looking for user." });
     }
+};
+
+export const logout = (req: Request, res: Response) => {
+    res.clearCookie("accessToken", {
+        secure:true,
+        sameSite:"none"
+    }).status(200).json({ message: "Logout successful" })
 };
 
 export const current = (req: Request, res: Response): void => {

@@ -1,24 +1,17 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useContext } from 'react'
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import LoginRadioInput from './LoginRadioInput';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import Spinner from 'react-bootstrap/Spinner';
 import './login.css'
+import { AuthContext } from "../../context/authContext";
 
 const Login: React.FC = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [isLogin, setIsLogin] = useState(true);
     const navigate = useNavigate();
-
-    useEffect(() => {
-        const userToken = localStorage.getItem('userToken');
-
-        if (userToken) {
-            navigate('/'); 
-        }
-    }, [navigate]);
+    const { login, register } = useContext(AuthContext);
 
     const baseSchema = {
         email: Yup.string()
@@ -70,26 +63,18 @@ const Login: React.FC = () => {
             }}
             validationSchema={getValidationSchema(isLogin)}
             onSubmit={async (values) => {
+                const { email, password } = values;
+
                 try {
                     setIsLoading(true);
 
-                    let response;
-
                     if (isLogin) {
-                        response = await axios.post('http://localhost:3000/api/user/login', values);
+                        await login({ email, password });
                     } else {
-                        response = await axios.post('http://localhost:3000/api/user/register', values);
+                        await register(values);
                     }
 
-                    if (response.status === 200) {
-                        console.log(isLogin ? 'Logged in!' : 'Signed up!');
-                        const data = response.data;
-                        localStorage.setItem('userToken', JSON.stringify(data));
-
-                        navigate('/search');
-                    } else {
-                        console.error(isLogin ? 'Error in login' : 'Error in registration');
-                    }
+                    navigate('/search');
                 } catch (error) {
                     console.error('Error', error);
                 } finally {
