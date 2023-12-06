@@ -1,0 +1,18 @@
+@media screen and (min-width: 330px) {
+  .notfound-img {
+    width: 100%;
+    max-width: 200px;
+    margin-bottom: 10px;
+  }
+}
+@media screen and (min-width: 600px) {
+  .notfound-img {
+    width: 100%;
+    max-width: 500px;
+  }
+}
+
+.notfound-title {
+  font-size: 4rem;
+  font-family: var(--title)
+}

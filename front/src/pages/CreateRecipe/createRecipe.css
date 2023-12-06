@@ -11,3 +11,15 @@
 .ingredient-item {
     background-color: var(--cream);
 }
+
+.quantity-ingredient-input {
+    width: 4rem;
+}
+
+.unit-ingredient-input {
+    min-width: 12rem;
+}
+
+.title-ingredient-input {
+    min-width: 15.7rem;
+}

@@ -129,3 +129,21 @@ footer a:hover:after {
 .active {
   --bs-navbar-active-color: var(--primary);
 }
+
+.progress-bar {
+  background-color: var(--primary);
+}
+
+.spinner-position {
+  height: 75vh;
+}
+
+.spinner-size {
+  height: 4rem;
+  width: 4rem;
+}
+
+.spinner-border {
+  border: 0.4rem solid var(--primary);
+  border-right-color: transparent;
+}

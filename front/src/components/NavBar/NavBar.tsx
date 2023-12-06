@@ -1,13 +1,16 @@
-import Container from 'react-bootstrap/Container';
-import Navbar from 'react-bootstrap/Navbar';
-import Nav from 'react-bootstrap/Nav';
-import Button from 'react-bootstrap/Button';
+import { useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { AuthContext } from '../../context/authContext';
+import { Container, Navbar, Nav, Button } from 'react-bootstrap';
 import { NavLink } from 'react-router-dom';
 import { MdOutlineAddCircle } from 'react-icons/md';
 import { BiSearchAlt, BiLogOut, BiSolidUser } from 'react-icons/bi';
+import './navbar.css'
 
 const NavBar: React.FC = () => {
-    const isLoggedIn = false;
+    const navigate = useNavigate();
+    const { logout, currentUser } = useContext(AuthContext);
+    console.log("Current user: ", currentUser);
 
     return (
         <Navbar expand='md' sticky='top' className='nav-general shadow'>
@@ -17,7 +20,7 @@ const NavBar: React.FC = () => {
                 </NavLink>
                 <Navbar.Toggle className='border-0' />
                 <Navbar.Collapse className='justify-content-end'>
-                    {isLoggedIn ? (
+                    {currentUser ? (
                         <Nav className="gap-4 my-3 my-md-0">
                             <NavLink to='/create-recipe' className='nav-link d-flex align-items-center justify-content-center column-gap-1'>
                                 <MdOutlineAddCircle className='fs-4' />
@@ -27,14 +30,20 @@ const NavBar: React.FC = () => {
                                 <BiSearchAlt className='fs-4' />
                                 Search
                             </NavLink>
-                            <NavLink to='/profile' className='nav-link d-flex align-items-center justify-content-center column-gap-1'>
+                            <NavLink to={`/profile/${currentUser.username}`} className='nav-link d-flex align-items-center justify-content-center column-gap-1'>
                                 <BiSolidUser className='fs-4' />
                                 Profile
                             </NavLink>
-                            <NavLink to='/logout' className='nav-link d-flex align-items-center justify-content-center column-gap-1'>
+                            <Button 
+                                className='nav-link d-flex align-items-center justify-content-center column-gap-1 btn-nav-link'
+                                onClick={() => {
+                                    logout()
+                                    navigate('/login')
+                                }}
+                            >
                                 <BiLogOut className='fs-4' />
                                 Log Out
-                            </NavLink>
+                            </Button>
                         </Nav>
                     ) : (
                         <Nav className="gap-4 my-3 my-md-0">

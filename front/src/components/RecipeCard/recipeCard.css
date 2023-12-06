@@ -1,6 +1,6 @@
 .recipe-card {
     width: 310px;
-    height: 490px;
+    height: fit-content;
     border-color: var(--primary);
 }
 
@@ -19,8 +19,16 @@
     -webkit-line-clamp: 3;
 }
 
+.card-title-height {
+    height: 50px;
+}
+
 .green-border {
     border-top: 1px solid var(--primary);
+}
+
+.leaf-color {
+    color: var(--primary);
 }
 
 @media screen and (min-width: 768px) {
