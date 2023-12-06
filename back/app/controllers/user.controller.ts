@@ -3,51 +3,84 @@ import { User } from '../models/user.model';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 
-// Crear y guardar un nuevo usuario
-export const create = (req: Request, res: Response): void => {
-    // Validar la solicitud
-    if (!req.body) {
-        res.status(400).send({
-            message: "¡El contenido no puede estar vacío!"
-        });
-    }
+export const create = async (req: Request, res: Response): Promise<void> => {
 
-    // Crear un usuario
-    const user: User = {
-        user_id:req.body.user_id,
+    const newUser: User = {
         username: req.body.username,
         email: req.body.email,
         password: req.body.password,
         user_image: req.body.user_image,
         user_description: req.body.user_description
-    };
+    }
 
-    // Guardar un Usuario en la base de datos
-    User.create(user, (err: Error | null, data?: User) => {
+    User.create(newUser, (err: Error | null, data?: User) => {
         if (err) {
             res.status(500).send({
                 message:
-                    err.message || "Se produjo un error al crear el usuario."
+                    err.message || "Error registering user"
             });
         } else {
             res.send(data);
+            User.login(newUser.email, newUser.password, (err: Error | null, data?: User) => {
+                if (err) {
+                    res.status(500).send({
+                        message:
+                            err.message || "Error logging user."
+                    });
+                } else {
+                    res.send(data);
+                }
+            })
         }
     });
 };
 
-// Buscar un usuario por ID
-export const findOne = (req: Request, res: Response): void => {
-    const userId: number = Number(req.params.id);
+export const login = async (req: Request, res: Response): Promise<void> => {
 
-    User.findById(userId, (err: Error | null, data?: User) => {
+    try {
+        const user = await User.findByEmail(req.body.email);
+
+        if (!user) {
+            res.status(404).send({ message: "User not found" });
+            return;
+        }
+
+        User.login(req.body.email, req.body.password, async (err: Error | null, data?: User) => {
+
+            if (err) {
+                console.error("Error logging user:", err);
+                res.status(500).send({
+                    message:
+                        err.message || "Error logging user."
+                });
+            } else {
+                const { email, username } = user;
+                res.status(200).send({ email, username });
+            }
+        })
+
+    } catch (err) {
+        res.status(500).send({ message: "Error looking for user." });
+    }
+};
+
+export const current = (req: Request, res: Response): void => {
+    const token: string | undefined = req.headers.authorization?.split(' ')[1];
+
+    if (!token) {
+        res.status(400).send({ message: "Token is missing or invalid" });
+        return;
+    }
+
+    User.current(token, (err: Error | null, data?: User) => {
         if (err) {
             if (err.message === "not_found") {
                 res.status(404).send({
-                    message: `No se encontró el Usuario con el ID ${userId}.`
+                    message: `Couldn't find user with token: ${token}.`
                 });
             } else {
                 res.status(500).send({
-                    message: "Error al recuperar el usuario con el ID " + userId
+                    message: `Error recovering user with token ${token}: ${err.message}`
                 });
             }
         } else {
@@ -56,11 +89,9 @@ export const findOne = (req: Request, res: Response): void => {
     });
 };
 
-// Actualizar un usuario por ID
 export const update = (req: Request, res: Response): void => {
     const userId: number = Number(req.params.id);
 
-    // Obtén los datos actualizados del usuario desde la solicitud
     const updatedUserData = {
         user_id: req.body.user_id,
         username: req.body.username,
@@ -82,33 +113,32 @@ export const update = (req: Request, res: Response): void => {
                 });
             }
         } else {
-            res.send(result); // Devuelve un mensaje de éxito
+            res.send(result);
         }
     });
 };
 
-export const login = async (req: Request, res: Response): Promise<void> => {
-    const { email, password } = req.body;
+export const findByUsername = (req: Request, res: Response): void => {
+    const username: string = req.params.username;
 
     try {
-        const user = await User.findByEmail(email);
-
-        if (!user) {
-            res.status(404).send({ message: "Usuario no encontrado" });
-            return;
-        }
-
-        const passwordMatches = await bcrypt.compare(password, user.password);
-
-        if (passwordMatches) {
-            // El usuario existe y la contraseña coincide
-            const token = jwt.sign({ userId: user.user_id }, 'secret_key', { expiresIn: '1h' });
-            res.send({ token });
-        } else {
-            res.status(401).send({ message: "Credenciales inválidas" });
-        }
-    } catch (err) {
-        res.status(500).send({ message: "Error al buscar el usuario" });
+        User.findByUsername(username, (err: Error | null, data?: User) => {
+            if (err) {
+                if (err.message === "not_found") {
+                    res.status(404).send({
+                        message: `User with username '${username}' not found`
+                    });
+                } else {
+                    res.status(500).send({
+                        message: `Internal server error`
+                    });
+                }
+            } else {
+                res.status(200).send(data);
+            }
+        })
+    } catch (error) {
+        res.status(500).json({ message: 'Internal server error' });
     }
 };
 

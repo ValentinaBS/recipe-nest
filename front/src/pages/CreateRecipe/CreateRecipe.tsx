@@ -28,24 +28,24 @@ const CreateRecipe: React.FC = () => {
 
     const validationSchema = Yup.object().shape({
         recipe_image: Yup.mixed().required('Image is required'),
-        title: Yup.string()
+        recipe_title: Yup.string()
             .required('Title is required')
             .max(45, 'The title must have less than 45 characters'),
-        serves: Yup.number()
+        recipe_portions: Yup.number()
             .required('Serves is required')
             .positive('Servings must be a positive number')
             .integer('Servings must be an integer')
             .moreThan(0, 'Servings must be greater than 0'),
-        cookTime: Yup.string()
+        recipe_cooktime: Yup.string()
             .required('Cook Time is required')
             .max(20, 'The cook time must have less than 20 characters'),
         ingredients: Yup.array().min(1, 'At least one ingredient is required'),
-        instructions: Yup.string()
+        recipe_instructions: Yup.string()
             .required('Instructions are required')
             .min(150, 'Instructions must have at least 150 characters')
             .max(1000, 'The instructions must have less than 1000 characters'),
-        occasion: Yup.string().notOneOf(['- Select an occasion -'], 'Occasion is required'),
-        type: Yup.string().required('Type is required'),
+        recipe_category_occasion: Yup.string().notOneOf(['- Select an occasion -'], 'Occasion is required'),
+        recipe_category_type: Yup.string().required('Type is required'),
         newIngredientQuantity: Yup.number()
             .typeError('Please enter a valid numeric value')
             .positive('Quantity must be a positive number'),
@@ -58,20 +58,26 @@ const CreateRecipe: React.FC = () => {
         <Formik
             initialValues={{
                 recipe_image: undefined,
-                title: '',
-                serves: '',
-                cookTime: '',
+                recipe_title: '',
+                recipe_portions: '',
+                recipe_cooktime: '',
                 ingredients: [],
-                instructions: '',
-                occasion: '- Select an occasion -',
-                type: '',
+                recipe_instructions: '',
+                recipe_category_occasion: '- Select an occasion -',
+                recipe_category_type: '',
+                recipe_likes: 0,
+                recipe_published_time: new Date().toISOString().split('T')[0],
+                user_id: 1,
+                recipe_active: true,
                 newIngredientQuantity: 0,
                 newIngredientText: '',
-                newIngredientUnit: ''
+                newIngredientUnit: '',
             }}
             validationSchema={validationSchema}
             onSubmit={async (values, formikBag) => {
+                // Destructuring unneccesary properties
                 const { newIngredientQuantity, newIngredientText, newIngredientUnit, ingredients, ...recipeValues } = values;
+
                 setShowModal(true)
 
                 const api_key = "128255215253675";
@@ -92,7 +98,7 @@ const CreateRecipe: React.FC = () => {
                         {
                             headers: { "Content-Type": "multipart/form-data" },
                             onUploadProgress: (progressEvent) => {
-                                if(progressEvent.total) {
+                                if (progressEvent.total) {
                                     const progress = Math.round((progressEvent.loaded * 100) / progressEvent.total);
                                     setUploadProgress(progress);
                                 }
@@ -100,13 +106,28 @@ const CreateRecipe: React.FC = () => {
                         }
                     );
 
+                    recipeValues.recipe_image = cloudinaryResponse.data.secure_url;
+
+                    const submitRecipe = async () => {
+                        try {
+                            const response = await axios.post('http://localhost:3000/api/recipes', recipeValues);
+
+                            console.log('Your recipe has been uploaded successfully!', response.data);
+                            setModalMessage('Your recipe has been uploaded successfully!');
+                            
+                            // Reset form & image values
+                            formikBag.resetForm();
+                            setSelectedFile('https://i.imgur.com/GEL53cL.png')
+                        } catch (error) {
+                            console.error('Error creating the recipe:', error);
+                        }
+                    };
+
+                    submitRecipe();
+
                     console.log("Upload successful:", cloudinaryResponse.data);
                     console.log("Clean values:", recipeValues);
 
-                    recipeValues.recipe_image = cloudinaryResponse.data.secure_url;
-                    setModalMessage('Your recipe has been uploaded successfully!');
-                    formikBag.resetForm();
-                    setSelectedFile('https://i.imgur.com/GEL53cL.png')
                 } catch (error) {
                     console.error("Error uploading image:", error);
                     setModalMessage('There was an error trying to upload your recipe. Try again!');
@@ -114,23 +135,25 @@ const CreateRecipe: React.FC = () => {
             }}
         >
             <Form className='my-5 mx-4 mx-md-auto create-form'>
-                <Modal 
-                    show={showModal} 
+                <Modal
+                    show={showModal}
                     onHide={() => setShowModal(false)}
                     backdrop="static"
                     keyboard={false}
                     centered
                 >
-                    <Modal.Body className='text-center py-5 px-5'>
+                    <Modal.Body className='text-center pb-4 pt-5 px-5'>
                         <ProgressBar animated now={uploadProgress} label={`${uploadProgress}%`} />
+                        {!modalMessage &&
+                            <p className='mt-3'>Loading...</p>}
 
                         {modalMessage &&
-                        <p className='mt-3'>{modalMessage}</p>}
+                            <p className='mt-3'>{modalMessage}</p>}
 
-                        {modalMessage &&                      
-                        <Button className='secondary-btn d-block mx-auto mt-4' onClick={() => setShowModal(false)}>
-                            Close
-                        </Button>}
+                        {modalMessage &&
+                            <Button className='secondary-btn d-block mx-auto mt-4 mb-1' onClick={() => setShowModal(false)}>
+                                Close
+                            </Button>}
                     </Modal.Body>
                 </Modal>
                 <FormBootstrap.Group className='mb-4'>
@@ -143,7 +166,7 @@ const CreateRecipe: React.FC = () => {
                             />
                         )}
                         Show others your finished dish!
-                        
+
                     </FormBootstrap.Label>
 
                     <Field
@@ -170,21 +193,21 @@ const CreateRecipe: React.FC = () => {
 
                 <FormBootstrap.Group className='mb-4' controlId='title'>
                     <FormBootstrap.Label>Title</FormBootstrap.Label>
-                    <Field type='text' name='title' className='form-control' placeholder='Traditional Tomato Soup...' />
-                    <ErrorMessage name='title' component='div' className='text-danger' />
+                    <Field type='text' name='recipe_title' className='form-control' placeholder='Traditional Tomato Soup...' />
+                    <ErrorMessage name='recipe_title' component='div' className='text-danger' />
                 </FormBootstrap.Group>
 
                 <Row className='mb-4'>
                     <FormBootstrap.Group as={Col} controlId='serves'>
                         <FormBootstrap.Label>Serves</FormBootstrap.Label>
-                        <Field type='number' min='1' name='serves' className='form-control' placeholder='3' />
-                        <ErrorMessage name='serves' component='div' className='text-danger' />
+                        <Field type='number' min='1' name='recipe_portions' className='form-control' placeholder='3' />
+                        <ErrorMessage name='recipe_portions' component='div' className='text-danger' />
                     </FormBootstrap.Group>
 
                     <FormBootstrap.Group as={Col} controlId='cookTime'>
                         <FormBootstrap.Label>Cook Time</FormBootstrap.Label>
-                        <Field type='text' name='cookTime' className='form-control' placeholder='2hr 30mins' />
-                        <ErrorMessage name='cookTime' component='div' className='text-danger' />
+                        <Field type='text' name='recipe_cooktime' className='form-control' placeholder='2hr 30mins' />
+                        <ErrorMessage name='recipe_cooktime' component='div' className='text-danger' />
                     </FormBootstrap.Group>
                 </Row>
 
@@ -196,13 +219,13 @@ const CreateRecipe: React.FC = () => {
 
                 <FormBootstrap.Group className='mb-4' controlId='instructions'>
                     <FormBootstrap.Label>Instructions</FormBootstrap.Label>
-                    <Field as='textarea' name='instructions' rows={3} className='form-control' placeholder='Step 1: Preheat the oven...' />
-                    <ErrorMessage name='instructions' component='div' className='text-danger' />
+                    <Field as='textarea' name='recipe_instructions' rows={3} className='form-control' placeholder='Step 1: Preheat the oven...' />
+                    <ErrorMessage name='recipe_instructions' component='div' className='text-danger' />
                 </FormBootstrap.Group>
 
                 <FormBootstrap.Group className='mb-4' controlId='occasion'>
                     <FormBootstrap.Label>Occasion</FormBootstrap.Label>
-                    <Field as='select' name='occasion' className='form-select'>
+                    <Field as='select' name='recipe_category_occasion' className='form-select'>
                         <option disabled>- Select an occasion -</option>
                         <option value='breakfast'>Breakfast</option>
                         <option value='lunch'>Lunch</option>
@@ -211,13 +234,13 @@ const CreateRecipe: React.FC = () => {
                         <option value='dinner'>Dinner</option>
                         <option value='appetizers'>Appetizers</option>
                     </Field>
-                    <ErrorMessage name='occasion' component='div' className='text-danger' />
+                    <ErrorMessage name='recipe_category_occasion' component='div' className='text-danger' />
                 </FormBootstrap.Group>
 
                 <FormBootstrap.Group className='mb-5' controlId='type'>
                     <FormBootstrap.Label className='w-100'>Type</FormBootstrap.Label>
                     <Field
-                        name='type'
+                        name='recipe_category_type'
                         type='radio'
                         value='Vegan'
                         id='radioVegan'
@@ -226,7 +249,7 @@ const CreateRecipe: React.FC = () => {
                         as={FormBootstrap.Check}
                     />
                     <Field
-                        name='type'
+                        name='recipe_category_type'
                         type='radio'
                         value='Vegetarian'
                         id='radioVegetarian'
@@ -234,11 +257,14 @@ const CreateRecipe: React.FC = () => {
                         inline
                         as={FormBootstrap.Check}
                     />
-                    <ErrorMessage name='type' component='div' className='text-danger' />
+                    <ErrorMessage name='recipe_category_type' component='div' className='text-danger' />
                 </FormBootstrap.Group>
 
                 <div className='d-flex justify-content-center'>
-                    <Button className='primary-btn d-flex align-items-center column-gap-2 py-2' type='submit'>
+                    <Button
+                        className='primary-btn d-flex align-items-center column-gap-2 py-2'
+                        type='submit'
+                    >
                         <MdOutlineAddCircle className='fs-5' />
                         Create a New Recipe!
                     </Button>
