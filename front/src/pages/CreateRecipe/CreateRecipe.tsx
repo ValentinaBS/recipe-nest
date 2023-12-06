@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
+import { AuthContext } from "../../context/authContext";
 import axios from 'axios';
 import FileUploadFormValues from '../../types/fileUpload';
 import { Button, Col, Row, Modal, ProgressBar } from 'react-bootstrap';
@@ -14,6 +15,7 @@ const CreateRecipe: React.FC = () => {
     const [showModal, setShowModal] = useState(false);
     const [modalMessage, setModalMessage] = useState('');
     const [uploadProgress, setUploadProgress] = useState(0);
+    const { currentUser } = useContext(AuthContext);
 
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
@@ -43,7 +45,7 @@ const CreateRecipe: React.FC = () => {
         recipe_instructions: Yup.string()
             .required('Instructions are required')
             .min(150, 'Instructions must have at least 150 characters')
-            .max(1000, 'The instructions must have less than 1000 characters'),
+            .max(1500, 'The instructions must have less than 1500 characters'),
         recipe_category_occasion: Yup.string().notOneOf(['- Select an occasion -'], 'Occasion is required'),
         recipe_category_type: Yup.string().required('Type is required'),
         newIngredientQuantity: Yup.number()
@@ -67,7 +69,7 @@ const CreateRecipe: React.FC = () => {
                 recipe_category_type: '',
                 recipe_likes: 0,
                 recipe_published_time: new Date().toISOString().split('T')[0],
-                user_id: 1,
+                user_id: currentUser?.user_id,
                 recipe_active: true,
                 newIngredientQuantity: 0,
                 newIngredientText: '',
@@ -75,7 +77,7 @@ const CreateRecipe: React.FC = () => {
             }}
             validationSchema={validationSchema}
             onSubmit={async (values, formikBag) => {
-                // Destructuring unneccesary properties
+                // Destructuring extra properties made for validation only
                 const { newIngredientQuantity, newIngredientText, newIngredientUnit, ingredients, ...recipeValues } = values;
 
                 setShowModal(true)

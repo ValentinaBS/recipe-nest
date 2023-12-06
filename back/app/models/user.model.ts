@@ -8,6 +8,7 @@ interface CustomJwtPayload extends JwtPayload {
 }
 
 export class User {
+  user_id: number | undefined;
   username: string;
   email: string;
   password: string;
@@ -15,6 +16,7 @@ export class User {
   user_description: string;
 
   constructor(user: any) {
+    this.user_id = user.user_id;
     this.username = user.username;
     this.email = user.email;
     this.password = user.password;
@@ -25,9 +27,9 @@ export class User {
   static async create(newUser: any, result: Function): Promise<void> {
     const connection = await pool.getConnection();
     try {
-      const existingUser = await connection.query("SELECT * FROM user WHERE email = ?", newUser.email);
+      const [rows] = await connection.query("SELECT * FROM user WHERE email = ? OR username = ?", [newUser.email, newUser.username]);
 
-      if (existingUser && existingUser.length > 0) {
+      if (Array.isArray(rows) && rows.length > 0) {
         result({ message: "User already exists" }, null);
         return;
       }
@@ -59,19 +61,10 @@ export class User {
 
       const user: User = rows[0] as User;
       const passwordMatch = await bcrypt.compare(password, user.password);
-      const secretKey = process.env.SECRET_KEY;
-
-      if (!secretKey) {
-        result("Secret key is missing or undefined", null);
-        return;
-      }
 
       if (passwordMatch) {
-
-        const token = jwt.sign({ email: user.email }, secretKey, { expiresIn: '1h' });
-
-        console.log("Logged in: ", { email, token });
-        result(null, { email, token });
+        console.log("Logged in: ", { email });
+        result(null, { email });
       } else {
         result("Invalid password", null);
       }
@@ -106,7 +99,7 @@ export class User {
 
       const userEmail = decodedToken.email;
 
-      const [rows] = await connection.query("SELECT * FROM user WHERE email = ?", userEmail);
+      const [rows] = await connection.query("SELECT username, email, user_image, user_description FROM user WHERE email = ?", userEmail);
 
       if (Array.isArray(rows)) {
         if (rows.length > 0) {
@@ -148,7 +141,7 @@ export class User {
     const connection = await pool.getConnection();
 
     try {
-      const [rows] = await connection.query("SELECT * FROM user WHERE email = ?", [email]);
+      const [rows] = await connection.query("SELECT user_id, username, email, user_image, user_description FROM user WHERE email = ?", [email]);
 
       if (Array.isArray(rows)) {
         if (rows.length > 0) {
@@ -169,7 +162,7 @@ export class User {
     const connection = await pool.getConnection();
 
     try {
-      const [rows] = await connection.query("SELECT username, email, user_image, user_description FROM user WHERE username = ?", username);
+      const [rows] = await connection.query("SELECT user_id, username, email, user_image, user_description FROM user WHERE username = ?", username);
 
       if (Array.isArray(rows)) {
         if (rows.length > 0) {
