@@ -7,6 +7,8 @@ router.post("/register", user.create);
 
 router.post("/login", user.login);
 
+router.post('/logout', user.logout);
+
 router.get("/current", user.current);
 
 router.get("/:username", user.findByUsername);
