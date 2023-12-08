@@ -13,7 +13,7 @@ router.get("/:id", recipes.findOne);
 router.patch("/addlike", recipes.addLike);
 
 //eliminar like
-router.patch ('/', recipes.removeLike);
+router.patch ("/removelike", recipes.removeLike);
 // Obtener todas las recetas 
 router.get('/AllRecipe', recipes.getAll);
 
