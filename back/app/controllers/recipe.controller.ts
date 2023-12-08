@@ -40,7 +40,7 @@ export const create = (req: Request, res: Response): void => {
 
 //Actualizar una receta 
 export const updateRecipe = async (req: Request, res: Response): Promise<void> => {
-  const recipeId: number = Number(req.params.recipe_id);
+  const recipeId: number = Number(req.params.id);
   if (isNaN(recipeId) || recipeId <= 0) {
     res.status(400).send({
       message: "El ID de la receta no es válido."
@@ -91,7 +91,7 @@ export const updateRecipe = async (req: Request, res: Response): Promise<void> =
 //Desactivar una receta 
 
 export const deactivateRecipe = async (req: Request, res: Response): Promise<void> => {
-  const recipeId: number = Number(req.params.recipe_id);
+  const recipeId: number = Number(req.params.id);
 
   try {
     console.log('recipe_id:', recipeId);
@@ -120,7 +120,7 @@ export const deactivateRecipe = async (req: Request, res: Response): Promise<voi
 
 // Encontrar una sola receta por su ID
 export const findOne = (req: Request, res: Response): void => {
-  const recipeId: number = Number(req.params.recipe_id);
+  const recipeId: number = Number(req.params.id);
 
 
   Recipe.findById(recipeId, (err: Error | null, data?: Recipe) => {
@@ -143,8 +143,8 @@ export const findOne = (req: Request, res: Response): void => {
 //encontrar todas las recetas por titulo
 export const getAll = async (req: Request, res: Response): Promise<void> => {
   try {
-    const recipe_title: string | null = req.query.recipe_title ? String(req.query.recipe_title): null;
-    const recipes = await Recipe.getAll(recipe_title);
+    const title: string | null = req.query.title ? String(req.query.title): null;
+    const recipes = await Recipe.getAll(title);
     res.json(recipes);
   } catch (err){
   console.log("Error al obtener todas las recetas:", err);

@@ -13,7 +13,7 @@ router.put("/:id", recipes.updateRecipe);
 router.put("/:id/deactivate", recipes.deactivateRecipe);
 
 // Obtener una receta por su id
-router.get("/:id:", recipes.findOne);
+router.get("/:id", recipes.findOne);
 
 // Obtener todas las recetas 
 router.get('/AllRecipe', recipes.getAll);
