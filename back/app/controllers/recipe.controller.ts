@@ -122,7 +122,6 @@ export const deactivateRecipe = async (req: Request, res: Response): Promise<voi
 export const findOne = (req: Request, res: Response): void => {
   const recipeId: number = Number(req.params.id);
 
-
   Recipe.findById(recipeId, (err: Error | null, data?: Recipe) => {
     if (err) {
       if (err.message === "not_found") {
