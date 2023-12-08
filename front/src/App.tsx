@@ -11,13 +11,10 @@ import Profile from './pages/Profile/Profile';
 import NotFound from './pages/NotFound/NotFound';
 import AboutUs from "./pages/AboutUs/AboutUs"
 import { AuthContextProvider } from './context/authContext.tsx';
-import { configureAxiosWithToken } from './axios';
 import ProtectedRoute from './routes/ProtectedRoute.tsx';
 
 
 function App() {
-
-  configureAxiosWithToken();
 
   return (
     <AuthContextProvider>

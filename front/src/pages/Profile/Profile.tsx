@@ -25,7 +25,7 @@ const Profile: React.FC = () => {
 
         const getUserByUsername = async () => {
             try {
-                const response = await axios.get(`http://localhost:3000/api/user/${username}`);
+                const response = await axios.get(`http://localhost:3000/api/user/search/${username}`);
                 const foundUser = response.data;
                 console.log(foundUser);
                 setProfileUser(foundUser);

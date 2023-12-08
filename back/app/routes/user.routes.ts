@@ -11,7 +11,7 @@ router.post('/logout', user.logout);
 
 router.get("/current", user.current);
 
-router.get("/:username", user.findByUsername);
+router.get("/search/:username", user.findByUsername);
 
 const userRoutes = (app: Express): void => {
     app.use('/api/user', router);

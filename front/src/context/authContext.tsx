@@ -1,33 +1,15 @@
 import { ReactNode, createContext, useState, useEffect } from 'react';
 import axios from 'axios';
-
-interface User {
-  user_id: number;
-  email: string;
-  username: string;
-  user_image: string;
-  user_description: string;
-}
-
-interface LoginInputs {
-  email: string;
-  password: string;
-}
-
-interface AuthContextType {
-  currentUser: User | null;
-  updateCurrentUser: (user: User) => void; 
-  login: (inputs: LoginInputs) => Promise<void>;
-  register: (values: any)  => Promise<void>;
-  logout: () => Promise<void>;
-}
+import { User, LoginInputs, AuthContextType } from '../types/auth';
 
 const initialContextValue: AuthContextType = {
   currentUser: null,
   login: async () => {},
   register: async () => {},
   logout: async () => {},
-  updateCurrentUser: () => {}
+  updateCurrentUser: () => {},
+  toastMessage: '',
+  setToastMessage: () => {}
 };
 
 export const AuthContext  = createContext(initialContextValue);
@@ -38,6 +20,7 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
   const [currentUser, setCurrentUser] = useState<User | null>(
     typeof storedUser === "string" ? JSON.parse(storedUser) : null
   );
+  const [toastMessage, setToastMessage] = useState('');
 
   const login = async (inputs: LoginInputs) => {
     console.log(inputs)
@@ -45,24 +28,31 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
       const res = await axios.post("http://localhost:3000/api/user/login", inputs);
 
       setCurrentUser(res.data);
+      setToastMessage('You have been logged in successfully!');
   } catch (error) {
       console.error('Error during login:', error);
+      setToastMessage('Could not log you in. Check your information and try again!');
   }
   };
 
   const register = async (values: any) => {
     try {
       const res = await axios.post("http://localhost:3000/api/user/register", values);
-      
-      setCurrentUser(res.data);
+
+      if(res) {
+        const { email, password } = values;
+        login({email, password})
+      }
   } catch (error) {
       console.error('Error during login:', error);
+      setToastMessage('Could not register you correctly. Check your information and try again!');
   }
   };
 
   const logout = async () => {
     await axios.post("http://localhost:3000/api/user/logout");
     setCurrentUser(null);
+    setToastMessage('You have been logged out successfully!');
   };
 
   const updateCurrentUser = (user: User) => {
@@ -88,7 +78,9 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
     login,
     register,
     logout,
-    updateCurrentUser
+    updateCurrentUser,
+    toastMessage,
+    setToastMessage
   };
 
   return (

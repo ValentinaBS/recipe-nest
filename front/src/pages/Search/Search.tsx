@@ -3,6 +3,7 @@ import RecipeCardContainer from '../../components/RecipeCard/RecipeCardContainer
 import useRecipeFilter from '../../hooks/UseRecipeFilter';
 
 const Search: React.FC = () => {
+
     const recipes = [
         {
             recipe_id: 1,

@@ -20,7 +20,7 @@ export const create = async (req: Request, res: Response): Promise<void> => {
                 message: err.message || "Error registering user"
             });
         } else {
-            res.status(200).json({ message: "User has been created", user: data });
+            res.status(200).json(data);
         }
     });
 };
