@@ -43,6 +43,47 @@ export class Recipe {
     }
   }
 
+  //Actualizar una receta 
+  static async updateById(Id: number, updateRecipe: any, result: Function): Promise<void>{
+const connection = await pool.getConnection();
+try {
+  const [resultInfo] = await connection.query('UPDATE recipe SET ? WHERE recipe_id = ?', [updateRecipe, Id]);
+  if ((resultInfo as any).affectedRows >0 ) {
+    console.log('Recipe whit ID ${id} update successfully.');
+    result(null, { status: 'updated'});
+  }else {
+    console.log(`Recipe with ID ${Id} not found.`);
+    result({ kind: 'not_found' }, null);
+  }
+} catch (err) {
+  console.log('Error updating recipe:', err);
+  result(err, null);
+} finally {
+  connection.release();
+}
+}
+
+// Cambiar el estado de recipe_active a false 
+ static async deactivateRecipe(Id: number, result: Function): Promise<void> {
+  const connection = await pool.getConnection();
+  try {
+   const [resultInfo] = await connection.query('UPDATE recipe SET recipe_active = false WHERE recipe_id = ?', Id);
+    if ((resultInfo as any).affectedRows > 0) {
+       console.log(`Recipe with ID ${Id} deactivated successfully.`);
+       result(null, { status: 'deactivated' });
+    } else {
+       console.log(`Recipe with ID ${Id} not found.`);
+      result({ kind: 'not_found' }, null);
+     }
+   } catch (err) {
+      console.log('Error deactivating recipe:', err);
+      result(err, null);
+   } finally {
+      connection.release();
+   }
+  }
+  
+//Encontrar una receta por su ID 
   static async findById(id: number, result: Function): Promise<void> {
     const connection = await pool.getConnection();
     try {
@@ -63,13 +104,15 @@ export class Recipe {
     }
   }
 
-
+//Encontrar todas las recetas 
   static async getAll(title: string | null): Promise<Recipe[]> {
     const connection = await pool.getConnection();
-    let query = "SELEC * FROM recipe";
+    let query = "SELECT * FROM recipe";
+    const values: any[] = [];
 
     if (title) {
-      query += ` WHERE title LIKE '%${title}%' `;
+      query += ` WHERE recipe_title LIKE ? `;
+      values.push(`%${title}%`);
     }
     try {
       const [rows] = await connection.query(query);
