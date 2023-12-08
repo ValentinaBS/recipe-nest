@@ -81,8 +81,32 @@ export class Recipe {
       connection.release();
     }
   }
+
+static async addLike(recipeId: number): Promise<void> {
+  const connection = await pool.getConnection();
+  try {
+    await connection.query("UPDATE recipe SET recipe_likes = recipe_likes + 1 WHERE recipe_id = ?", [recipeId]);
+  } catch (err) {
+    throw err;
+  } finally {
+    connection.release();
+  }
 }
 
+static async removeLike(recipeId: number): Promise<void> {
+  const connection = await pool.getConnection();
+  try {
+    await connection.query("UPDATE recipe SET recipe_likes = GREATEST(recipe_likes - 1, 0) WHERE recipe_id = ?", [recipeId]);
+  } catch (err) {
+    throw err;
+  } finally {
+    connection.release();
+  }
+}
+}
+
+
+/*
 export class Likemodel {
 
   recipe_id: Number;
@@ -131,3 +155,4 @@ export class Likemodel {
   }
 
 }
+*/

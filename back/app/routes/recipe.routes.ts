@@ -10,10 +10,10 @@ router.post("/", recipes.create);
 router.get("/:id", recipes.findOne);
 
 //Añadir like
-router.get('/', recipes.addLike);
+router.patch("/addlike", recipes.addLike);
 
 //eliminar like
-router.delete ('/', recipes.removeLike);
+router.patch ('/', recipes.removeLike);
 // Obtener todas las recetas 
 router.get('/AllRecipe', recipes.getAll);
 
