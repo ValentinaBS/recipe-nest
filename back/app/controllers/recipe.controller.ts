@@ -40,11 +40,15 @@ export const create = (req: Request, res: Response): void => {
 
 //Actualizar una receta 
 export const updateRecipe = async (req: Request, res: Response): Promise<void> => {
-  const recipe_id: number = Number(req.params.recipe_id);
-  if (!req.body) {
+  const recipeId: number = Number(req.params.recipe_id);
+  if (isNaN(recipeId) || recipeId <= 0) {
+    res.status(400).send({
+      message: "El ID de la receta no es válido."
+    });
+  /*if (!req.body) {
     res.status(400).send({
       message: "¡El contenido no puede estar vacio!"
-    });
+    });*/
     return;
   }
   const updateRecipe: Recipe = {
@@ -61,11 +65,11 @@ export const updateRecipe = async (req: Request, res: Response): Promise<void> =
     recipe_category_occasion: req.body.recipe_category_occasion
   };
   try {
-    await Recipe.updateById(recipe_id, updateRecipe, (err: Error | null, data?: Recipe) => {
+    await Recipe.updateById(recipeId, updateRecipe, (err: Error | null, data?: Recipe) => {
       if (err) {
         if (err.message === "not_found") {
           res.status(400).send({
-          message: `no se encontro la reseta con el id ${recipe_id}.` 
+          message: `no se encontro la reseta con el id ${recipeId}.` 
           });
         } else {
           res.status(500).send({
@@ -90,6 +94,7 @@ export const deactivateRecipe = async (req: Request, res: Response): Promise<voi
   const recipeId: number = Number(req.params.recipe_id);
 
   try {
+    console.log('recipe_id:', recipeId);
     await Recipe.deactivateRecipe(recipeId, (err: Error | null, data?: Recipe) => {
       if (err) {
         if (err.message === "not_found") {
@@ -157,7 +162,7 @@ export const addLike = async (req: Request, res: Response): Promise<void> => {
     const userId: number = Number(req.body.user_id);
     //añadir like
     const result = await new Promise<Error | null | number>((resolve) => {
-      Likemodel.addLike(recipe_likes, recipeId, userId, (err: Error | null, data?: number) => {
+      Likemodel.addLike(recipeId, userId, recipe_likes, (err: Error | null, data?: number) => {
         if (err) {
           console.error('Error adding the like to the database:', err);
           return res.status(500).json({ Error: 'Internal Server Error'});
@@ -178,8 +183,6 @@ export const addLike = async (req: Request, res: Response): Promise<void> => {
         const userId = req.body.userId; 
         
         //eliminar like
-         /* if (isNaN(recipeId) || recipeId <= 0) {
-          return res.status(400).json({ Error: 'Invalid like ID'});*/
           Likemodel.removeLike(recipe_likes, recipeId, userId, (err: Error | null, data?: number)=>{
 
             if (err) {

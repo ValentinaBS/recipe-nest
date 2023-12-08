@@ -44,15 +44,15 @@ export class Recipe {
   }
 
   //Actualizar una receta 
-  static async updateById(recipe_id: number, updateRecipe: any, result: Function): Promise<void>{
+  static async updateById(Id: number, updateRecipe: any, result: Function): Promise<void>{
 const connection = await pool.getConnection();
 try {
-  const [resultInfo] = await connection.query('UPDATE recipe SET ? WHERE recipe_id = ?', [updateRecipe, recipe_id]);
+  const [resultInfo] = await connection.query('UPDATE recipe SET ? WHERE recipe_id = ?', [updateRecipe, Id]);
   if ((resultInfo as any).affectedRows >0 ) {
-    console.log('Recipe whit ID ${recipe_id} update successfully.');
+    console.log('Recipe whit ID ${id} update successfully.');
     result(null, { status: 'updated'});
   }else {
-    console.log(`Recipe with ID ${recipe_id} not found.`);
+    console.log(`Recipe with ID ${Id} not found.`);
     result({ kind: 'not_found' }, null);
   }
 } catch (err) {
@@ -64,15 +64,15 @@ try {
 }
 
 // Cambiar el estado de recipe_active a false 
- static async deactivateRecipe(recipe_id: number, result: Function): Promise<void> {
+ static async deactivateRecipe(Id: number, result: Function): Promise<void> {
   const connection = await pool.getConnection();
   try {
-   const [resultInfo] = await connection.query('UPDATE recipe SET recipe_active = false WHERE recipe_id = ?', recipe_id);
+   const [resultInfo] = await connection.query('UPDATE recipe SET recipe_active = false WHERE recipe_id = ?', Id);
     if ((resultInfo as any).affectedRows > 0) {
-       console.log(`Recipe with ID ${recipe_id} deactivated successfully.`);
+       console.log(`Recipe with ID ${Id} deactivated successfully.`);
        result(null, { status: 'deactivated' });
     } else {
-       console.log(`Recipe with ID ${recipe_id} not found.`);
+       console.log(`Recipe with ID ${Id} not found.`);
       result({ kind: 'not_found' }, null);
      }
    } catch (err) {
@@ -107,7 +107,7 @@ try {
 //Encontrar todas las recetas 
   static async getAll(title: string | null): Promise<Recipe[]> {
     const connection = await pool.getConnection();
-    let query = "SELEC * FROM recipe";
+    let query = "SELECT * FROM recipe";
     if (title) {
       query += ` WHERE title LIKE '%${title}%' `;
     }
