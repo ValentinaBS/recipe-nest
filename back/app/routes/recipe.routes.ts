@@ -3,9 +3,6 @@ import * as recipes from '../controllers/recipe.controller';
 
 const router = express.Router();
 
-// Create a new recipe
-router.post("/", recipes.create);
-
 // Actualizar una receta por su ID
 router.put("/:id", recipes.updateRecipe);
 
@@ -13,10 +10,13 @@ router.put("/:id", recipes.updateRecipe);
 router.put("/:id/deactivate", recipes.deactivateRecipe);
 
 // Obtener una receta por su id
-router.get("/:id", recipes.findOne);
+router.get("/search/:id", recipes.findOne);
 
 // Obtener todas las recetas 
-router.get('/AllRecipe', recipes.getAll);
+router.get("/AllRecipe", recipes.getAll);
+
+// Create a new recipe
+router.post("/", recipes.create);
 
 //Añadir like
 router.get('/', recipes.addLike);

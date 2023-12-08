@@ -108,8 +108,11 @@ try {
   static async getAll(title: string | null): Promise<Recipe[]> {
     const connection = await pool.getConnection();
     let query = "SELECT * FROM recipe";
+    const values: any[] = [];
+
     if (title) {
-      query += ` WHERE title LIKE '%${title}%' `;
+      query += ` WHERE recipe_title LIKE ? `;
+      values.push(`%${title}%`);
     }
     try {
       const [rows] = await connection.query(query);
