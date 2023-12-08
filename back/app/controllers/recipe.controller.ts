@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { Recipe, Likemodel } from '../models/recipe.model'; // Asegúrate de que la importación sea correcta
+import { Recipe, Likemodel } from '../models/recipe.model';
 
 // Crear y guardar una nueva Receta
 export const create = (req: Request, res: Response): void => {
@@ -22,7 +22,8 @@ export const create = (req: Request, res: Response): void => {
     recipe_category_type: req.body.recipe_category_type,
     user_id: req.body.user_id,
     recipe_active: req.body.recipe_active || true,
-    recipe_category_occasion: req.body.recipe_category_occasion
+    recipe_category_occasion: req.body.recipe_category_occasion,
+    recipe_ingredients: req.body.recipe_ingredients
   };
 
   // Guardar la Receta en la base de datos
@@ -40,17 +41,15 @@ export const create = (req: Request, res: Response): void => {
 
 //Actualizar una receta 
 export const updateRecipe = async (req: Request, res: Response): Promise<void> => {
+
   const recipeId: number = Number(req.params.id);
   if (isNaN(recipeId) || recipeId <= 0) {
     res.status(400).send({
-      message: "El ID de la receta no es válido."
+      message: "Recipe ID is not valid."
     });
-  /*if (!req.body) {
-    res.status(400).send({
-      message: "¡El contenido no puede estar vacio!"
-    });*/
     return;
   }
+
   const updateRecipe: Recipe = {
     recipe_title: req.body.recipe_title,
     recipe_instructions: req.body.recipe_instructions,
@@ -62,7 +61,8 @@ export const updateRecipe = async (req: Request, res: Response): Promise<void> =
     recipe_category_type: req.body.recipe_category_type,
     user_id: req.body.user_id,
     recipe_active: req.body.recipe_active || true,
-    recipe_category_occasion: req.body.recipe_category_occasion
+    recipe_category_occasion: req.body.recipe_category_occasion,
+    recipe_ingredients: req.body.recipe_ingredients
   };
   try {
     await Recipe.updateById(recipeId, updateRecipe, (err: Error | null, data?: Recipe) => {
@@ -73,7 +73,7 @@ export const updateRecipe = async (req: Request, res: Response): Promise<void> =
           });
         } else {
           res.status(500).send({
-           message: "Error al actualizar la receta." 
+            message: "Error al actualizar la receta." 
           });
         }
       } else {
@@ -82,7 +82,7 @@ export const updateRecipe = async (req: Request, res: Response): Promise<void> =
     });
   } catch (Error) {
     console.log("Error en el controlador de actualizar la receta:", Error);
-     res.status(500).json({
+      res.status(500).json({
     message: "Error al actualizar la receta."
   });
 }

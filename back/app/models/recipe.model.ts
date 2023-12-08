@@ -14,6 +14,7 @@ export class Recipe {
   user_id: number;
   recipe_active: boolean;
   recipe_category_occasion: string;
+  recipe_ingredients: string[];
 
   constructor(recipe: any) {
     this.recipe_title = recipe.recipe_title;
@@ -27,11 +28,16 @@ export class Recipe {
     this.user_id = recipe.user_id;
     this.recipe_active = recipe.recipe_active;
     this.recipe_category_occasion = recipe.recipe_category_occasion;
+    this.recipe_ingredients = recipe.recipe_ingredients;
   }
   //Crear una receta 
   static async create(newRecipe: any, result: Function): Promise<void> {
     const connection = await pool.getConnection();
     try {
+      // Stringify the array to save it in the database as JSON.
+      const ingredientsJson = JSON.stringify(newRecipe.recipe_ingredients);
+      newRecipe.recipe_ingredients = ingredientsJson;
+
       await connection.query("INSERT INTO recipe SET ?", newRecipe);
       console.log("Created new recipe:", newRecipe);
       result(null, { status: "created" });

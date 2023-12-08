@@ -8,10 +8,10 @@ export const Ingredients: React.FC = () => {
     const formikContext = useFormikContext<any>();
 
     const removeIngredient = (id: string) => {
-            const updatedIngredients = formikContext.values.ingredients
+            const updatedIngredients = formikContext.values.recipe_ingredients
             .filter((ingredient: Ingredient) => ingredient.id !== id);
     
-            formikContext.setFieldValue('ingredients', updatedIngredients);
+            formikContext.setFieldValue('recipe_ingredients', updatedIngredients);
     };
 
     const addIngredient = () => {
@@ -21,13 +21,11 @@ export const Ingredients: React.FC = () => {
 
         if (!newIngredientText || !newIngredientQuantity || !newIngredientUnit) return;
 
-        formikContext.setFieldValue('ingredients', [
-            ...formikContext.values.ingredients,
+        formikContext.setFieldValue('recipe_ingredients', [
+            ...formikContext.values.recipe_ingredients,
             {
                 id: crypto.randomUUID(),
-                text: newIngredientText,
-                quantity: newIngredientQuantity,
-                unit: newIngredientUnit,
+                text: `${newIngredientQuantity} ${newIngredientUnit} ${newIngredientText}`
             },
         ]);
 
@@ -39,7 +37,7 @@ export const Ingredients: React.FC = () => {
     return (
         <>
             <ul className='d-flex flex-column gap-3 ps-0 overflow-hidden'>
-                {formikContext.values.ingredients.map((ingredient: Ingredient) => (
+                {formikContext.values.recipe_ingredients.map((ingredient: Ingredient) => (
                     <IngredientItem key={ingredient.id} ingredient={ingredient} removeIngredient={removeIngredient} />
                 ))}
             </ul>
