@@ -3,11 +3,11 @@ import { SavedRecipe } from '../models/saveRecipe.model';
 
 export const saveRecipe = async (req: Request, res: Response): Promise<void> => {
     try {
-      const user_Id = req.body.user_Id;
-      const recipe_Id = req.body.recipe_Id; 
+      const user_id = req.body.user_id;
+      const recipe_id = req.body.recipe_id; 
   
       // Llama al método estático para guardar la receta en el perfil del usuario
-      SavedRecipe.savedRecipe(user_Id, recipe_Id, (err: any, result: any) => {
+      SavedRecipe.savedRecipe(user_id, recipe_id, (err: any, result: any) => {
         if (err) {
           res.status(500).json({ error: 'Error al guardar la receta en el perfil' });
         } else {
@@ -22,10 +22,10 @@ export const saveRecipe = async (req: Request, res: Response): Promise<void> => 
   
   export const getSavedRecipes = async (req: Request, res: Response): Promise<void> => {
     try {
-      const user_Id = req.body.user_Id;
+      const user_id = req.body.user_id;
   
       // Llama al método estático para obtener las recetas guardadas del perfil del usuario
-      SavedRecipe.getSavedRecipes(user_Id, (err: any, result: any) => {
+      SavedRecipe.getSavedRecipes(user_id, (err: any, result: any) => {
         if (err) {
           res.status(500).json({ error: 'Error al obtener las recetas guardadas' });
         } else {

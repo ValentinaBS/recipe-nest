@@ -3,24 +3,32 @@ import * as recipes from '../controllers/recipe.controller';
 
 const router = express.Router();
 
+// Actualizar una receta por su ID
+router.put("/:id", recipes.updateRecipe);
+
+// Desactivar una receta por su ID
+router.put("/:id/deactivate", recipes.deactivateRecipe);
+
+// Obtener una receta por su id
+router.get("/search/:id", recipes.findOne);
+
+// Obtener todas las recetas 
+router.get("/AllRecipe", recipes.getAll);
+
 // Create a new recipe
 router.post("/", recipes.create);
-
-// Retrieve a single recipe with id
-router.get("/:id", recipes.findOne);
 
 //Añadir like
 router.get('/', recipes.addLike);
 
 //eliminar like
 router.delete ('/', recipes.removeLike);
-// Obtener todas las recetas 
-router.get('/AllRecipe', recipes.getAll);
 
 const recipeRoutes = (app: Express): void => {
   app.use('/api/recipes', router);
-
 };
+
+
 export default recipeRoutes;
 
 
