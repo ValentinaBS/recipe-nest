@@ -103,24 +103,20 @@ export const current = (req: Request, res: Response): void => {
 export const update = (req: Request, res: Response): void => {
     const userId: number = Number(req.params.id);
 
-    const updatedUserData = {
-        user_id: req.body.user_id,
-        username: req.body.username,
-        email: req.body.email,
-        password: req.body.password,
-        user_image: req.body.user_image,
-        user_description: req.body.user_description
-    };
+    const updatedUserData: Partial<User> = {};
+    if (req.body.username) updatedUserData.username = req.body.username;
+    if (req.body.user_image) updatedUserData.user_image = req.body.user_image;
+    if (req.body.user_description) updatedUserData.user_description = req.body.user_description;
 
     User.update(userId, updatedUserData, (err: Error | null, result?: { message: string }) => {
         if (err) {
             if (err.message === "not_found") {
                 res.status(404).send({
-                    message: `No se encontró el Usuario con el ID ${userId}.`
+                    message: `User with ID ${userId} not found.`
                 });
             } else {
                 res.status(500).send({
-                    message: "Error al actualizar el usuario con el ID " + userId
+                    message: "Error updating user with ID " + userId
                 });
             }
         } else {

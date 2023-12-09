@@ -8,6 +8,7 @@ import { Formik, Form, Field, ErrorMessage, FieldProps } from 'formik';
 import * as Yup from 'yup';
 import { MdOutlineAddCircle } from 'react-icons/md';
 import { Ingredients } from '../../components/Ingredients/Ingredients';
+import { Ingredient } from '../../types/ingredient';
 import './createRecipe.css';
 
 const CreateRecipe: React.FC = () => {
@@ -80,7 +81,7 @@ const CreateRecipe: React.FC = () => {
                 // Destructuring extra properties made for validation only
                 const { newIngredientQuantity, newIngredientText, newIngredientUnit, recipe_ingredients, ...recipeValues } = values;
 
-                const ingredientsArray = (recipe_ingredients as { id: `${string}-${string}-${string}-${string}-${string}`; text: string; }[]).map((ingredient) => ingredient.text);
+                const ingredientsArray = (recipe_ingredients as Ingredient[]).map((ingredient) => ingredient.text);
 
                 const updatedRecipeValues = {
                     ...recipeValues,

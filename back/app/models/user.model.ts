@@ -119,18 +119,24 @@ export class User {
     }
   }
 
-  static async update(id: number, updatedUser: any, result: Function): Promise<void> {
+  static async update(id: number, updatedUser: Partial<User>, result: Function): Promise<void> {
     const connection = await pool.getConnection();
     try {
-      const [resultObj] = await connection.query<ResultSetHeader>("UPDATE user SET ? WHERE id = ?", [updatedUser, id]);
+      const [resultObj] = await connection.query<ResultSetHeader>("UPDATE user SET ? WHERE user_id = ?", [updatedUser, id]);
+      
       if (resultObj.affectedRows > 0) {
         console.log(`Updated user with ID: ${id}`);
-        result(null, { message: "Usuario actualizado con éxito" });
+  
+        const [updatedUserData] = await connection.query<RowDataPacket[]>("SELECT * FROM user WHERE user_id = ?", id);
+        const { password, ...newUser } = updatedUserData[0];
+        
+        result(null, newUser);
       } else {
         result({ kind: "not_found" }, null);
       }
+
     } catch (err) {
-      console.log("error: ", err);
+      console.log("Error: ", err);
       result(err, null);
     } finally {
       connection.release();

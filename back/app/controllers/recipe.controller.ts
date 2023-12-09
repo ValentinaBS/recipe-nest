@@ -139,6 +139,26 @@ export const findOne = (req: Request, res: Response): void => {
   });
 };
 
+export const findByUserId = (req: Request, res: Response): void => {
+  const userId: number = Number(req.params.user_id);
+
+  Recipe.findByUserId(userId, (err: Error | null, data?: any[]) => {
+    if (err) {
+      if (err.message === "not_found") {
+        res.status(404).send({
+          message: `No recipes found for the user with ID ${userId}.`
+        });
+      } else {
+        res.status(500).send({
+          message: "Error retrieving recipes for the user with ID " + userId
+        });
+      }
+    } else {
+      res.send(data);
+    }
+  });
+};
+
 //encontrar todas las recetas por titulo
 export const getAll = async (req: Request, res: Response): Promise<void> => {
   try {

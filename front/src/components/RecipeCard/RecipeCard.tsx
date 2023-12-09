@@ -6,6 +6,7 @@ import { FaRegBookmark } from 'react-icons/fa6';
 import { BiLike, BiEdit, BiSolidLeaf, BiTrash } from 'react-icons/bi';
 import LoadingSpinner from '../../components/LoadingSpinner/LoadingSpinner';
 import ConfirmationModal from '../ConfirmationModal/ConfirmationModal';
+import UpdateRecipeModal from '../UpdateModal/UpdateRecipeModal';
 import { RecipeCardProps } from '../../types/recipe';
 
 const RecipeCard: React.FC<RecipeCardProps> = ({ recipe }) => {
@@ -14,6 +15,7 @@ const RecipeCard: React.FC<RecipeCardProps> = ({ recipe }) => {
     const [recipeUser, setRecipeUser] = useState(currentUser);
     const [isLoading, setIsLoading] = useState(true);
     const [showModal, setShowModal] = useState(false);
+    const [showUpdateModal, setShowUpdateModal] = useState(false);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -80,7 +82,11 @@ const RecipeCard: React.FC<RecipeCardProps> = ({ recipe }) => {
                                 </button>
                                 {isCurrentUser &&
                                     <div className='d-flex align-items-center gap-3'>
-                                        <button type='button' className='btn z-1 secondary-btn border-0 d-flex align-items-center gap-2'>
+                                        <button
+                                            type='button'
+                                            className='btn z-1 secondary-btn border-0 d-flex align-items-center gap-2'
+                                            onClick={() => setShowUpdateModal(true)}
+                                        >
                                             <BiEdit className='fs-4' />
                                         </button>
                                         <button
@@ -98,6 +104,12 @@ const RecipeCard: React.FC<RecipeCardProps> = ({ recipe }) => {
                                                 setShowModal(false);
                                                 handleDeleteRecipe();
                                             }}
+                                        />
+                                        <UpdateRecipeModal
+                                            show={showUpdateModal}
+                                            onHide={() => setShowUpdateModal(false)}
+                                            title='Update Recipe'
+                                            fields={recipe}
                                         />
                                     </div>
                                 }

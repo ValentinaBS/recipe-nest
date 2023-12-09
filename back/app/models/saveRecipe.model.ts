@@ -17,12 +17,9 @@ export class SavedRecipe {
   const connection = await pool.getConnection();
   try {
     const [rows] = await connection.query("INSERT INTO userrecipe (recipe_id, user_id) VALUES (?, ?)", [recipeId, userId]);
-    const queryResult = rows as RowDataPacket[];
-    if (queryResult[0] && queryResult[0].insertId) {
-      const insertId = queryResult[0].insertId;
-      console.log("Receta guardada en el perfil con éxito: ", { id: insertId, recipe_id: recipeId, user_id: userId });
-      result(null, { id: insertId, recipe_id: recipeId, user_id: userId });
-  }
+
+    console.log("Receta guardada en el perfil con éxito: ", { recipe_id: recipeId, user_id: userId });
+    result(null, { recipe_id: recipeId, user_id: userId });
   } catch (err) {
     console.log("Error al guardar la receta en el perfil", err);
     result(err, null); 

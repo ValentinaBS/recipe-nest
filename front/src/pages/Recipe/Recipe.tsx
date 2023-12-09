@@ -75,7 +75,7 @@ const Recipe: React.FC = () => {
                             {recipeData.recipe_category_type} - {recipeData.recipe_category_occasion}
                         </p>
                         <div className='d-flex justify-content-between align-items-center mt-3'>
-                            <NavLink className='d-flex align-items-center gap-2' to='/profile'>
+                            <NavLink className='d-flex align-items-center gap-2' to={`/profile/${recipeUser?.user_id}`}>
                                 <img className='rounded-circle p-1 recipe-profile-img shadow-sm' src={recipeUser?.user_image} alt={`Profile picture from ${recipeUser?.username}`} />
                                 <p className='mb-0 fw-bold'>{recipeUser?.username}</p>
                             </NavLink>

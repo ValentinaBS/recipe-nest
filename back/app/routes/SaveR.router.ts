@@ -8,6 +8,6 @@ router.post("/", saveRecipe);
 router.get("/", getSavedRecipes);
 
 const SavedRecipeRoutes = (app: Express): void => {
-  app.use('/api/SaveRecipes', router);
+  app.use('/api/bookmark', router);
 };
 export default SavedRecipeRoutes; 

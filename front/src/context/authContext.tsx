@@ -51,6 +51,9 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
 
   const logout = async () => {
     await axios.post("http://localhost:3000/api/user/logout");
+
+    localStorage.removeItem('user');
+    
     setCurrentUser(null);
     setToastMessage('You have been logged out successfully!');
   };
@@ -59,11 +62,12 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
     if (currentUser) {
       const updatedUser: User = {
         ...currentUser,
-        username: user.username,
-        user_image: user.user_image, 
-        user_description: user.user_description,
+        username: user.username || currentUser.username,
+        user_image: user.user_image || currentUser.user_image,
+        user_description: user.user_description || currentUser.user_description,
       };
       setCurrentUser(updatedUser);
+  
     }
   };
 

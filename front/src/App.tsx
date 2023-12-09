@@ -35,7 +35,7 @@ function App() {
           } />
           {<Route path='/about-us' element={<AboutUs />} /> }
           <Route path='/login' element={<Login />} />
-          <Route path='/profile/:username' element={
+          <Route path='/profile/:id' element={
             <ProtectedRoute>
               <Profile />
             </ProtectedRoute>

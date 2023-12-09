@@ -53,9 +53,13 @@ export class Recipe {
   static async updateById(Id: number, updateRecipe: any, result: Function): Promise<void>{
 const connection = await pool.getConnection();
 try {
+  const ingredientsJson = JSON.stringify(updateRecipe.recipe_ingredients);
+  updateRecipe.recipe_ingredients = ingredientsJson;
+
   const [resultInfo] = await connection.query('UPDATE recipe SET ? WHERE recipe_id = ?', [updateRecipe, Id]);
+  
   if ((resultInfo as any).affectedRows >0 ) {
-    console.log('Recipe whit ID ${id} update successfully.');
+    console.log('Recipe with ID ${id} update successfully.');
     result(null, { status: 'updated'});
   }else {
     console.log(`Recipe with ID ${Id} not found.`);
@@ -104,6 +108,26 @@ try {
       }
     } catch (err) {
       console.log("error: ", err);
+      result(err, null);
+    } finally {
+      connection.release();
+    }
+  }
+
+  static async findByUserId(userId: number, result: Function): Promise<void> {
+    const connection = await pool.getConnection();
+    try {
+      const [rows] = await connection.query("SELECT * FROM recipe WHERE user_id = ?", userId);
+      if (Array.isArray(rows)) {
+        if (rows.length > 0) {
+          console.log("Found recipes for user with user_id: ", userId);
+          result(null, rows);
+        } else {
+          result({ kind: "not_found" }, null);
+        }
+      }
+    } catch (err) {
+      console.log("Error: ", err);
       result(err, null);
     } finally {
       connection.release();
