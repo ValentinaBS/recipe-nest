@@ -58,7 +58,7 @@ const TeamSection: React.FC = () => {
               />
               <div className="content mt-2">
                 <h4>Belen Delgadillo Arias</h4>
-                <p className="text-muted">Full Stack Deverloper Jr.</p>
+                <p className="text-muted">Full Stack Deverloper Jr</p>
               </div>
             </div>
           </div>
