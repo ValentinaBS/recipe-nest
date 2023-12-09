@@ -82,6 +82,7 @@ const AboutUs: React.FC = () => {
           </Col>
         </Row>
       </Container>
+       <TeamSection />
     </Card>
   );
 };
