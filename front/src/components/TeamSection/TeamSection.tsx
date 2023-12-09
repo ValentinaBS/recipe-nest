@@ -68,7 +68,7 @@ const TeamSection: React.FC = () => {
             <div className="img-block mb-5">
               <img
                 src="https://cdn270.picsart.com/a8d8537c-2917-49ef-a57b-ff0107c652a3/439737212039201.jpg?to=crop&type=webp&r=1456x1456&q=85"
-                className="img-fluid img-thumbnail justify-content-center align-items-center"
+                className="img-fluid img-thumbnail"
                 alt="image5"
               />
               <div className="content mt-2">
