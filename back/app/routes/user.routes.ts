@@ -13,6 +13,8 @@ router.get("/current", user.current);
 
 router.get("/search/:username", user.findByUsername);
 
+router.get("/:id", user.findOne);
+
 const userRoutes = (app: Express): void => {
     app.use('/api/user', router);
   };

@@ -1,52 +1,25 @@
+import { useEffect, useState } from 'react';
+import axios from 'axios';
 import Filters from '../../components/Filters/Filters';
 import RecipeCardContainer from '../../components/RecipeCard/RecipeCardContainer';
 import useRecipeFilter from '../../hooks/UseRecipeFilter';
+import { Recipe } from '../../types/recipe';
 
 const Search: React.FC = () => {
+    const [recipes, setRecipes] = useState<Recipe[]>([]);
 
-    const recipes = [
-        {
-            recipe_id: 1,
-            recipe_image: 'https://i.imgur.com/xIkRscC.jpg',
-            recipe_title: 'Tomato Salad With Lemon, Avocado, Sesame Seeds and more',
-            recipe_published_time: '10/12/2023',
-            recipe_instructions: 'Pasta for everyone! Gluten-free and vegan gnocchi with pesto, a perfect recipe for the most demanding palates.',
-            recipe_category_type: 'Vegan',
-            recipe_category_occasion: 'Lunch',
-            recipe_likes: 15,
-        },
-        {
-            recipe_id: 2,
-            recipe_image: 'https://i.imgur.com/xIkRscC.jpg',
-            recipe_title: 'Grilled Avocado with Rosemary and Garlic',
-            recipe_published_time: '11/01/2023',
-            recipe_instructions: 'Juicy grilled avocado seasoned with fresh rosemary and garlic, a delightful dish for your next barbecue.',
-            recipe_category_type: 'Vegan',
-            recipe_category_occasion: 'Dinner',
-            recipe_likes: 23,
-        },
-        {
-            recipe_id: 3,
-            recipe_image: 'https://i.imgur.com/xIkRscC.jpg',
-            recipe_title: 'Chocolate Chip Cookies with',
-            recipe_published_time: '11/15/2023',
-            recipe_instructions: 'Classic chocolate chip cookies with a twist of added cinnamon and nutmeg, perfect for satisfying your sweet tooth.',
-            recipe_category_type: 'Vegetarian',
-            recipe_category_occasion: 'Tea Time',
-            recipe_likes: 10,
-        },
-        {
-            recipe_id: 4,
-            recipe_image: 'https://i.imgur.com/xIkRscC.jpg',
-            recipe_title: 'Vegetarian Stuffed Bell Peppers',
-            recipe_published_time: '11/28/2023',
-            recipe_instructions: 'Colorful bell peppers stuffed with a delicious mix of quinoa, black beans, corn, and spices, a healthy and flavorful option for dinner.',
-            recipe_category_type: 'Vegetarian',
-            recipe_category_occasion: 'Dinner',
-            recipe_likes: 30,
-        },
+    useEffect(() => {
+        const fetchRecipes = async () => {
+            try {
+                const response = await axios.get<Recipe[]>('http://localhost:3000/api/recipes/all');
+                setRecipes(response.data.filter(recipe => recipe.recipe_active == 1));
+            } catch (error) {
+                console.error('Error fetching recipes:', error);
+            }
+        };
 
-    ];
+        fetchRecipes();
+    }, []);
 
     const {
         searchInput,

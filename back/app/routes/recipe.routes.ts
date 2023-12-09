@@ -7,13 +7,13 @@ const router = express.Router();
 router.put("/:id", recipes.updateRecipe);
 
 // Desactivar una receta por su ID
-router.put("/:id/deactivate", recipes.deactivateRecipe);
+router.patch("/delete/:id", recipes.deactivateRecipe);
 
 // Obtener una receta por su id
 router.get("/search/:id", recipes.findOne);
 
 // Obtener todas las recetas 
-router.get("/AllRecipe", recipes.getAll);
+router.get("/all", recipes.getAll);
 
 // Create a new recipe
 router.post("/", recipes.create);

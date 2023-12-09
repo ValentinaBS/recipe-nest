@@ -1,4 +1,4 @@
-import { FaTrash } from "react-icons/fa6";
+import { BiTrash } from 'react-icons/bi';
 import { IngredientItemProps } from "../../types/ingredient";
 
 const IngredientItem: React.FC<IngredientItemProps> = ({ ingredient, removeIngredient }) => {
@@ -12,10 +12,10 @@ const IngredientItem: React.FC<IngredientItemProps> = ({ ingredient, removeIngre
             <button
                 type='button'
                 title='Delete this item'
-                className='btn secondary-btn'
+                className='btn secondary-btn px-2'
                 onClick={handleDelete}
             >
-                <FaTrash />
+                <BiTrash className='fs-4' />
             </button>
         </li>
     );

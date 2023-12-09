@@ -236,12 +236,12 @@ const CreateRecipe: React.FC = () => {
                     <FormBootstrap.Label>Occasion</FormBootstrap.Label>
                     <Field as='select' name='recipe_category_occasion' className='form-select'>
                         <option disabled>- Select an occasion -</option>
-                        <option value='breakfast'>Breakfast</option>
-                        <option value='lunch'>Lunch</option>
-                        <option value='brunch'>Brunch</option>
-                        <option value='tea time'>Tea Time</option>
-                        <option value='dinner'>Dinner</option>
-                        <option value='appetizers'>Appetizers</option>
+                        <option value='Breakfast'>Breakfast</option>
+                        <option value='Lunch'>Lunch</option>
+                        <option value='Brunch'>Brunch</option>
+                        <option value='Tea Time'>Tea Time</option>
+                        <option value='Dinner'>Dinner</option>
+                        <option value='Appetizers'>Appetizers</option>
                     </Field>
                     <ErrorMessage name='recipe_category_occasion' component='div' className='text-danger' />
                 </FormBootstrap.Group>
