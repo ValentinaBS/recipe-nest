@@ -1,10 +1,12 @@
 import express, { Express, Request, Response } from 'express';
-import { createComment } from '../controllers/comment.controller';
+import * as comments from '../controllers/comment.controller';
 
 const router = express.Router();
 
 // Add comment to a recipe
-router.post("/", createComment);
+router.post("/", comments.createComment);
+
+router.get("/search/:recipe_id", comments.findByRecipeId);
 
 const CommentRoutes = (app: Express): void => {
   app.use('/api/comments', router);

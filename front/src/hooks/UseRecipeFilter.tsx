@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Recipe } from '../types/recipe';
 import { UseRecipeFilterProps, UseRecipeFilterResult } from '../types/useRecipeFilter';
 
@@ -6,7 +6,11 @@ const useRecipeFilter = ({ recipes }: UseRecipeFilterProps): UseRecipeFilterResu
     const [searchInput, setSearchInput] = useState('');
     const [occasionFilters, setOccasionFilters] = useState<string[]>([]);
     const [typeFilters, setTypeFilters] = useState<string[]>([]);
-    const [filteredRecipes, setFilteredRecipes] = useState<Recipe[]>(recipes);
+    const [filteredRecipes, setFilteredRecipes] = useState<Recipe[]>([]);
+
+    useEffect(() => {
+        setFilteredRecipes(recipes);
+    }, [recipes]);
 
     const allOccasions = [...new Set(recipes.map((recipe) => recipe.recipe_category_occasion))];
     const allTypes = [...new Set(recipes.map((recipe) => recipe.recipe_category_type))];

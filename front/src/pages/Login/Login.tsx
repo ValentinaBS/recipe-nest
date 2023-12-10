@@ -1,24 +1,18 @@
-import React, { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import React, { useState, useContext } from 'react';
 import LoginRadioInput from './LoginRadioInput';
+import LoadingSpinner from '../../components/LoadingSpinner/LoadingSpinner';
+import ToastMessage from '../../components/ToastMessage/ToastMessage';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
-import Spinner from 'react-bootstrap/Spinner';
+import { IoEye, IoEyeOff } from 'react-icons/io5';
+import { AuthContext } from '../../context/authContext';
 import './login.css'
 
 const Login: React.FC = () => {
     const [isLoading, setIsLoading] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
     const [isLogin, setIsLogin] = useState(true);
-    const navigate = useNavigate();
-
-    useEffect(() => {
-        const userToken = localStorage.getItem('userToken');
-
-        if (userToken) {
-            navigate('/'); 
-        }
-    }, [navigate]);
+    const { login, register, toastMessage, setToastMessage } = useContext(AuthContext);
 
     const baseSchema = {
         email: Yup.string()
@@ -69,27 +63,18 @@ const Login: React.FC = () => {
                 user_image: '',
             }}
             validationSchema={getValidationSchema(isLogin)}
-            onSubmit={async (values) => {
+            onSubmit={async (values, formikBag) => {
+                const { email, password } = values;
+
                 try {
                     setIsLoading(true);
 
-                    let response;
-
                     if (isLogin) {
-                        response = await axios.post('http://localhost:3000/api/user/login', values);
+                        await login({ email, password });
                     } else {
-                        response = await axios.post('http://localhost:3000/api/user/register', values);
+                        await register(values);
                     }
-
-                    if (response.status === 200) {
-                        console.log(isLogin ? 'Logged in!' : 'Signed up!');
-                        const data = response.data;
-                        localStorage.setItem('userToken', JSON.stringify(data));
-
-                        navigate('/search');
-                    } else {
-                        console.error(isLogin ? 'Error in login' : 'Error in registration');
-                    }
+                    formikBag.resetForm();
                 } catch (error) {
                     console.error('Error', error);
                 } finally {
@@ -98,11 +83,7 @@ const Login: React.FC = () => {
             }}
         >
             {isLoading ? (
-                <div className='spinner-position d-flex justify-content-center align-items-center'>
-                    <Spinner animation="border" role="status" className='spinner-size'>
-                        <span className="visually-hidden">Loading...</span>
-                    </Spinner>
-                </div>
+                <LoadingSpinner />
             ) : (
                 <div className={'d-flex justify-content-center align-items-center login-margin mx-2 gap-5' + (isLogin ? '' : ' flex-row-reverse')}>
                     <img
@@ -110,6 +91,9 @@ const Login: React.FC = () => {
                         alt='Woman holding vegetables'
                         className='d-none d-lg-block login-img'
                     />
+                    {toastMessage && (
+                        <ToastMessage message={toastMessage} toggleToast={() => setToastMessage('')} />
+                    )}
                     <Form className='login-form'>
                         <h1 className='text-center mb-4 fs-2'>
                             {isLogin ? 'Log into your account!' : 'Sign up with us!'}
@@ -143,12 +127,21 @@ const Login: React.FC = () => {
 
                         <div className='mb-4'>
                             <label htmlFor='password' className='form-label'>Password</label>
-                            <Field
-                                id='password'
-                                name='password'
-                                className='form-control'
-                                type='password'
-                            />
+                            <div className='input-group'>
+                                <Field
+                                    id='password'
+                                    name='password'
+                                    className='form-control'
+                                    type={showPassword ? 'text' : 'password'}
+                                />
+                                <button
+                                    type='button'
+                                    className={`btn ${showPassword ? 'secondary-btn' : 'primary-btn'}`}
+                                    onClick={() => setShowPassword(prevState => !prevState)}
+                                >
+                                    {showPassword ? <IoEyeOff /> : <IoEye />}
+                                </button>
+                            </div>
                             <ErrorMessage name='password' component='div' className='text-danger' />
                         </div>
 
@@ -172,9 +165,9 @@ const Login: React.FC = () => {
                                     Profile Picture
                                 </legend>
                                 <div className='d-flex justify-content-between'>
-                                    <LoginRadioInput id="user_image1" imageSrc="https://i.imgur.com/3PnQ2EZ.png" alt="Yoghurt bowl" />
-                                    <LoginRadioInput id="user_image2" imageSrc="https://i.imgur.com/pW3YAYr.png" alt="Salad bowl" />
-                                    <LoginRadioInput id="user_image3" imageSrc="https://i.imgur.com/iofu5Wq.png" alt="Vegan tacos" />
+                                    <LoginRadioInput id='user_image1' imageSrc='https://i.imgur.com/3PnQ2EZ.png' alt='Yoghurt bowl' />
+                                    <LoginRadioInput id='user_image2' imageSrc='https://i.imgur.com/pW3YAYr.png' alt='Salad bowl' />
+                                    <LoginRadioInput id='user_image3' imageSrc='https://i.imgur.com/iofu5Wq.png' alt='Vegan tacos' />
                                 </div>
                                 <ErrorMessage name='user_image' component='div' className='text-danger' />
                             </fieldset>
@@ -186,7 +179,7 @@ const Login: React.FC = () => {
 
                         <div className='d-flex flex-column mt-4 align-items-center'>
                             <p className='text-secondary mb-2'>
-                                {isLogin ? "Don't have an account?" : 'Already have an account?'}
+                                {isLogin ? `Don't have an account?` : 'Already have an account?'}
                             </p>
                             <button
                                 type='button'

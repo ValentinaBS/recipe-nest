@@ -8,6 +8,7 @@ interface CustomJwtPayload extends JwtPayload {
 }
 
 export class User {
+  user_id: number | undefined;
   username: string;
   email: string;
   password: string;
@@ -15,6 +16,7 @@ export class User {
   user_description: string;
 
   constructor(user: any) {
+    this.user_id = user.user_id;
     this.username = user.username;
     this.email = user.email;
     this.password = user.password;
@@ -25,9 +27,9 @@ export class User {
   static async create(newUser: any, result: Function): Promise<void> {
     const connection = await pool.getConnection();
     try {
-      const existingUser = await connection.query("SELECT * FROM user WHERE email = ?", newUser.email);
+      const [rows] = await connection.query("SELECT * FROM user WHERE email = ? OR username = ?", [newUser.email, newUser.username]);
 
-      if (existingUser && existingUser.length > 0) {
+      if (Array.isArray(rows) && rows.length > 0) {
         result({ message: "User already exists" }, null);
         return;
       }
@@ -59,19 +61,10 @@ export class User {
 
       const user: User = rows[0] as User;
       const passwordMatch = await bcrypt.compare(password, user.password);
-      const secretKey = process.env.SECRET_KEY;
-
-      if (!secretKey) {
-        result("Secret key is missing or undefined", null);
-        return;
-      }
 
       if (passwordMatch) {
-
-        const token = jwt.sign({ email: user.email }, secretKey, { expiresIn: '1h' });
-
-        console.log("Logged in: ", { email, token });
-        result(null, { email, token });
+        console.log("Logged in: ", { email });
+        result(null, { email });
       } else {
         result("Invalid password", null);
       }
@@ -106,7 +99,7 @@ export class User {
 
       const userEmail = decodedToken.email;
 
-      const [rows] = await connection.query("SELECT * FROM user WHERE email = ?", userEmail);
+      const [rows] = await connection.query("SELECT username, email, user_image, user_description FROM user WHERE email = ?", userEmail);
 
       if (Array.isArray(rows)) {
         if (rows.length > 0) {
@@ -126,18 +119,24 @@ export class User {
     }
   }
 
-  static async update(id: number, updatedUser: any, result: Function): Promise<void> {
+  static async update(id: number, updatedUser: Partial<User>, result: Function): Promise<void> {
     const connection = await pool.getConnection();
     try {
-      const [resultObj] = await connection.query<ResultSetHeader>("UPDATE user SET ? WHERE id = ?", [updatedUser, id]);
+      const [resultObj] = await connection.query<ResultSetHeader>("UPDATE user SET ? WHERE user_id = ?", [updatedUser, id]);
+      
       if (resultObj.affectedRows > 0) {
         console.log(`Updated user with ID: ${id}`);
-        result(null, { message: "Usuario actualizado con éxito" });
+  
+        const [updatedUserData] = await connection.query<RowDataPacket[]>("SELECT * FROM user WHERE user_id = ?", id);
+        const { password, ...newUser } = updatedUserData[0];
+        
+        result(null, newUser);
       } else {
         result({ kind: "not_found" }, null);
       }
+
     } catch (err) {
-      console.log("error: ", err);
+      console.log("Error: ", err);
       result(err, null);
     } finally {
       connection.release();
@@ -148,7 +147,7 @@ export class User {
     const connection = await pool.getConnection();
 
     try {
-      const [rows] = await connection.query("SELECT * FROM user WHERE email = ?", [email]);
+      const [rows] = await connection.query("SELECT user_id, username, email, user_image, user_description FROM user WHERE email = ?", [email]);
 
       if (Array.isArray(rows)) {
         if (rows.length > 0) {
@@ -169,7 +168,7 @@ export class User {
     const connection = await pool.getConnection();
 
     try {
-      const [rows] = await connection.query("SELECT username, email, user_image, user_description FROM user WHERE username = ?", username);
+      const [rows] = await connection.query("SELECT user_id, username, email, user_image, user_description FROM user WHERE username = ?", username);
 
       if (Array.isArray(rows)) {
         if (rows.length > 0) {
@@ -178,6 +177,26 @@ export class User {
         } else {
           result({ kind: "not_found" }, null);
         }
+      }
+    } catch (err) {
+      console.log("error: ", err);
+      result(err, null);
+    } finally {
+      connection.release();
+    }
+  }
+
+  static async findById(id: number, result: Function): Promise<void> {
+    const connection = await pool.getConnection();
+    try {
+      const [rows] = await connection.query("SELECT user_id, username, email, user_image, user_description FROM user WHERE user_id = ?", id);
+      if (Array.isArray(rows)) {
+        if (rows.length > 0) {
+        console.log("found user: ", rows[0]);
+        result(null, rows[0]);
+      } else {
+        result({ kind: "not_found" }, null);
+      }
       }
     } catch (err) {
       console.log("error: ", err);

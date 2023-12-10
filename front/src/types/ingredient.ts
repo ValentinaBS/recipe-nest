@@ -1,8 +1,6 @@
 export interface Ingredient {
     id: `${string}-${string}-${string}-${string}-${string}`; 
     text: string;
-    quantity: number;
-    unit: string;
 }
 
 export interface IngredientItemProps {

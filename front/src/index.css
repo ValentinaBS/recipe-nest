@@ -147,3 +147,7 @@ footer a:hover:after {
   border: 0.4rem solid var(--primary);
   border-right-color: transparent;
 }
+
+.green-text {
+  color: var(--primary);
+}
