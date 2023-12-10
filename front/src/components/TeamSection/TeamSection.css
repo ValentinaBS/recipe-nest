@@ -1,0 +1,5 @@
+a.team-member-link {
+    text-decoration: none; /* Quita el subrayado predeterminado del enlace */
+    cursor: pointer; /* Cambia el cursor al pasar sobre el enlace */
+    color: #000; /* Color del texto del enlace */
+  }
