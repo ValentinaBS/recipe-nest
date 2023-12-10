@@ -14,6 +14,7 @@ export class Recipe {
   user_id: number;
   recipe_active: boolean;
   recipe_category_occasion: string;
+  recipe_ingredients: string[];
 
   constructor(recipe: any) {
     this.recipe_title = recipe.recipe_title;
@@ -27,11 +28,16 @@ export class Recipe {
     this.user_id = recipe.user_id;
     this.recipe_active = recipe.recipe_active;
     this.recipe_category_occasion = recipe.recipe_category_occasion;
+    this.recipe_ingredients = recipe.recipe_ingredients;
   }
   //Crear una receta 
   static async create(newRecipe: any, result: Function): Promise<void> {
     const connection = await pool.getConnection();
     try {
+      // Stringify the array to save it in the database as JSON.
+      const ingredientsJson = JSON.stringify(newRecipe.recipe_ingredients);
+      newRecipe.recipe_ingredients = ingredientsJson;
+
       await connection.query("INSERT INTO recipe SET ?", newRecipe);
       console.log("Created new recipe:", newRecipe);
       result(null, { status: "created" });
@@ -47,9 +53,13 @@ export class Recipe {
   static async updateById(Id: number, updateRecipe: any, result: Function): Promise<void>{
 const connection = await pool.getConnection();
 try {
+  const ingredientsJson = JSON.stringify(updateRecipe.recipe_ingredients);
+  updateRecipe.recipe_ingredients = ingredientsJson;
+
   const [resultInfo] = await connection.query('UPDATE recipe SET ? WHERE recipe_id = ?', [updateRecipe, Id]);
+  
   if ((resultInfo as any).affectedRows >0 ) {
-    console.log('Recipe whit ID ${id} update successfully.');
+    console.log('Recipe with ID ${id} update successfully.');
     result(null, { status: 'updated'});
   }else {
     console.log(`Recipe with ID ${Id} not found.`);
@@ -98,6 +108,26 @@ try {
       }
     } catch (err) {
       console.log("error: ", err);
+      result(err, null);
+    } finally {
+      connection.release();
+    }
+  }
+
+  static async findByUserId(userId: number, result: Function): Promise<void> {
+    const connection = await pool.getConnection();
+    try {
+      const [rows] = await connection.query("SELECT * FROM recipe WHERE user_id = ?", userId);
+      if (Array.isArray(rows)) {
+        if (rows.length > 0) {
+          console.log("Found recipes for user with user_id: ", userId);
+          result(null, rows);
+        } else {
+          result({ kind: "not_found" }, null);
+        }
+      }
+    } catch (err) {
+      console.log("Error: ", err);
       result(err, null);
     } finally {
       connection.release();

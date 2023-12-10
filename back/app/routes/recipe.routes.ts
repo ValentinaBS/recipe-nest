@@ -3,25 +3,20 @@ import * as recipes from '../controllers/recipe.controller';
 
 const router = express.Router();
 
-// Actualizar una receta por su ID
 router.put("/:id", recipes.updateRecipe);
 
-// Desactivar una receta por su ID
-router.put("/:id/deactivate", recipes.deactivateRecipe);
+router.patch("/delete/:id", recipes.deactivateRecipe);
 
-// Obtener una receta por su id
 router.get("/search/:id", recipes.findOne);
 
-// Obtener todas las recetas 
-router.get("/AllRecipe", recipes.getAll);
+router.get("/user/:user_id", recipes.findByUserId);
 
-// Create a new recipe
+router.get("/all", recipes.getAll);
+
 router.post("/", recipes.create);
 
-//Añadir like
 router.get('/', recipes.addLike);
 
-//eliminar like
 router.delete ('/', recipes.removeLike);
 
 const recipeRoutes = (app: Express): void => {

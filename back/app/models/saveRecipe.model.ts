@@ -17,12 +17,9 @@ export class SavedRecipe {
   const connection = await pool.getConnection();
   try {
     const [rows] = await connection.query("INSERT INTO userrecipe (recipe_id, user_id) VALUES (?, ?)", [recipeId, userId]);
-    const queryResult = rows as RowDataPacket[];
-    if (queryResult[0] && queryResult[0].insertId) {
-      const insertId = queryResult[0].insertId;
-      console.log("Receta guardada en el perfil con éxito: ", { id: insertId, recipe_id: recipeId, user_id: userId });
-      result(null, { id: insertId, recipe_id: recipeId, user_id: userId });
-  }
+
+    console.log("Receta guardada en el perfil con éxito: ", { recipe_id: recipeId, user_id: userId });
+    result(null, { recipe_id: recipeId, user_id: userId });
   } catch (err) {
     console.log("Error al guardar la receta en el perfil", err);
     result(err, null); 
@@ -36,10 +33,24 @@ export class SavedRecipe {
     const connection = await pool.getConnection();
     try {
       const [rows] = await connection.query("SELECT * FROM userrecipe WHERE user_id = ?", userId);
-      console.log(`Recetas guardadas para el usuario con ID ${userId}:`, rows);
-      result(null, rows);
+
+      const recipes = [];
+      if (Array.isArray(rows)) {
+        for (const row of rows) {
+          if ('recipe_id' in row) {
+            const recipeId = row.recipe_id;
+            const [recipeRow] = await connection.query("SELECT * FROM recipe WHERE recipe_id = ?", recipeId);
+            if (Array.isArray(recipeRow) && recipeRow.length > 0) {
+              recipes.push(recipeRow[0]);
+            }
+          }
+        }
+      }
+
+      console.log(`Saved recipes for user with ID ${userId}:`, recipes);
+      result(null, recipes);
     } catch (err) {
-      console.log("Error al obtener las recetas guardadas: ", err);
+      console.log("Error fetching saved recipes: ", err);
       result(err, null);
     } finally {
       connection.release();
