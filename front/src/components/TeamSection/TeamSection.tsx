@@ -1,7 +1,8 @@
 import React from 'react';
+import './TeamSection.css';
 
 const TeamSection: React.FC = () => {
-  const linkedinURL = 'www.linkedin.com/in/lourdes-camila-godoy-lotta-0330621bb';
+  const linkedinURL = 'https://www.linkedin.com/in/lourdes-camila-godoy-lotta-0330621bb/';
 
 
   return (
@@ -75,7 +76,7 @@ const TeamSection: React.FC = () => {
                 alt="image5"
               />
               <div className="content mt-2">
-              <a href={linkedinURL} target="_blank" rel="noopener noreferrer">
+              <a href={linkedinURL} target="_blank" rel="noopener noreferrer" className="team-member-link">
                 <h4>Lourdes Camila Godoy Lotta</h4>
                 </a>
                 <p className="text-muted">Full Stack Deverloper Jr</p>
