@@ -3,39 +3,152 @@ import { User } from '../models/user.model';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 
-// Crear y guardar un nuevo usuario
-export const create = (req: Request, res: Response): void => {
-    // Validar la solicitud
-    if (!req.body) {
-        res.status(400).send({
-            message: "¡El contenido no puede estar vacío!"
-        });
-    }
+export const create = async (req: Request, res: Response): Promise<void> => {
 
-    // Crear un usuario
-    const user: User = {
-        user_id:req.body.user_id,
+    const newUser: User = {
+        user_id: undefined,
         username: req.body.username,
         email: req.body.email,
         password: req.body.password,
         user_image: req.body.user_image,
         user_description: req.body.user_description
-    };
+    }
 
-    // Guardar un Usuario en la base de datos
-    User.create(user, (err: Error | null, data?: User) => {
+    User.create(newUser, (err: Error | null, data?: User) => {
         if (err) {
             res.status(500).send({
-                message:
-                    err.message || "Se produjo un error al crear el usuario."
+                message: err.message || "Error registering user"
             });
+        } else {
+            res.status(200).json(data);
+        }
+    });
+};
+
+export const login = async (req: Request, res: Response): Promise<void> => {
+
+    try {
+        const user = await User.findByEmail(req.body.email);
+        console.log(user)
+
+        if (!user) {
+            res.status(404).send({ message: "User not found" });
+            return;
+        }
+
+        User.login(req.body.email, req.body.password, async (err: Error | null, data?: User) => {
+
+            if (err) {
+                console.error("Error logging user:", err);
+                res.status(500).send({
+                    message:
+                        err.message || "Error logging user."
+                });
+            } else {
+                const { email, username } = user;
+
+                const secretKey = process.env.SECRET_KEY;
+
+                if (!secretKey) {
+                    res.status(404).send("Secret key is missing or undefined");
+                    return;
+                }
+
+                const token = jwt.sign({ email, username }, secretKey, { expiresIn: '1h' });
+
+                const {password, ...others} = user; 
+                res.cookie("accessToken", token, {
+                    httpOnly: true,
+                }).status(200).json(others);
+            }
+        })
+
+    } catch (err) {
+        res.status(500).send({ message: "Error looking for user." });
+    }
+};
+
+export const logout = (req: Request, res: Response) => {
+    res.clearCookie("accessToken", {
+        secure:true,
+        sameSite:"none"
+    }).status(200).json({ message: "Logout successful" })
+};
+
+export const current = (req: Request, res: Response): void => {
+    const token: string | undefined = req.headers.authorization?.split(' ')[1];
+
+    if (!token) {
+        res.status(400).send({ message: "Token is missing or invalid" });
+        return;
+    }
+
+    User.current(token, (err: Error | null, data?: User) => {
+        if (err) {
+            if (err.message === "not_found") {
+                res.status(404).send({
+                    message: `Couldn't find user with token: ${token}.`
+                });
+            } else {
+                res.status(500).send({
+                    message: `Error recovering user with token ${token}: ${err.message}`
+                });
+            }
         } else {
             res.send(data);
         }
     });
 };
 
-// Buscar un usuario por ID
+export const update = (req: Request, res: Response): void => {
+    const userId: number = Number(req.params.id);
+
+    const updatedUserData: Partial<User> = {};
+    if (req.body.username) updatedUserData.username = req.body.username;
+    if (req.body.user_image) updatedUserData.user_image = req.body.user_image;
+    if (req.body.user_description) updatedUserData.user_description = req.body.user_description;
+
+    User.update(userId, updatedUserData, (err: Error | null, result?: { message: string }) => {
+        if (err) {
+            if (err.message === "not_found") {
+                res.status(404).send({
+                    message: `User with ID ${userId} not found.`
+                });
+            } else {
+                res.status(500).send({
+                    message: "Error updating user with ID " + userId
+                });
+            }
+        } else {
+            res.send(result);
+        }
+    });
+};
+
+export const findByUsername = (req: Request, res: Response): void => {
+    const username: string = req.params.username;
+
+    try {
+        User.findByUsername(username, (err: Error | null, data?: User) => {
+            if (err) {
+                if (err.message === "not_found") {
+                    res.status(404).send({
+                        message: `User with username '${username}' not found`
+                    });
+                } else {
+                    res.status(500).send({
+                        message: `Internal server error`
+                    });
+                }
+            } else {
+                res.status(200).send(data);
+            }
+        })
+    } catch (error) {
+        res.status(500).json({ message: 'Internal server error' });
+    }
+};
+
 export const findOne = (req: Request, res: Response): void => {
     const userId: number = Number(req.params.id);
 
@@ -54,61 +167,5 @@ export const findOne = (req: Request, res: Response): void => {
             res.send(data);
         }
     });
-};
-
-// Actualizar un usuario por ID
-export const update = (req: Request, res: Response): void => {
-    const userId: number = Number(req.params.id);
-
-    // Obtén los datos actualizados del usuario desde la solicitud
-    const updatedUserData = {
-        user_id: req.body.user_id,
-        username: req.body.username,
-        email: req.body.email,
-        password: req.body.password,
-        user_image: req.body.user_image,
-        user_description: req.body.user_description
-    };
-
-    User.update(userId, updatedUserData, (err: Error | null, result?: { message: string }) => {
-        if (err) {
-            if (err.message === "not_found") {
-                res.status(404).send({
-                    message: `No se encontró el Usuario con el ID ${userId}.`
-                });
-            } else {
-                res.status(500).send({
-                    message: "Error al actualizar el usuario con el ID " + userId
-                });
-            }
-        } else {
-            res.send(result); // Devuelve un mensaje de éxito
-        }
-    });
-};
-
-export const login = async (req: Request, res: Response): Promise<void> => {
-    const { email, password } = req.body;
-
-    try {
-        const user = await User.findByEmail(email);
-
-        if (!user) {
-            res.status(404).send({ message: "Usuario no encontrado" });
-            return;
-        }
-
-        const passwordMatches = await bcrypt.compare(password, user.password);
-
-        if (passwordMatches) {
-            // El usuario existe y la contraseña coincide
-            const token = jwt.sign({ userId: user.user_id }, 'secret_key', { expiresIn: '1h' });
-            res.send({ token });
-        } else {
-            res.status(401).send({ message: "Credenciales inválidas" });
-        }
-    } catch (err) {
-        res.status(500).send({ message: "Error al buscar el usuario" });
-    }
 };
 

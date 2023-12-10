@@ -1,7 +1,6 @@
 export interface Ingredient {
     id: `${string}-${string}-${string}-${string}-${string}`; 
     text: string;
-    quantity: string;
 }
 
 export interface IngredientItemProps {
