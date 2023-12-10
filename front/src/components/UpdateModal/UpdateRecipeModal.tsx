@@ -3,8 +3,6 @@ import { Button, Col, Row, Modal, ProgressBar } from 'react-bootstrap';
 import { UpdateRecipeModalProps } from '../../types/updateModal';
 import { Formik, Form, Field, ErrorMessage, FieldProps } from 'formik';
 import { BiCheck } from "react-icons/bi";
-import { Ingredients } from '../../components/Ingredients/Ingredients';
-import { Ingredient } from '../../types/ingredient';
 import FormBootstrap from 'react-bootstrap/Form';
 import * as Yup from 'yup';
 import FileUploadFormValues from '../../types/fileUpload';
@@ -46,7 +44,7 @@ const UpdateRecipeModal: React.FC<UpdateRecipeModalProps> = ({ show, onHide, tit
                         recipe_category_occasion: fields?.recipe_category_occasion || '- Select an occasion -',
                         recipe_category_type: fields?.recipe_category_type || '',
                         recipe_likes: fields?.recipe_likes || 0,
-                        recipe_published_time: fields?.recipe_published_time || new Date().toISOString().split('T')[0],
+                        recipe_published_time: fields?.recipe_published_time.slice(0, 10).replace('T', ' ') || new Date().toISOString().split('T')[0],
                         user_id: fields?.user_id || 0,
                         recipe_active: fields?.recipe_active !== undefined ? fields.recipe_active : true,
                     }}
@@ -75,18 +73,13 @@ const UpdateRecipeModal: React.FC<UpdateRecipeModalProps> = ({ show, onHide, tit
                         onHide();
                         setShowModal(true)
 
-                        let updatedRecipe = {
-                            ...values
-                        };
-
-                        console.log(updatedRecipe.recipe_ingredients)
-
                         const api_key = "128255215253675";
                         const cloud_name = "dx1etk0x2";
                         const upload_preset = "f5vfvkh2";
 
                         const data = new FormData();
-
+                        let updatedRecipe = values;
+                        
                         // Type guard to check if values.recipe_image is a File
                         const isFile = (file: any): file is File => {
                             return file instanceof File;
@@ -128,8 +121,7 @@ const UpdateRecipeModal: React.FC<UpdateRecipeModalProps> = ({ show, onHide, tit
                             const response = await axios.put(`http://localhost:3000/api/recipes/${updatedRecipe.recipe_id}`, updatedRecipe);
 
                             console.log('Your recipe has been updated successfully!', response.data);
-                            setModalMessage('Your recipe has been updated successfully!');
-
+                            
                             location.reload()
                         } catch (error) {
                             console.error('Error updating the recipe:', error);
@@ -213,12 +205,6 @@ const UpdateRecipeModal: React.FC<UpdateRecipeModalProps> = ({ show, onHide, tit
                                 <ErrorMessage name='recipe_cooktime' component='div' className='text-danger' />
                             </FormBootstrap.Group>
                         </Row>
-
-                        <FormBootstrap.Group className='mb-4' controlId='recipe_ingredients'>
-                            <FormBootstrap.Label>Ingredients</FormBootstrap.Label>
-                            <Ingredients />
-                            <ErrorMessage name='recipe_ingredients' component='div' className='text-danger' />
-                        </FormBootstrap.Group>
 
                         <FormBootstrap.Group className='mb-4' controlId='instructions'>
                             <FormBootstrap.Label>Instructions</FormBootstrap.Label>

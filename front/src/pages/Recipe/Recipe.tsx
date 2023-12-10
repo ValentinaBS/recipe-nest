@@ -2,10 +2,10 @@ import React, { useState, useEffect, useContext } from 'react';
 import { AuthContext } from '../../context/authContext';
 import axios from 'axios';
 import { NavLink, useParams } from 'react-router-dom';
-import Card from 'react-bootstrap/Card';
+//import Card from 'react-bootstrap/Card';
 import Comments from '../../components/Comments/Comments'
 import LoadingSpinner from '../../components/LoadingSpinner/LoadingSpinner';
-import { BiLike, BiSolidUser, BiSolidTimeFive, BiRightArrowAlt, BiEdit } from 'react-icons/bi';
+import { BiLike, BiSolidUser, BiSolidTimeFive, BiEdit } from 'react-icons/bi';
 import { FaRegBookmark } from 'react-icons/fa6';
 import './recipe.css'
 
@@ -127,7 +127,7 @@ const Recipe: React.FC = () => {
                         </p>
                     </div>
 
-                    <div className='mb-4 py-4 card-background w-100'>
+{/*                     <div className='mb-4 py-4 card-background w-100'>
                         <div className='mb-4 d-flex gap-2 justify-content-between align-items-center'>
                             <h2 className='fs-3 mb-0'>
                                 More Recipes By {recipeUser?.username}
@@ -166,9 +166,9 @@ const Recipe: React.FC = () => {
                                 </Card.Body>
                             </Card>
                         </div>
-                    </div>
+                    </div> */}
 
-                    <Comments />
+                    <Comments userId={currentUser?.user_id} recipeId={recipeData.recipe_id} />
                 </div>
             )}
         </>
