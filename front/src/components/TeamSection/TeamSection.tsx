@@ -1,6 +1,9 @@
 import React from 'react';
 
 const TeamSection: React.FC = () => {
+  const linkedinURL = 'www.linkedin.com/in/lourdes-camila-godoy-lotta-0330621bb';
+
+
   return (
     <section className="team text-center py-5">
       <div className="container">
@@ -64,7 +67,7 @@ const TeamSection: React.FC = () => {
           </div>
         </div>
      </div>
-     <div className="col-md-6 col-lg-3 ">
+     <div className="col-md-6 col-lg-3">
             <div className="img-block mb-5">
               <img
                 src="https://cdn270.picsart.com/a8d8537c-2917-49ef-a57b-ff0107c652a3/439737212039201.jpg?to=crop&type=webp&r=1456x1456&q=85"
@@ -72,8 +75,10 @@ const TeamSection: React.FC = () => {
                 alt="image5"
               />
               <div className="content mt-2">
+              <a href={linkedinURL} target="_blank" rel="noopener noreferrer">
                 <h4>Lourdes Camila Godoy Lotta</h4>
-                <p className="text-muted">Full Stack Deverloper Jr </p>
+                </a>
+                <p className="text-muted">Full Stack Deverloper Jr</p>
               </div>
             </div>
           </div>
@@ -82,3 +87,4 @@ const TeamSection: React.FC = () => {
 };
 
 export default TeamSection;
+
