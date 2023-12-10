@@ -1,19 +1,43 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { AuthContext } from '../../context/authContext';
 import axios from 'axios';
 import { BiSolidComment, BiSolidSend } from 'react-icons/bi';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
-import ToastMessage from '../ToastMessage/ToastMessage';
 
 interface CommentsProps {
     userId: number | undefined;
     recipeId: number;
 }
 
-const Comments: React.FC<CommentsProps> = ({ userId, recipeId }) => {
+interface Comment {
+    comment_id: number;
+    comment_text: string;
+    comment_likes: number;
+    comment_published_time: string;
+    recipe_id: number;
+    user_id: number;
+    comment_active: number;
+    user_image: string;
+    username: string;
+}
 
-    const { toastMessage, setToastMessage } = useContext(AuthContext);
+const Comments: React.FC<CommentsProps> = ({ userId, recipeId }) => {
+    const [comments, setComments] = useState<Comment[]>([]);
+    const { currentUser } = useContext(AuthContext)
+
+    useEffect(() => {
+        fetchComments();
+    }, []);
+
+    const fetchComments = async () => {
+        try {
+            const response = await axios.get(`http://localhost:3000/api/comments/search/${recipeId}`);
+            setComments(response.data);
+        } catch (error) {
+            console.error('Error fetching comments:', error);
+        }
+    };
 
     const validationSchema = Yup.object().shape({
         comment_text: Yup.string()
@@ -25,7 +49,7 @@ const Comments: React.FC<CommentsProps> = ({ userId, recipeId }) => {
         const newComment = {
             comment_text: values.comment_text,
             comment_likes: 0,
-            comment_published_time: new Date().toISOString(),
+            comment_published_time: new Date().toISOString().slice(0, 19).replace('T', ' '),
             recipe_id: recipeId,
             user_id: userId,
             comment_active: 1
@@ -36,7 +60,7 @@ const Comments: React.FC<CommentsProps> = ({ userId, recipeId }) => {
 
             // Reset the form after successful submission
             actions.resetForm();
-            setToastMessage('Your comment has been submitted!')
+            location.reload()
         } catch (error) {
             console.error('Error submitting comment:', error);
         }
@@ -44,22 +68,38 @@ const Comments: React.FC<CommentsProps> = ({ userId, recipeId }) => {
 
     return (
         <div className='py-4 card-background w-100 mx-5'>
-            {toastMessage && (
-                <ToastMessage message={toastMessage} toggleToast={() => setToastMessage('')} />
-            )}
             <div className='d-flex align-items-center gap-3'>
                 <BiSolidComment className='fs-3 mb-2' />
                 <h2 className='fs-3'>Comments</h2>
             </div>
 
-            <div className='d-flex gap-3 my-3'>
-                <img className='rounded-circle p-1 comments-img' src="https://i.imgur.com/3PnQ2EZ.png" alt="Profile picture" />
-                <div>
-                    <p className='mb-0 fw-bold'>JaneD123</p>
-                    <p className='mb-2 text-secondary'>a few seconds ago</p>
-                    <p>Such a creative recipe!</p>
+            {comments.length === 0 ? (
+                <p className='my-5 fs-5 text-center'>
+                    No comments yet. Be the first to comment!
+                </p>
+            ) : (comments.map((comment) => (
+                <div key={comment.comment_id} className='d-flex gap-3 my-3'>
+                    <img className='rounded-circle p-1 comments-img' src={comment.user_image} alt={`Profile picture from ${comment.username}`} />
+                    <div>
+                        <p className='mb-0 fw-bold'>{comment.username}</p>
+                        <p className='mb-2 text-secondary'>
+                            {new Date(comment.comment_published_time).toLocaleDateString('en-US', {
+                                year: 'numeric',
+                                month: 'short',
+                                day: 'numeric',
+                            }) +
+                                ' at ' +
+                                new Date(comment.comment_published_time).toLocaleTimeString('en-US', {
+                                    hour: 'numeric',
+                                    minute: 'numeric',
+                                    hour12: true,
+                                })}
+                        </p>
+                        <p>{comment.comment_text}</p>
+                    </div>
                 </div>
-            </div>
+            )
+            ))}
 
             <Formik
                 initialValues={{
@@ -69,18 +109,21 @@ const Comments: React.FC<CommentsProps> = ({ userId, recipeId }) => {
                 onSubmit={handleSubmit}
             >
                 {({ isSubmitting }) => (
-                    <Form className='d-flex align-items-center gap-2'>
-                        <Field
-                            className='form-control'
-                            placeholder='I liked the part where...'
-                            type="text"
-                            name="comment_text"
-                            as="input"
-                        />
+                    <Form>
+                        <div className='d-flex align-items-center gap-2'>
+                            <img className='rounded-circle p-1 comments-img' src={currentUser?.user_image} alt={`Profile picture from ${currentUser?.username}`} />
+                            <Field
+                                className='form-control'
+                                placeholder='I liked the part where...'
+                                type="text"
+                                name="comment_text"
+                                as="input"
+                            />
+                            <button className='btn primary-btn px-2' type='submit' disabled={isSubmitting}>
+                                <BiSolidSend className='fs-5' />
+                            </button>
+                        </div>
                         <ErrorMessage name="comment_text" component="div" className="text-danger" />
-                        <button className='btn primary-btn px-2' type='submit' disabled={isSubmitting}>
-                            <BiSolidSend className='fs-5' />
-                        </button>
                     </Form>
                 )}
             </Formik>
