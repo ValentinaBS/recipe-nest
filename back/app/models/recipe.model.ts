@@ -14,6 +14,7 @@ export class Recipe {
   user_id: number;
   recipe_active: boolean;
   recipe_category_occasion: string;
+  recipe_ingredients: string[];
 
   constructor(recipe: any) {
     this.recipe_title = recipe.recipe_title;
@@ -27,11 +28,16 @@ export class Recipe {
     this.user_id = recipe.user_id;
     this.recipe_active = recipe.recipe_active;
     this.recipe_category_occasion = recipe.recipe_category_occasion;
+    this.recipe_ingredients = recipe.recipe_ingredients;
   }
   //Crear una receta 
   static async create(newRecipe: any, result: Function): Promise<void> {
     const connection = await pool.getConnection();
     try {
+      // Stringify the array to save it in the database as JSON.
+      const ingredientsJson = JSON.stringify(newRecipe.recipe_ingredients);
+      newRecipe.recipe_ingredients = ingredientsJson;
+
       await connection.query("INSERT INTO recipe SET ?", newRecipe);
       console.log("Created new recipe:", newRecipe);
       result(null, { status: "created" });
@@ -43,6 +49,51 @@ export class Recipe {
     }
   }
 
+  //Actualizar una receta 
+  static async updateById(Id: number, updateRecipe: any, result: Function): Promise<void>{
+const connection = await pool.getConnection();
+try {
+  const ingredientsJson = JSON.stringify(updateRecipe.recipe_ingredients);
+  updateRecipe.recipe_ingredients = ingredientsJson;
+
+  const [resultInfo] = await connection.query('UPDATE recipe SET ? WHERE recipe_id = ?', [updateRecipe, Id]);
+  
+  if ((resultInfo as any).affectedRows >0 ) {
+    console.log('Recipe with ID ${id} update successfully.');
+    result(null, { status: 'updated'});
+  }else {
+    console.log(`Recipe with ID ${Id} not found.`);
+    result({ kind: 'not_found' }, null);
+  }
+} catch (err) {
+  console.log('Error updating recipe:', err);
+  result(err, null);
+} finally {
+  connection.release();
+}
+}
+
+// Cambiar el estado de recipe_active a false 
+ static async deactivateRecipe(Id: number, result: Function): Promise<void> {
+  const connection = await pool.getConnection();
+  try {
+   const [resultInfo] = await connection.query('UPDATE recipe SET recipe_active = false WHERE recipe_id = ?', Id);
+    if ((resultInfo as any).affectedRows > 0) {
+       console.log(`Recipe with ID ${Id} deactivated successfully.`);
+       result(null, { status: 'deactivated' });
+    } else {
+       console.log(`Recipe with ID ${Id} not found.`);
+      result({ kind: 'not_found' }, null);
+     }
+   } catch (err) {
+      console.log('Error deactivating recipe:', err);
+      result(err, null);
+   } finally {
+      connection.release();
+   }
+  }
+  
+//Encontrar una receta por su ID 
   static async findById(id: number, result: Function): Promise<void> {
     const connection = await pool.getConnection();
     try {
@@ -63,13 +114,35 @@ export class Recipe {
     }
   }
 
+  static async findByUserId(userId: number, result: Function): Promise<void> {
+    const connection = await pool.getConnection();
+    try {
+      const [rows] = await connection.query("SELECT * FROM recipe WHERE user_id = ?", userId);
+      if (Array.isArray(rows)) {
+        if (rows.length > 0) {
+          console.log("Found recipes for user with user_id: ", userId);
+          result(null, rows);
+        } else {
+          result({ kind: "not_found" }, null);
+        }
+      }
+    } catch (err) {
+      console.log("Error: ", err);
+      result(err, null);
+    } finally {
+      connection.release();
+    }
+  }
 
+//Encontrar todas las recetas 
   static async getAll(title: string | null): Promise<Recipe[]> {
     const connection = await pool.getConnection();
-    let query = "SELEC * FROM recipe";
+    let query = "SELECT * FROM recipe";
+    const values: any[] = [];
 
     if (title) {
-      query += ` WHERE title LIKE '%${title}%' `;
+      query += ` WHERE recipe_title LIKE ? `;
+      values.push(`%${title}%`);
     }
     try {
       const [rows] = await connection.query(query);

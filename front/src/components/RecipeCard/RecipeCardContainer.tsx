@@ -12,6 +12,7 @@ const RecipeCardContainer: React.FC<RecipeCardContainerProps> = (props) => {
 
     useEffect(() => {
         sortRecipes();
+        console.log(recipesList)
     }, [recipesList, sortOrder]);
 
     const sortOptions: Record<string, (a: Recipe, b: Recipe) => number> = {

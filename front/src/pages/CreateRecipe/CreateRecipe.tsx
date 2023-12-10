@@ -8,6 +8,7 @@ import { Formik, Form, Field, ErrorMessage, FieldProps } from 'formik';
 import * as Yup from 'yup';
 import { MdOutlineAddCircle } from 'react-icons/md';
 import { Ingredients } from '../../components/Ingredients/Ingredients';
+import { Ingredient } from '../../types/ingredient';
 import './createRecipe.css';
 
 const CreateRecipe: React.FC = () => {
@@ -63,7 +64,7 @@ const CreateRecipe: React.FC = () => {
                 recipe_title: '',
                 recipe_portions: '',
                 recipe_cooktime: '',
-                ingredients: [],
+                recipe_ingredients: [],
                 recipe_instructions: '',
                 recipe_category_occasion: '- Select an occasion -',
                 recipe_category_type: '',
@@ -78,8 +79,15 @@ const CreateRecipe: React.FC = () => {
             validationSchema={validationSchema}
             onSubmit={async (values, formikBag) => {
                 // Destructuring extra properties made for validation only
-                const { newIngredientQuantity, newIngredientText, newIngredientUnit, ingredients, ...recipeValues } = values;
+                const { newIngredientQuantity, newIngredientText, newIngredientUnit, recipe_ingredients, ...recipeValues } = values;
 
+                const ingredientsArray = (recipe_ingredients as Ingredient[]).map((ingredient) => ingredient.text);
+
+                const updatedRecipeValues = {
+                    ...recipeValues,
+                    recipe_ingredients: ingredientsArray,
+                };
+                
                 setShowModal(true)
 
                 const api_key = "128255215253675";
@@ -112,7 +120,7 @@ const CreateRecipe: React.FC = () => {
 
                     const submitRecipe = async () => {
                         try {
-                            const response = await axios.post('http://localhost:3000/api/recipes', recipeValues);
+                            const response = await axios.post('http://localhost:3000/api/recipes', updatedRecipeValues);
 
                             console.log('Your recipe has been uploaded successfully!', response.data);
                             setModalMessage('Your recipe has been uploaded successfully!');
@@ -128,7 +136,7 @@ const CreateRecipe: React.FC = () => {
                     submitRecipe();
 
                     console.log("Upload successful:", cloudinaryResponse.data);
-                    console.log("Clean values:", recipeValues);
+                    console.log("Clean values:", updatedRecipeValues);
 
                 } catch (error) {
                     console.error("Error uploading image:", error);
@@ -213,10 +221,10 @@ const CreateRecipe: React.FC = () => {
                     </FormBootstrap.Group>
                 </Row>
 
-                <FormBootstrap.Group className='mb-4' controlId='ingredients'>
+                <FormBootstrap.Group className='mb-4' controlId='recipe_ingredients'>
                     <FormBootstrap.Label>Ingredients</FormBootstrap.Label>
                     <Ingredients />
-                    <ErrorMessage name='ingredients' component='div' className='text-danger' />
+                    <ErrorMessage name='recipe_ingredients' component='div' className='text-danger' />
                 </FormBootstrap.Group>
 
                 <FormBootstrap.Group className='mb-4' controlId='instructions'>
@@ -229,12 +237,12 @@ const CreateRecipe: React.FC = () => {
                     <FormBootstrap.Label>Occasion</FormBootstrap.Label>
                     <Field as='select' name='recipe_category_occasion' className='form-select'>
                         <option disabled>- Select an occasion -</option>
-                        <option value='breakfast'>Breakfast</option>
-                        <option value='lunch'>Lunch</option>
-                        <option value='brunch'>Brunch</option>
-                        <option value='tea time'>Tea Time</option>
-                        <option value='dinner'>Dinner</option>
-                        <option value='appetizers'>Appetizers</option>
+                        <option value='Breakfast'>Breakfast</option>
+                        <option value='Lunch'>Lunch</option>
+                        <option value='Brunch'>Brunch</option>
+                        <option value='Tea Time'>Tea Time</option>
+                        <option value='Dinner'>Dinner</option>
+                        <option value='Appetizers'>Appetizers</option>
                     </Field>
                     <ErrorMessage name='recipe_category_occasion' component='div' className='text-danger' />
                 </FormBootstrap.Group>
