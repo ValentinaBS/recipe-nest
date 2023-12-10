@@ -35,5 +35,4 @@ export type RecipeCardProps = {
         recipe_ingredients: string[];
         user_id: number;
     };
-    bookmarkRecipe: (userId: number, recipeId: number) => void;
 };

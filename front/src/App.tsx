@@ -9,6 +9,7 @@ import Login from './pages/Login/Login';
 import Recipe from './pages/Recipe/Recipe';
 import Profile from './pages/Profile/Profile';
 import NotFound from './pages/NotFound/NotFound';
+import Home from "./pages/Home/Home"
 import AboutUs from "./pages/AboutUs/AboutUs"
 import { AuthContextProvider } from './context/authContext.tsx';
 import ProtectedRoute from './routes/ProtectedRoute.tsx';
@@ -20,10 +21,9 @@ function App() {
       <BrowserRouter>
         <ScrollToTop />
         <NavBar />
-
         <Routes>
           
-          {/* <Route index element={<Home />} /> */}
+          <Route index element={<Home />} />
           <Route path='/recipe/:id' element={<Recipe />} />
           <Route path='/search' element={<Search />} />
           <Route path='/create-recipe' 
