@@ -2,20 +2,22 @@ import React, { useState, useEffect, useContext } from 'react';
 import { AuthContext } from '../../context/authContext';
 import axios from 'axios';
 import { NavLink } from 'react-router-dom';
-import { FaRegBookmark } from 'react-icons/fa6';
+import { FaRegBookmark, FaBookmark } from 'react-icons/fa6';
 import { BiLike, BiEdit, BiSolidLeaf, BiTrash } from 'react-icons/bi';
 import LoadingSpinner from '../../components/LoadingSpinner/LoadingSpinner';
 import ConfirmationModal from '../ConfirmationModal/ConfirmationModal';
 import UpdateRecipeModal from '../UpdateModal/UpdateRecipeModal';
 import { RecipeCardProps } from '../../types/recipe';
+import ToastMessage from '../ToastMessage/ToastMessage';
 
 const RecipeCard: React.FC<RecipeCardProps> = ({ recipe }) => {
-    const { currentUser } = useContext(AuthContext);
+    const { currentUser, toastMessage, setToastMessage } = useContext(AuthContext);
     const [isCurrentUser, setIsCurrentUser] = useState(true)
     const [recipeUser, setRecipeUser] = useState(currentUser);
     const [isLoading, setIsLoading] = useState(true);
     const [showModal, setShowModal] = useState(false);
     const [showUpdateModal, setShowUpdateModal] = useState(false);
+    const [isBookmarked, setIsBookmarked] = useState(false);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -33,6 +35,17 @@ const RecipeCard: React.FC<RecipeCardProps> = ({ recipe }) => {
                 console.error('Error fetching data:', error);
                 setIsLoading(false);
             }
+
+            try {
+                const response = await axios.get(`http://localhost:3000/api/bookmark/${currentUser?.user_id}`);
+                const bookmarkedRecipes = response.data;
+
+                const isRecipeBookmarked = bookmarkedRecipes.some((bookmark: any) => bookmark.recipe_id === recipe.recipe_id);
+
+                setIsBookmarked(isRecipeBookmarked);
+            } catch (error) {
+                console.error('Error fetching bookmarked recipes:', error);
+            }
         };
 
         fetchData();
@@ -47,12 +60,29 @@ const RecipeCard: React.FC<RecipeCardProps> = ({ recipe }) => {
         }
     };
 
+    const handleBookmark = async () => {
+        if (!isBookmarked) {
+            setIsBookmarked(true);
+
+            try {
+                await axios.post(`http://localhost:3000/api/bookmark`, { user_id: currentUser?.user_id, recipe_id: recipe.recipe_id });
+
+                setToastMessage('The recipe has been bookmarked!')
+            } catch (error) {
+                console.error('Error bookmarking recipe:', error);
+            }
+        }
+    };
+
     return (
         <>
             {isLoading ? (
                 <LoadingSpinner />
             ) : (
                 <div className='col px-0 d-flex justify-content-center'>
+                    {toastMessage && (
+                        <ToastMessage message={toastMessage} toggleToast={() => setToastMessage('')} />
+                    )}
                     <div className='card recipe-card'>
                         <img
                             src={recipe.recipe_image}
@@ -73,8 +103,12 @@ const RecipeCard: React.FC<RecipeCardProps> = ({ recipe }) => {
                             </span>
                             <p className='mb-1 recipe-card-line-clamp'>{recipe.recipe_instructions}</p>
                             <div className='d-flex align-items-center justify-content-between gap-3 mt-3'>
-                                <button type='button' className='btn secondary-btn border-0 pt-1 z-1'>
-                                    <FaRegBookmark className='fs-5' />
+                                <button
+                                    type='button'
+                                    className='btn secondary-btn border-0 pt-1 z-1'
+                                    onClick={handleBookmark}
+                                >
+                                    {isBookmarked ? <FaBookmark className='fs-5' /> : <FaRegBookmark className='fs-5' />}
                                 </button>
                                 <button type='button' className='btn z-1 secondary-btn border-0 d-flex align-items-center gap-2'>
                                     <BiLike className='fs-4' />

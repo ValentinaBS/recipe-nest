@@ -26,21 +26,50 @@ const Profile: React.FC = () => {
             try {
                 const response = await axios.get(`http://localhost:3000/api/user/${id}`);
                 setProfileUser(response.data);
-
-                const recipesResponse = await axios.get<Recipe[]>(`http://localhost:3000/api/recipes/user/${id}`);
-                setRecipes(recipesResponse.data.filter(recipe => recipe.recipe_active == 1));
             } catch (error) {
                 console.error('Error fetching user:', error);
             }
         };
 
+        const getBookmarkedRecipes = async () => {
+            try {
+
+                const response = await axios.get<Recipe[]>(`http://localhost:3000/api/bookmark/${currentUser?.user_id}`);
+                console.log(response)
+                const bookmarkedRecipes = response.data.filter(recipe => recipe.recipe_active == 1);
+
+                console.log(bookmarkedRecipes)
+
+                if (activeTab === 'bookmarked') {
+                    setRecipes(bookmarkedRecipes);
+                }
+            } catch (error) {
+                console.error('Error fetching bookmarked recipes:', error);
+            }
+        };
+    
+        const getOwnRecipes = async () => {
+            try {
+                const recipesResponse = await axios.get<Recipe[]>(`http://localhost:3000/api/recipes/user/${id}`);
+                const userRecipes = recipesResponse.data.filter(recipe => recipe.recipe_active == 1);
+
+                if (activeTab === 'own') {
+                    setRecipes(userRecipes);
+                }
+            } catch (error) {
+                console.error('Error fetching own recipes:', error);
+            }
+        };
+    
         setIsCurrentUser(id == currentUser?.user_id);
         getUserById();
-    }, [id]);
 
-    const handleTabChange = (tab: 'bookmarked' | 'own') => {
-        setActiveTab(tab);
-    };
+        if (activeTab === 'bookmarked') {
+            getBookmarkedRecipes();
+        } else if (activeTab === 'own') {
+            getOwnRecipes();
+        }
+    }, [id, activeTab]);
 
     const handleSaveChanges = async (updatedData: any) => {
         try {
@@ -104,15 +133,15 @@ const Profile: React.FC = () => {
                     {isCurrentUser &&
                         <div className='d-flex flex-column flex-md-row justify-content-between mt-4 gap-4'>
                             <button
-                                className={`btn py-2 w-100 ${activeTab === 'bookmarked' ? 'primary-btn' : 'secondary-btn'}`}
-                                onClick={() => handleTabChange('bookmarked')}
+                                className={`btn py-2 w-100 ${activeTab === 'bookmarked' ? 'secondary-btn' : 'primary-btn'}`}
+                                onClick={() => setActiveTab('bookmarked')}
                             >
                                 {activeTab === 'bookmarked' ? <FaBookmark className='me-3' /> : <FaRegBookmark className='me-3' />}
                                 Bookmarked Recipes
                             </button>
                             <button
-                                className={`btn py-2 w-100 ${activeTab === 'own' ? 'primary-btn' : 'secondary-btn'}`}
-                                onClick={() => handleTabChange('own')}
+                                className={`btn py-2 w-100 ${activeTab === 'own' ? 'secondary-btn' : 'primary-btn'}`}
+                                onClick={() => setActiveTab('own')}
                             >
                                 {activeTab === 'own' ? <BiSolidHeart className='fs-5 me-3' /> : <BiHeart className='fs-5 me-3' />}
                                 Your Recipes

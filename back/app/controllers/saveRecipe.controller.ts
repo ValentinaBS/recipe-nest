@@ -22,7 +22,7 @@ export const saveRecipe = async (req: Request, res: Response): Promise<void> => 
   
   export const getSavedRecipes = async (req: Request, res: Response): Promise<void> => {
     try {
-      const user_id = req.body.user_id;
+      const user_id: number = Number(req.params.id);
   
       // Llama al método estático para obtener las recetas guardadas del perfil del usuario
       SavedRecipe.getSavedRecipes(user_id, (err: any, result: any) => {

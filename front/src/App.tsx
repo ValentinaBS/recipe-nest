@@ -13,7 +13,6 @@ import AboutUs from "./pages/AboutUs/AboutUs"
 import { AuthContextProvider } from './context/authContext.tsx';
 import ProtectedRoute from './routes/ProtectedRoute.tsx';
 
-
 function App() {
 
   return (
