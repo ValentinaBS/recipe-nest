@@ -154,53 +154,28 @@ try {
       connection.release();
     }
   }
-}
 
-export class Likemodel {
-
-  recipe_id: Number;
-  recipe_likes: Number;
-  user_id: Number;
-
-  constructor(like: any) {
-    this.recipe_id = like.recipe_id;
-    this.recipe_likes = like.recipe_likes;
-    this.user_id = like.user_id;
-  }
-  //añadir like
-  static async addLike(recipeId: Number, userId: Number, recipe_likes: Number, result: Function): Promise<void> {
+  static async addLike(recipeId: number): Promise<void> {
     const connection = await pool.getConnection();
     try {
-      const [existingLikes] = await connection.query('SELECT * FROM likes WHERE recipe_id = ? AND user_id = ? AND recipe_likes = ?', [recipeId, userId, recipe_likes]);
-
-      if ((existingLikes as any[]).length === 0) {
-        await connection.query('INSERT INTO likes (recipe_id, user_id, recipe_likes) VALUES (?, ?, ?)', [recipeId, userId, recipe_likes]);
-        console.log('Like added successfully.');
-        result(null, { receta_id: recipeId, user_id: userId, recipe_likes: recipe_likes });
-      } else {
-        console.log('The user has already "Liked" this recipe.');
-        result(null);
-      }
-    } catch (error) {
-      console.error('Error adding "Like":', error);
-      throw error;
+      await connection.query("UPDATE recipe SET recipe_likes = recipe_likes + 1 WHERE recipe_id = ?", [recipeId]);
+    } catch (err) {
+      throw err;
+    } finally {
+      connection.release();
     }
   }
-  //eliminar like
-  static async removeLike(recipeId: Number, userId: Number, recipe_likes: Number, result: Function): Promise<void> {
+  
+  
+  static async removeLike(recipeId: number): Promise<void> {
     const connection = await pool.getConnection();
     try {
-      const [existingLikes, _]: [RowDataPacket[], FieldPacket[]] = await connection.query('SELECT * FROM likes WHERE recipe_id = ? AND user_id = ? AND recipe_likes = ?', [recipeId, userId, recipe_likes]);
-      if (existingLikes.length > 0) {
-        await connection.query('DELETE FROM likes WHERE recipe_id = ? AND user_id = ? AND recipe_likes = ?', [recipeId, userId, recipe_likes]);
-        console.log('Like successfully removed.');
-      } else {
-        console.log('The user has not "Liked" this recipe.');
-      }
-    } catch (error) {
-      console.error('Error deleting likes:', error);
-      throw error;
+      await connection.query("UPDATE recipe SET recipe_likes = GREATEST(recipe_likes - 1, 0) WHERE recipe_id = ?", [recipeId]);
+    } catch (err) {
+      throw err;
+    } finally {
+      connection.release();
     }
   }
-
 }
+

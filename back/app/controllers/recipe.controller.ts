@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { Recipe, Likemodel } from '../models/recipe.model';
+import { Recipe  } from '../models/recipe.model';
 
 // Crear y guardar una nueva Receta
 export const create = (req: Request, res: Response): void => {
@@ -173,48 +173,24 @@ export const getAll = async (req: Request, res: Response): Promise<void> => {
 }
 }
 
-  //Funcion de like
+//Funcion de like
 export const addLike = async (req: Request, res: Response): Promise<void> => {
-  try {
-    const recipe_likes: number = Number(req.body.recipe_likes);
-    const recipeId: number = Number(req.params.recipe_id);
-    const userId: number = Number(req.body.user_id);
-    //añadir like
-    const result = await new Promise<Error | null | number>((resolve) => {
-      Likemodel.addLike(recipeId, userId, recipe_likes, (err: Error | null, data?: number) => {
-        if (err) {
-          console.error('Error adding the like to the database:', err);
-          return res.status(500).json({ Error: 'Internal Server Error'});
-      }
-      res.status(201).json({ message: 'Likes successfully added' });
-        });
-    });
-  } catch (error){
-    console.error("Error en el controlador de obtener el like", error);
-    res.status(201).json({ error: 'Error interno del servidor' });
+  const recipeId: number = Number(req.params.id);
+  try{
+    res.status(200).send('Like added successfully');
+  } catch (err){
+    console.error('Error adding like:', err);
+    res.status(500).send('Internal Server Error');
   }
 }
 
-  export const removeLike = (req: Request, res: Response) => {
-      try{
-        const recipeId = req.body.recipeId;
-        const recipe_likes = req.body.recipe_likes;
-        const userId = req.body.userId; 
-        
-        //eliminar like
-          Likemodel.removeLike(recipe_likes, recipeId, userId, (err: Error | null, data?: number)=>{
 
-            if (err) {
-              console.error('Error deleting like from database:');
-              return res.status(500).json({ Error:'Internal Server Error'});
-            }
-            if (recipe_likes.affectedRows === 0) {
-              return res.status(404).json({ Error: 'Like not found' });
-            }
-          })
-           res.json({ message: 'Like successfully removed' });
-           } catch (error) {
-            console.error("Error en el controlador de eliminar el like", error);
-            res.status(500).json ({ error: 'Error interno del servidor' });
-          }
-        };
+export const removeLike = async (req: Request, res: Response): Promise<void> => {
+  const recipeId: number = Number(req.params.id);
+  try{
+    res.status(200).send('Like removed successfully');
+  } catch (err){
+    console.error('Error removing like:', err);
+    res.status(500).send('Internal Server Error');
+  }
+}
