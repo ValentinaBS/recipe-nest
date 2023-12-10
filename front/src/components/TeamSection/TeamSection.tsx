@@ -2,7 +2,11 @@ import React from 'react';
 import './TeamSection.css';
 
 const TeamSection: React.FC = () => {
-  const linkedinURL = 'https://www.linkedin.com/in/lourdes-camila-godoy-lotta-0330621bb/';
+  let linkedinURL = 'https://www.linkedin.com/in/lourdes-camila-godoy-lotta-0330621bb/';
+  let secondLinkedInURL = 'https://www.linkedin.com/in/valentina-belen-sanchez/';
+  let thirdLinkedInURL= 'https://www.linkedin.com/in/analaurazanardi/';
+  let fourthLinkedInURL = 'https://www.linkedin.com/in/zoe-n-carida/';
+  let fivethLinkedInURL = 'https://www.linkedin.com/in/belendelgadilloarias/';
 
 
   return (
@@ -21,7 +25,9 @@ const TeamSection: React.FC = () => {
                 alt="image1"
               />
               <div className="content mt-2">
+              <a href={secondLinkedInURL} target="_blank" rel="noopener noreferrer" className="team-member-link">
                 <h4>Valentina Belen Sanchez</h4>
+                </a>
                 <p className="text-muted">Scrum master</p>
                 <p className="text-muted">Full Stack Deverloper Jr</p>
               </div>
@@ -35,7 +41,9 @@ const TeamSection: React.FC = () => {
                 alt="image2"
               />
               <div className="content mt-2">
+              <a href={thirdLinkedInURL} target="_blank" rel="noopener noreferrer" className="team-member-link">
                 <h4>Ana Laura Zanardi</h4>
+                </a>
                 <p className="text-muted">Full Stack Deverloper Jr </p>
               </div>
             </div>
@@ -48,7 +56,9 @@ const TeamSection: React.FC = () => {
                 alt="image3"
               />
               <div className="content mt-2">
+              <a href={fourthLinkedInURL} target="_blank" rel="noopener noreferrer" className="team-member-link">
                 <h4>Zoe N Carida</h4>
+                </a>
                 <p className="text-muted">Full Stack Deverloper Jr</p>
               </div>
             </div>
@@ -61,7 +71,9 @@ const TeamSection: React.FC = () => {
                 alt="image4"
               />
               <div className="content mt-2">
+              <a href={fivethLinkedInURL} target="_blank" rel="noopener noreferrer" className="team-member-link">
                 <h4>Belen Delgadillo Arias</h4>
+                </a>
                 <p className="text-muted">Full Stack Deverloper Jr</p>
               </div>
             </div>
