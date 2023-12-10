@@ -1,24 +1,37 @@
+.home-banner {
+  height: 500px;
+  object-fit: cover;
+}
+
+@media screen and (min-width: 720px) {
+  .home-banner {
+    height: 750px;
+  }
+  
+  .home-banner-overlay {
+    margin: 0 6rem;
+    max-width: 900px;
+  }
+}
 
 .home-title {
-  text-align: center;
-  margin-top: 3%;
-  font-family: poppins;
-    white-space: pre-line;
-    font-size: 100px;
-    color: var(--dark); 
-    font-weight: bold; 
+  font-family: var(--title);
+  font-size: 100px;
+  font-weight: bold; 
 }
-.home-text{
-    font-family: var(--dark);
-    color:black;
-    white-space: pre-line;
-    font-size: 30px;
-    padding: 1%  50% 1% 3%;
+
+.home-recipes {
+  margin: 7rem auto 8rem;
 }
+
 .home-articles-container{
   margin-top: 3%;
   margin-bottom: 3%;
-  width: 800px;
+  width: 720px;
+}
+
+.home-square-img {
+  max-width: 19rem;
 }
 
 .home-boldtitle{
@@ -29,7 +42,7 @@
   
 }
 .home-img{
-  width: 800px;
+  max-width: 1600px;
 }
 .img-fluid1 {
 
@@ -44,14 +57,6 @@
 }
 
 @media screen and (max-width: 700px) {
-.home-title {
-    text-align: center;
-    font-family: poppins;
-    white-space: pre-line;
-    font-size: 1px;
-    color: var(--dark);
-    font-weight: bold;
-  }
 
   .home-text {
     font-family: var(--dark);
