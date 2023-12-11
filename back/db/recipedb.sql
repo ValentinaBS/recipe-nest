@@ -22,14 +22,14 @@ USE `recipedb` ;
 -- Table `recipedb`.`User`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `recipedb`.`User` (
-  `user_id` INT AUTO_INCREMENT NOT NULL,
-  `username` VARCHAR(45) NULL,
-  `email` VARCHAR(45) NULL,
-  `password` VARCHAR(255) NULL,
-  `user_image` VARCHAR(45) NULL,
-  `user_description` VARCHAR(500) NULL,
-  PRIMARY KEY (`user_id`))
-ENGINE = InnoDB;
+    `user_id` INT AUTO_INCREMENT NOT NULL,
+    `username` VARCHAR(45) NULL,
+    `email` VARCHAR(45) NULL,
+    `password` VARCHAR(255) NULL,
+    `user_image` VARCHAR(45) NULL,
+    `user_description` VARCHAR(500) NULL,
+    PRIMARY KEY (`user_id`)
+)  ENGINE=INNODB;
 
 -- -----------------------------------------------------
 -- Table `recipedb`.`recipe`
@@ -47,6 +47,7 @@ CREATE TABLE IF NOT EXISTS `recipedb`.`recipe` (
   `user_id` INT NOT NULL,
   `recipe_active` TINYINT NULL,
   `recipe_category_occasion` VARCHAR(45) NULL,
+`recipe_ingredients` JSON NULL,
   INDEX `user_id_idx` (`user_id` ASC) VISIBLE,
   CONSTRAINT `user_id`
     FOREIGN KEY (`user_id`)
@@ -54,7 +55,6 @@ CREATE TABLE IF NOT EXISTS `recipedb`.`recipe` (
     ON DELETE NO ACTION
     ON UPDATE NO ACTION
 ) ENGINE = InnoDB;
-
 
 -- -----------------------------------------------------
 -- Table `recipedb`.`UserRecipe`
@@ -76,40 +76,6 @@ CREATE TABLE IF NOT EXISTS `recipedb`.`UserRecipe` (
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
-
--- -----------------------------------------------------
--- Table `recipedb`.`Ingredient`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `recipedb`.`Ingredient` (
-  `ingredient_id` VARCHAR(45) NOT NULL,
-  `ingredient_name` VARCHAR(45) NULL,
-  `ingredient_quantity` DOUBLE NULL,
-  `ingredient_unit` VARCHAR(45) NULL,
-  PRIMARY KEY (`ingredient_id`))
-ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
--- Table `recipedb`.`RecipeIngredient`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `recipedb`.`RecipeIngredient` (
-  `ingredient_id` VARCHAR(45) NOT NULL,
-  `recipe_id` INT NOT NULL,
-  `recipe_ingredient` INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
-  INDEX `recipe_id_idx` (`recipe_id` ASC) VISIBLE,
-  CONSTRAINT `recipe_id_recipeingredient`
-    FOREIGN KEY (`recipe_id`)
-    REFERENCES `recipedb`.`recipe` (`recipe_id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `ingredient_id`
-    FOREIGN KEY (`ingredient_id`)
-    REFERENCES `recipedb`.`Ingredient` (`ingredient_id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
-
-
 -- -----------------------------------------------------
 -- Table `recipedb`.`Comment`
 -- -----------------------------------------------------
@@ -120,6 +86,8 @@ CREATE TABLE IF NOT EXISTS `recipedb`.`Comment` (
   `comment_published_time` DATETIME NULL,
   `recipe_id` INT NOT NULL,
   `user_id` INT NOT NULL,
+  `username` VARCHAR(45) NULL,
+  `user_image` VARCHAR(45) NULL,
   `comment_active` TINYINT NULL,
   PRIMARY KEY (`comment_id`, `user_id`, `recipe_id`),
   INDEX `user_id_idx` (`user_id` ASC) VISIBLE,
