@@ -15,9 +15,9 @@ router.get("/all", recipes.getAll);
 
 router.post("/", recipes.create);
 
-router.get('/addlike/:id', recipes.addLike);
+router.patch('/addlike/:id', recipes.addLike);
 
-router.delete ('/removelike/:id', recipes.removeLike);
+router.patch('/removelike/:id', recipes.removeLike);
 
 const recipeRoutes = (app: Express): void => {
   app.use('/api/recipes', router);
