@@ -6,7 +6,7 @@ const LoginRadioInput: React.FC<LoginRadioInputProps> = ({ id, imageSrc, alt }) 
     <div className="custom-checkbox">
         <Field
             type="radio"
-            name="profileImg"
+            name="user_image"
             id={id}
             className="form-check-input d-none"
             value={imageSrc}

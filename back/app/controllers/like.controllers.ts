@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+/*import { Request, Response, query } from 'express';
+import { Like } from '../models/like.model';
+=======
 import { Request, Response } from 'express';
 import { Likemodel } from '../models/like.model'; 
 
@@ -6,6 +10,7 @@ import { Likemodel } from '../models/like.model';
 interface Likemodel {
     query: (sql: string, callback:(err: Error | null, result: any) => void) => void;
 }
+>>>>>>> a7676f1c58eab8c989d2e1c2d0ef4b682918e775
 
 export const getLikes = (req: Request, res: Response) => {
     const sql = 'SELECT * FROM recipe_like';
@@ -51,6 +56,9 @@ export const removeLike = (req: Request, res: Response) => {
         }
         res.json({ message: 'Like successfully removed' });
     });
+<<<<<<< HEAD
+};*/
+=======
 };
 */
 
@@ -62,3 +70,4 @@ export const removeLike = (req: Request, res: Response) => {
     
         
         
+>>>>>>> a7676f1c58eab8c989d2e1c2d0ef4b682918e775

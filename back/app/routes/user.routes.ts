@@ -3,11 +3,19 @@ import * as user from '../controllers/user.controller';
 
 const router = express.Router();
 
-// Create a new user
-router.post("/", user.create);
+router.post("/register", user.create);
 
-// Retrieve a single user with id
+router.post("/login", user.login);
+
+router.post('/logout', user.logout);
+
+router.get("/current", user.current);
+
+router.get("/search/:username", user.findByUsername);
+
 router.get("/:id", user.findOne);
+
+router.patch("/:id", user.update);
 
 const userRoutes = (app: Express): void => {
     app.use('/api/user', router);

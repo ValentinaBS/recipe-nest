@@ -7,6 +7,11 @@ export interface Recipe {
     recipe_category_type: string;
     recipe_category_occasion: string;
     recipe_likes: number;
+    recipe_cooktime: string;
+    recipe_portions: number;
+    recipe_active: number;
+    recipe_ingredients: string[];
+    user_id: number;
 };
 
 export interface RecipeCardContainerProps {
@@ -24,6 +29,10 @@ export type RecipeCardProps = {
         recipe_category_type: string;
         recipe_category_occasion: string;
         recipe_likes: number;
+        recipe_cooktime: string;
+        recipe_portions: number;
+        recipe_active: number;
+        recipe_ingredients: string[];
+        user_id: number;
     };
-    //bookmarkRecipe: (recipeId: number) => void;
 };

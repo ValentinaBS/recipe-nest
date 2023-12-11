@@ -3,15 +3,27 @@ import * as recipes from '../controllers/recipe.controller';
 
 const router = express.Router();
 
-// Create a new recipe
+router.put("/:id", recipes.updateRecipe);
+
+router.patch("/delete/:id", recipes.deactivateRecipe);
+
+router.get("/search/:id", recipes.findOne);
+
+router.get("/user/:user_id", recipes.findByUserId);
+
+router.get("/all", recipes.getAll);
+
 router.post("/", recipes.create);
 
-// Retrieve a single recipe with id
-router.get("/:id", recipes.findOne);
+router.get('/', recipes.addLike);
+
+router.delete ('/', recipes.removeLike);
 
 const recipeRoutes = (app: Express): void => {
   app.use('/api/recipes', router);
 };
+
+
 export default recipeRoutes;
 
 
