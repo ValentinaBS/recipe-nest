@@ -3,8 +3,8 @@ import { saveRecipe, getSavedRecipes } from '../controllers/saveRecipe.controlle
 
 const router = express.Router();
 
-// Add comment to a recipe
 router.post("/", saveRecipe);
+
 router.get("/:id", getSavedRecipes);
 
 const SavedRecipeRoutes = (app: Express): void => {

@@ -14,21 +14,18 @@ var corsOptions = {
     origin: "http://localhost:5173"
 };
 
-  app.use(cors(corsOptions));
-  app.use(express.json());
-  
+app.use(cors(corsOptions));
+app.use(express.json());
 
-  // Configuracion de rutas 
 recipeRoutes(app);
 userRoutes(app);
 CommentRoutes(app);
 SavedRecipeRoutes(app);
 
-app.get('/', (req, res) =>{
+app.get('/', (req, res) => {
     res.send('Hello World!!!')
 });
 
-
-app.listen(PORT, ()=> {
+app.listen(PORT, () => {
     console.log(`Example app listening on port http://localhost:${PORT}`)
 });

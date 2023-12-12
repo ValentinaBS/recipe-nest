@@ -62,7 +62,6 @@ export const login = async (req: Request, res: Response): Promise<void> => {
                 }).status(200).json(others);
             }
         })
-
     } catch (err) {
         res.status(500).send({ message: "Error looking for user." });
     }
@@ -156,11 +155,11 @@ export const findOne = (req: Request, res: Response): void => {
         if (err) {
             if (err.message === "not_found") {
                 res.status(404).send({
-                    message: `No se encontró el Usuario con el ID ${userId}.`
+                    message: `User with ID ${userId} was not found.`
                 });
             } else {
                 res.status(500).send({
-                    message: "Error al recuperar el usuario con el ID " + userId
+                    message: "Error retrieving user with ID " + userId
                 });
             }
         } else {

@@ -1,16 +1,13 @@
 import { Request, Response } from 'express';
 import { Recipe, Likemodel } from '../models/recipe.model';
 
-// Crear y guardar una nueva Receta
 export const create = (req: Request, res: Response): void => {
-  // Validar la solicitud
   if (!req.body) {
     res.status(400).send({
-      message: "¡El contenido no puede estar vacío!"
+      message: "Content can't be empty"
     });
   }
 
-  // Crear una Receta
   const recipe: Recipe = {
     recipe_title: req.body.recipe_title,
     recipe_instructions: req.body.recipe_instructions,
@@ -26,7 +23,6 @@ export const create = (req: Request, res: Response): void => {
     recipe_ingredients: req.body.recipe_ingredients
   };
 
-  // Guardar la Receta en la base de datos
   Recipe.create(recipe, (err: Error | null, data?: Recipe) => {
     if (err) {
       res.status(500).send({
@@ -39,7 +35,6 @@ export const create = (req: Request, res: Response): void => {
   });
 };
 
-//Actualizar una receta 
 export const updateRecipe = async (req: Request, res: Response): Promise<void> => {
 
   const recipeId: number = Number(req.params.id);
@@ -69,11 +64,11 @@ export const updateRecipe = async (req: Request, res: Response): Promise<void> =
       if (err) {
         if (err.message === "not_found") {
           res.status(400).send({
-          message: `no se encontro la reseta con el id ${recipeId}.` 
+            message: `Can't fin recipe with ID: ${recipeId}.`
           });
         } else {
           res.status(500).send({
-            message: "Error al actualizar la receta." 
+            message: "Error updating recipe."
           });
         }
       } else {
@@ -81,11 +76,11 @@ export const updateRecipe = async (req: Request, res: Response): Promise<void> =
       }
     });
   } catch (Error) {
-    console.log("Error en el controlador de actualizar la receta:", Error);
-      res.status(500).json({
-    message: "Error al actualizar la receta."
-  });
-}
+    console.log("Error in the contrtroller updating recipe:", Error);
+    res.status(500).json({
+      message: "Error updating recipe."
+    });
+  }
 };
 
 //Desactivar una receta 
@@ -99,11 +94,11 @@ export const deactivateRecipe = async (req: Request, res: Response): Promise<voi
       if (err) {
         if (err.message === "not_found") {
           res.status(404).send({
-            message: `No se encontró la Receta con el ID ${recipeId}.`
+            message: `Can't fin recipe with ID: ${recipeId}.`
           });
         } else {
           res.status(500).send({
-            message: "Error al desactivar la Receta con el ID " + recipeId
+            message: "Error deactivating recipe with ID: " + recipeId
           });
         }
       } else {
@@ -111,14 +106,13 @@ export const deactivateRecipe = async (req: Request, res: Response): Promise<voi
       }
     });
   } catch (error) {
-    console.error("Error en el controlador de desactivar la receta:", error);
+    console.error("Error in the contrtroller deactivating recipe:", error);
     res.status(500).json({
-      message: "Error al desactivar la receta."
+      message: "Error deactivating recipe."
     });
   }
 };
 
-// Encontrar una sola receta por su ID
 export const findOne = (req: Request, res: Response): void => {
   const recipeId: number = Number(req.params.id);
 
@@ -126,11 +120,11 @@ export const findOne = (req: Request, res: Response): void => {
     if (err) {
       if (err.message === "not_found") {
         res.status(404).send({
-          message: `No se encontró la Receta con el ID ${recipeId}.`
+          message: `Can't fin recipe with ID: ${recipeId}.`
         });
       } else {
         res.status(500).send({
-          message: "Error al recuperar la Receta con el ID " + recipeId
+          message: "Error getting recipe with ID: " + recipeId
         });
       }
     } else {
@@ -162,59 +156,57 @@ export const findByUserId = (req: Request, res: Response): void => {
 //encontrar todas las recetas por titulo
 export const getAll = async (req: Request, res: Response): Promise<void> => {
   try {
-    const title: string | null = req.query.title ? String(req.query.title): null;
+    const title: string | null = req.query.title ? String(req.query.title) : null;
     const recipes = await Recipe.getAll(title);
     res.json(recipes);
-  } catch (err){
-  console.log("Error al obtener todas las recetas:", err);
-  res.status(500).json({
-    massage: "Error al obtener las recetas."
-  })
-}
+  } catch (err) {
+    console.log("Error retrieving all recipes: ", err);
+    res.status(500).json({
+      massage: "Error retrieving recipes"
+    })
+  }
 }
 
-  //Funcion de like
 export const addLike = async (req: Request, res: Response): Promise<void> => {
   try {
     const recipe_likes: number = Number(req.body.recipe_likes);
     const recipeId: number = Number(req.params.recipe_id);
     const userId: number = Number(req.body.user_id);
-    //añadir like
+
     const result = await new Promise<Error | null | number>((resolve) => {
       Likemodel.addLike(recipeId, userId, recipe_likes, (err: Error | null, data?: number) => {
         if (err) {
           console.error('Error adding the like to the database:', err);
-          return res.status(500).json({ Error: 'Internal Server Error'});
-      }
-      res.status(201).json({ message: 'Likes successfully added' });
-        });
+          return res.status(500).json({ Error: 'Internal Server Error' });
+        }
+        res.status(201).json({ message: 'Likes successfully added' });
+      });
     });
-  } catch (error){
-    console.error("Error en el controlador de obtener el like", error);
-    res.status(201).json({ error: 'Error interno del servidor' });
+  } catch (error) {
+    console.error("Error in the contrtroller to obtain likes", error);
+    res.status(500).json({ Error: 'Internal Server Error' });
   }
 }
 
-  export const removeLike = (req: Request, res: Response) => {
-      try{
-        const recipeId = req.body.recipeId;
-        const recipe_likes = req.body.recipe_likes;
-        const userId = req.body.userId; 
-        
-        //eliminar like
-          Likemodel.removeLike(recipe_likes, recipeId, userId, (err: Error | null, data?: number)=>{
+export const removeLike = (req: Request, res: Response) => {
+  try {
+    const recipeId = req.body.recipeId;
+    const recipe_likes = req.body.recipe_likes;
+    const userId = req.body.userId;
 
-            if (err) {
-              console.error('Error deleting like from database:');
-              return res.status(500).json({ Error:'Internal Server Error'});
-            }
-            if (recipe_likes.affectedRows === 0) {
-              return res.status(404).json({ Error: 'Like not found' });
-            }
-          })
-           res.json({ message: 'Like successfully removed' });
-           } catch (error) {
-            console.error("Error en el controlador de eliminar el like", error);
-            res.status(500).json ({ error: 'Error interno del servidor' });
-          }
-        };
+    Likemodel.removeLike(recipe_likes, recipeId, userId, (err: Error | null, data?: number) => {
+
+      if (err) {
+        console.error('Error deleting like from database:');
+        return res.status(500).json({ Error: 'Internal Server Error' });
+      }
+      if (recipe_likes.affectedRows === 0) {
+        return res.status(404).json({ Error: 'Like not found' });
+      }
+    })
+    res.json({ message: 'Like successfully removed' });
+  } catch (error) {
+    console.error("Error in the contrtroller deleting like: ", error);
+    res.status(500).json({ Error: 'Internal Server Error' });
+  }
+};

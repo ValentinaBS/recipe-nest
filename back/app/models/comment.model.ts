@@ -1,5 +1,4 @@
 import { pool } from './db';
-import { User } from './user.model';
 
 export class Comment {
   comment_text: string;
@@ -46,7 +45,7 @@ export class Comment {
       }
 
     } catch (err) {
-      console.log("Error al insertar comentario: ", err);
+      console.log("Error inserting comment: ", err);
       result(err, null);
     } finally {
       connection.release();
