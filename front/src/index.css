@@ -78,19 +78,24 @@ footer a:hover:after {
 }
 
 .primary-btn,
-.secondary-btn:hover {
+.secondary-btn:hover, .secondary-btn:focus {
   background-color: var(--primary);
   color: white;
   font-weight: bold;
   border: 2px solid var(--primary);
 }
 
-.primary-btn:hover,
+.primary-btn:hover, .primary-btn:focus,
 .secondary-btn {
   background-color: white;
   color: var(--dark);
   font-weight: bold;
   border: 2px solid var(--secondary);
+}
+
+.btn-primary {
+  --bs-btn-active-bg: var(--primary);
+  --bs-btn-active-border-color: var(--dark);
 }
 
 .form-control,

@@ -18,14 +18,16 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({ message, show, ha
                 </Modal.Header>
                 <Modal.Body className='px-4 py-0'>
                     {message}
-                    <p>(You won't be able to revert this action)</p>
+                    {message == 'Are you sure you want to delete this recipe?' && 
+                        <p>(You won't be able to revert this action)</p>
+                    }
                 </Modal.Body>
                 <Modal.Footer className='border-0 px-3 mx-auto mx-md-0 '>
                     <Button className='secondary-btn' onClick={handleClose}>
                         Close
                     </Button>
                     <Button className='primary-btn' onClick={handleSave}>
-                        Save Changes
+                        Yes, log out
                     </Button>
                 </Modal.Footer>
             </Modal>

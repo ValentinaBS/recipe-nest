@@ -13,7 +13,7 @@ const Home: React.FC = () => {
     const fetchRecipes = async () => {
       try {
         const response = await axios.get<Recipe[]>('http://localhost:3000/api/recipes/all');
-        setRecipes(response.data.slice(0, 3));
+        setRecipes(response.data.slice(1, 4));
       } catch (error) {
         console.error('Error fetching recipes:', error);
       }

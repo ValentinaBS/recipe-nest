@@ -19,9 +19,9 @@ const Recipe: React.FC = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            
+
             setIsLoading(true)
-            
+
             try {
                 const recipeResponse = await axios.get(`http://localhost:3000/api/recipes/search/${id}`);
                 const fetchedRecipeData = recipeResponse.data;
@@ -118,16 +118,16 @@ const Recipe: React.FC = () => {
                     </div>
 
                     <div className='mb-4 py-4 card-background w-100'>
-                        <h2 className='fs-3 mb-0'>
+                        <h2 className='fs-3 mb-4'>
                             Instructions
                         </h2>
 
-                        <p className='my-3'>
-                            {recipeData.recipe_instructions}
-                        </p>
+                        {recipeData.recipe_instructions.split('\n').map((instruction: string, index: number) => (
+                            <p className='my-0' key={index}>{instruction}<br /></p>
+                        ))}
                     </div>
 
-{/*                     <div className='mb-4 py-4 card-background w-100'>
+                    {/*                     <div className='mb-4 py-4 card-background w-100'>
                         <div className='mb-4 d-flex gap-2 justify-content-between align-items-center'>
                             <h2 className='fs-3 mb-0'>
                                 More Recipes By {recipeUser?.username}

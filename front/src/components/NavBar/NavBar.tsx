@@ -4,12 +4,14 @@ import { Container, Navbar, Nav, Button } from 'react-bootstrap';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { MdOutlineAddCircle } from 'react-icons/md';
 import { BiSearchAlt, BiLogOut, BiSolidUser } from 'react-icons/bi';
+import ConfirmationModal from '../ConfirmationModal/ConfirmationModal';
 import './navbar.css'
 
 const NavBar: React.FC = () => {
     const navigate = useNavigate();
     const { logout, currentUser } = useContext(AuthContext);
     const [expanded, setExpanded] = useState(false);
+    const [showModal, setShowModal] = useState(false);
 
     const handleNavLinkClick = (path: string) => {
         setExpanded(false);
@@ -19,8 +21,18 @@ const NavBar: React.FC = () => {
 
     return (
         <Navbar expanded={expanded} expand='md' sticky='top' className='nav-general shadow' style={{ zIndex: 3 }}>
+            <ConfirmationModal
+                message='Are you sure you want to log out?'
+                show={showModal}
+                handleClose={() => setShowModal(false)}
+                handleSave={() => {
+                    setShowModal(false);
+                    logout();
+                    navigate('/login');
+                }}
+            />
             <Container fluid className='px-4 mx-0'>
-                <NavLink to='/home' className='navbar-brand'>
+                <NavLink to='/' className='navbar-brand'>
                     <img className='nav-logo my-1' src='https://i.imgur.com/bBi1u4w.png' alt='Green Plates logo' />
                 </NavLink>
                 <Navbar.Toggle onClick={() => setExpanded(!expanded)} className='border-0' aria-controls='navbar-nav' />
@@ -50,10 +62,7 @@ const NavBar: React.FC = () => {
                             </Nav.Link>
                             <Button
                                 className='nav-link d-flex align-items-center justify-content-center column-gap-1 btn-nav-link'
-                                onClick={() => {
-                                    logout()
-                                    navigate('/login')
-                                }}
+                                onClick={() => setShowModal(true)}
                             >
                                 <BiLogOut className='fs-4' />
                                 Log Out

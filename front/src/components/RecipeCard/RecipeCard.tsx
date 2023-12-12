@@ -1,9 +1,9 @@
-import React, { useState, useEffect, useContext } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { AuthContext } from '../../context/authContext';
 import axios from 'axios';
 import { NavLink } from 'react-router-dom';
 import { FaRegBookmark, FaBookmark } from 'react-icons/fa6';
-import { BiLike, BiEdit, BiSolidLeaf, BiTrash } from 'react-icons/bi';
+import { BiLike, BiSolidLike, BiEdit, BiSolidLeaf, BiTrash } from 'react-icons/bi';
 import LoadingSpinner from '../../components/LoadingSpinner/LoadingSpinner';
 import ConfirmationModal from '../ConfirmationModal/ConfirmationModal';
 import UpdateRecipeModal from '../UpdateModal/UpdateRecipeModal';
@@ -18,6 +18,7 @@ const RecipeCard: React.FC<RecipeCardProps> = ({ recipe }) => {
     const [showModal, setShowModal] = useState(false);
     const [showUpdateModal, setShowUpdateModal] = useState(false);
     const [isBookmarked, setIsBookmarked] = useState(false);
+    const [isLiked, setIsLiked] = useState(false);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -110,9 +111,13 @@ const RecipeCard: React.FC<RecipeCardProps> = ({ recipe }) => {
                                 >
                                     {isBookmarked ? <FaBookmark className='fs-5' /> : <FaRegBookmark className='fs-5' />}
                                 </button>
-                                <button type='button' className='btn z-1 secondary-btn border-0 d-flex align-items-center gap-2'>
-                                    <BiLike className='fs-4' />
-                                    {recipe.recipe_likes}
+                                <button 
+                                    type='button' 
+                                    className='btn z-1 secondary-btn border-0 d-flex align-items-center gap-2'
+                                    onClick={() => setIsLiked(prevLikes => !prevLikes)}
+                                >
+                                    {isLiked ? <BiSolidLike className='fs-4' /> : <BiLike className='fs-4' />}
+                                    {isLiked ? recipe.recipe_likes + 1 : recipe.recipe_likes}
                                 </button>
                                 {isCurrentUser &&
                                     <div className='d-flex align-items-center gap-3'>
