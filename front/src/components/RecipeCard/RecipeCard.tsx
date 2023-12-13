@@ -91,7 +91,9 @@ const RecipeCard: React.FC<RecipeCardProps> = ({ recipe }) => {
                             className='card-img-top recipe-card-img object-fit-cover w-100 h-lg-100 rounded-bottom-0'
                         />
                         <div className='card-body mt-2 d-flex flex-column justify-content-between'>
-                            <h5 className='card-title card-title-height fw-bold line-clamp'>{recipe.recipe_title}</h5>
+                            <h5 className='card-title card-title-height fw-bold line-clamp'>
+                                {recipe.recipe_title}
+                            </h5>
                             <div className='d-flex justify-content-between  pt-3 green-border'>
                                 <p className='mb-1'>
                                     {new Date(recipe.recipe_published_time).toISOString().split('T')[0]}

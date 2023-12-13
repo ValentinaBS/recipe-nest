@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { Recipe, Likemodel } from '../models/recipe.model';
+import { Recipe } from '../models/recipe.model';
 
 export const create = (req: Request, res: Response): void => {
   if (!req.body) {
@@ -166,47 +166,3 @@ export const getAll = async (req: Request, res: Response): Promise<void> => {
     })
   }
 }
-
-export const addLike = async (req: Request, res: Response): Promise<void> => {
-  try {
-    const recipe_likes: number = Number(req.body.recipe_likes);
-    const recipeId: number = Number(req.params.recipe_id);
-    const userId: number = Number(req.body.user_id);
-
-    const result = await new Promise<Error | null | number>((resolve) => {
-      Likemodel.addLike(recipeId, userId, recipe_likes, (err: Error | null, data?: number) => {
-        if (err) {
-          console.error('Error adding the like to the database:', err);
-          return res.status(500).json({ Error: 'Internal Server Error' });
-        }
-        res.status(201).json({ message: 'Likes successfully added' });
-      });
-    });
-  } catch (error) {
-    console.error("Error in the contrtroller to obtain likes", error);
-    res.status(500).json({ Error: 'Internal Server Error' });
-  }
-}
-
-export const removeLike = (req: Request, res: Response) => {
-  try {
-    const recipeId = req.body.recipeId;
-    const recipe_likes = req.body.recipe_likes;
-    const userId = req.body.userId;
-
-    Likemodel.removeLike(recipe_likes, recipeId, userId, (err: Error | null, data?: number) => {
-
-      if (err) {
-        console.error('Error deleting like from database:');
-        return res.status(500).json({ Error: 'Internal Server Error' });
-      }
-      if (recipe_likes.affectedRows === 0) {
-        return res.status(404).json({ Error: 'Like not found' });
-      }
-    })
-    res.json({ message: 'Like successfully removed' });
-  } catch (error) {
-    console.error("Error in the contrtroller deleting like: ", error);
-    res.status(500).json({ Error: 'Internal Server Error' });
-  }
-};
